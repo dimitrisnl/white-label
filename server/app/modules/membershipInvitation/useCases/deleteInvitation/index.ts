@@ -1,0 +1,1 @@
+export {deleteInvitation} from './deleteInvitation';

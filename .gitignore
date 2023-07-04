@@ -1,0 +1,13 @@
+node_modules
+build
+dist
+coverage
+.vscode
+.DS_STORE
+.env
+tmp
+
+
+# temp
+web
+docker

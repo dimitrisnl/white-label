@@ -1,0 +1,62 @@
+{
+  "typescript": true,
+  "commands": [
+    "./commands",
+    "@adonisjs/core/build/commands/index.js",
+    "@adonisjs/repl/build/commands",
+    "@adonisjs/lucid/build/commands",
+    "@adonisjs/mail/build/commands",
+    "@adonisjs/bouncer/build/commands"
+  ],
+  "exceptionHandlerNamespace": "@/app/exceptions/Handler",
+  "aliases": {
+    "@/app": "app",
+    "@/config": "config",
+    "@/contracts": "contracts",
+    "@/database": "database"
+  },
+  "namespaces": {
+    "eventListeners": "@/app/listeners",
+    "middleware": "@/app/middleware",
+    "exceptions": "@/app/exceptions"
+  },
+  "preloads": [
+    "./start/routes",
+    "./start/kernel",
+    "./start/bouncer",
+    "./start/events",
+    "./start/mail"
+  ],
+  "providers": [
+    "./providers/AppProvider",
+    "@adonisjs/core",
+    "@adonisjs/lucid",
+    "@adonisjs/lucid-slugify",
+    "@adonisjs/auth",
+    "@adonisjs/mail",
+    "@adonisjs/view",
+    "@adonisjs/redis",
+    "@adonisjs/bouncer"
+  ],
+  "aceProviders": ["@adonisjs/repl"],
+  "tests": {
+    "suites": [
+      {
+        "name": "functional",
+        "files": ["tests/functional/**/*.spec(.ts|.js)"],
+        "timeout": 60000
+      },
+      {
+        "name": "integration",
+        "files": ["app/modules/**/*.test(.ts|.js)"]
+      }
+    ]
+  },
+  "testProviders": ["@japa/preset-adonis/TestsProvider"],
+  "metaFiles": [
+    {
+      "pattern": "resources/views/**/*.edge",
+      "reloadServer": false
+    }
+  ]
+}
