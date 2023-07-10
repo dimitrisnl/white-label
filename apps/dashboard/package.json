@@ -1,0 +1,40 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "build": "remix build",
+    "dev": "remix dev",
+    "lint": "eslint --ext .ts,.tsx .",
+    "start": "remix-serve build",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@remix-run/css-bundle": "^1.18.1",
+    "@remix-run/node": "^1.18.1",
+    "@remix-run/react": "^1.18.1",
+    "@remix-run/serve": "^1.18.1",
+    "axios": "^1.4.0",
+    "isbot": "^3.6.12",
+    "lucide-react": "^0.258.0",
+    "nprogress": "^0.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "remix-flat-routes": "^0.5.10",
+    "tailwindcss-animate": "^1.0.6",
+    "ui-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^1.18.1",
+    "@types/nprogress": "^0.2.0",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
+    "autoprefixer": "^10.4.14",
+    "eslint-config-custom-remix": "workspace:*",
+    "tailwindcss": "^3.3.2"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}
