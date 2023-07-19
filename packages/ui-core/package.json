@@ -2,6 +2,11 @@
   "name": "ui-core",
   "version": "0.0.0",
   "private": true,
+  "exports": {
+    ".": "./index.tsx",
+    "./tailwind-config": "./tailwind.config.js",
+    "./tailwind.css": "./tailwind.css"
+  },
   "main": "./index.tsx",
   "types": "./index.tsx",
   "scripts": {
