@@ -1,0 +1,13 @@
+{
+  "root": true,
+  "include": ["**/*.ts", "**/*.tsx"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "strict": true,
+    "lib": ["DOM", "DOM.Iterable", "ES2019"],
+    "jsx": "react-jsx",
+    "target": "ES2019",
+    "module": "ESNext",
+    "moduleResolution": "NodeNext"
+  }
+}

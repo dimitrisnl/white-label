@@ -1,1 +1,5 @@
 build
+node_modules
+tmp
+dist
+.cache
