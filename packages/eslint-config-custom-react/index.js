@@ -42,6 +42,7 @@ module.exports = {
       {default: 'generic', readonly: 'generic'},
     ],
     '@typescript-eslint/no-empty-interface': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
   },
   settings: {
     react: {
