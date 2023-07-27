@@ -1,6 +1,7 @@
-import type {Request, LoaderArgs} from '@remix-run/node';
-import {json} from '@remix-run/node';
+import type {LoaderArgs, Request} from '@remix-run/node';
+import {redirect} from '@remix-run/node';
 
+import {respond} from '@/lib/respond';
 import {requireToken} from '@/lib/session';
 
 import {getOrg} from './requests';
@@ -12,16 +13,22 @@ export async function loader({
   request: Request;
   params: LoaderArgs['params'];
 }) {
-  const orgId = params.orgId!;
+  if (!params.orgId) {
+    return redirect('/');
+  }
+
+  const {orgId} = params;
   const token = await requireToken(request);
 
   return await getOrg({
     token,
     orgId,
   }).then(({data}) => {
-    return json({
+    return respond.ok.data({
       org: data.org,
       users: data.users,
     });
   });
 }
+
+export type GetOrgLoader = typeof loader;

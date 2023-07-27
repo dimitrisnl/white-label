@@ -1,10 +1,12 @@
+import type {getOrgRequest, updateOrgRequest} from 'api-contract';
+
 import {client} from '@/lib/client';
 
 const GET_ORG_ENDPOINT = '/v1/orgs';
 const EDIT_ORG_ENDPOINT = '/v1/orgs';
 
 export function getOrg({token, orgId}: {token: string; orgId: string}) {
-  return client.get(GET_ORG_ENDPOINT, {
+  return client.get<getOrgRequest.ResponseData>(GET_ORG_ENDPOINT, {
     headers: {
       'Authorization': `Bearer ${token}`,
       'x-org-id': orgId,
@@ -14,16 +16,15 @@ export function getOrg({token, orgId}: {token: string; orgId: string}) {
 
 export function editOrg({
   token,
-  data,
   orgId,
+  data,
 }: {
   token: string;
-  data: FormData;
   orgId: string;
+  data: updateOrgRequest.RequestData;
 }) {
-  return client.patch(EDIT_ORG_ENDPOINT, data, {
+  return client.patch<updateOrgRequest.ResponseData>(EDIT_ORG_ENDPOINT, data, {
     headers: {
-      'Content-Type': 'multipart/form-data',
       'Authorization': `Bearer ${token}`,
       'x-org-id': orgId,
     },

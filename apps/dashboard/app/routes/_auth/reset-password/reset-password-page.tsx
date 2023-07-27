@@ -3,12 +3,13 @@ import {useLoaderData} from '@remix-run/react';
 import {GuestLayout} from '@/components/layouts/guest-layout';
 
 import {InvalidToken} from './invalid-token';
+import type {ResetPasswordLoader} from './loader.server';
 import {ResetPasswordForm} from './reset-password-form';
 
 export function ResetPasswordPage() {
-  const {ok, token} = useLoaderData();
+  const loaderData = useLoaderData<ResetPasswordLoader>();
 
-  if (!ok) {
+  if (!loaderData.ok) {
     return (
       <GuestLayout>
         <InvalidToken />
@@ -18,7 +19,7 @@ export function ResetPasswordPage() {
 
   return (
     <GuestLayout>
-      <ResetPasswordForm token={token} />
+      <ResetPasswordForm token={loaderData.data.token} />
     </GuestLayout>
   );
 }

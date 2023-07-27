@@ -1,3 +1,4 @@
+import {useNavigate} from '@remix-run/react';
 import {CheckIcon, ChevronsUpDownIcon} from 'lucide-react';
 import * as React from 'react';
 import {
@@ -11,7 +12,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from 'ui-core';
-import {useNavigate} from '@remix-run/react';
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger

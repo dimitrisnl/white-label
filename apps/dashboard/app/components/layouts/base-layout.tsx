@@ -2,7 +2,6 @@ import {Link} from '@remix-run/react';
 import React from 'react';
 import {cn} from 'ui-core';
 
-import TeamSwitcher from '@/components/team-switcher';
 import {UserNav} from '@/components/user-nav';
 import {useUser} from '@/lib/user';
 

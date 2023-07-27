@@ -1,5 +1,8 @@
 import type {Request} from '@remix-run/node';
-import {json} from '@remix-run/node';
+import {resetPasswordRequest} from 'api-contract';
+
+import {isErrorObject} from '@/lib/isErrorObject';
+import {respond} from '@/lib/respond';
 
 import {resetPassword} from './requests';
 
@@ -7,11 +10,28 @@ export async function action({request}: {request: Request}) {
   const formData = await request.formData();
   formData.delete('confirmPassword');
 
-  return resetPassword(formData)
-    .then(({data}) => {
-      return json({ok: true});
+  const validation = resetPasswordRequest.validate(formData);
+
+  // todo: fix
+  if (!validation.success) {
+    return respond.fail.validation({
+      password: 'Invalid credentials',
+    });
+  }
+
+  const payload = validation.data;
+
+  return resetPassword(payload)
+    .then(() => {
+      return respond.ok.empty();
     })
-    .catch((error) => {
-      return json({ok: false, messageObject: error.response.data});
+    .catch((error: unknown) => {
+      if (isErrorObject(error)) {
+        return respond.fail.validation(error.response.data);
+      } else {
+        return respond.fail.unknown();
+      }
     });
 }
+
+export type ResetPasswordAction = typeof action;

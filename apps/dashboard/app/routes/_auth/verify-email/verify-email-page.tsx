@@ -11,8 +11,10 @@ import {
 
 import {GuestLayout} from '@/components/layouts/guest-layout';
 
+import type {VerifyEmailLoader} from './loader.server';
+
 export function VerifyEmailPage() {
-  const data = useLoaderData();
+  const data = useLoaderData<VerifyEmailLoader>();
 
   if (data.ok) {
     return (

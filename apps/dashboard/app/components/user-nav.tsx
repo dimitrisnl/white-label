@@ -1,4 +1,5 @@
 import {Link} from '@remix-run/react';
+import type {User} from 'api-contract';
 import {LogOutIcon, SettingsIcon} from 'lucide-react';
 import {
   Avatar,
@@ -13,13 +14,7 @@ import {
   DropdownMenuTrigger,
 } from 'ui-core';
 
-type UserType = {
-  id: string;
-  name: string;
-  email: string;
-};
-
-export function UserNav({user}: {user: UserType}) {
+export function UserNav({user}: {user: User}) {
   const initials = user.name
     .split(' ')
     .map((words) => words[0])

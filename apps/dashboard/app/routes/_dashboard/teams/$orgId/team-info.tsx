@@ -11,10 +11,15 @@ import {
   Label,
 } from 'ui-core';
 
-import {ErrorFeedback} from '@/components/error-feedback';
+import {
+  UknownErrorMessage,
+  ValidationErrorMessage,
+} from '@/components/error-feedback';
+
+import type {NameChangeAction} from './action.server';
 
 export function TeamInfo({initialName}: {initialName: string}) {
-  const {Form, state, data} = useFetcher();
+  const {Form, state, data} = useFetcher<NameChangeAction>();
 
   return (
     <Form method="post">
@@ -38,8 +43,11 @@ export function TeamInfo({initialName}: {initialName: string}) {
                 disabled={state !== 'idle'}
               />
             </div>
-            {data?.ok === false ? (
-              <ErrorFeedback errors={data.messageObject} />
+            {data?.ok === false && data.type === 'validation' ? (
+              <ValidationErrorMessage errors={data.messageObj} />
+            ) : null}
+            {data?.ok === false && data.type === 'unknown' ? (
+              <UknownErrorMessage />
             ) : null}
           </div>
         </CardContent>

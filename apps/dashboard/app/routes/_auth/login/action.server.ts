@@ -1,14 +1,26 @@
 import type {Request} from '@remix-run/node';
-import {json} from '@remix-run/node';
+import {loginRequest} from 'api-contract';
 
+import {isErrorObject} from '@/lib/isErrorObject';
+import {respond} from '@/lib/respond';
 import {createUserSession} from '@/lib/session';
 
 import {login} from './requests';
 
 export async function action({request}: {request: Request}) {
   const formData = await request.formData();
+  const validation = loginRequest.validate(formData);
 
-  return login(formData)
+  // todo: fix
+  if (!validation.success) {
+    return respond.fail.validation({
+      email: 'Invalid credentials',
+    });
+  }
+
+  const payload = validation.data;
+
+  return login(payload)
     .then(({data}) => {
       //redirects away
       return createUserSession({
@@ -16,7 +28,13 @@ export async function action({request}: {request: Request}) {
         token: data.token.token,
       });
     })
-    .catch((error) => {
-      return json({ok: false, messageObject: error.response.data});
+    .catch((error: unknown) => {
+      if (isErrorObject(error)) {
+        return respond.fail.validation(error.response.data);
+      } else {
+        return respond.fail.unknown();
+      }
     });
 }
+
+export type LoginRequestAction = typeof action;
