@@ -1,4 +1,4 @@
-import {Org} from './domain';
+import * as Org from './domain/Org';
 import zod from 'zod';
 
 export interface RequestData {
@@ -6,11 +6,11 @@ export interface RequestData {
 }
 
 export interface ResponseData {
-  org: Org;
+  org: Org.Org;
 }
 
 export const validationSchema = zod.object({
-  name: zod.string(),
+  name: Org.orgNameValidationSchema,
 });
 
 export function validate(data: Record<string, any>) {

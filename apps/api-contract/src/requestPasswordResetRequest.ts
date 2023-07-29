@@ -1,4 +1,5 @@
 import zod from 'zod';
+import * as Email from './domain/Email';
 
 export interface RequestData {
   email: string;
@@ -7,7 +8,7 @@ export interface RequestData {
 export interface ResponseData {}
 
 export const validationSchema = zod.object({
-  email: zod.string().email(),
+  email: Email.validationSchema,
 });
 
 export function validate(data: Record<string, any>) {

@@ -20,13 +20,13 @@ const userSchema = zod.object({
   ),
 });
 
-type OrgWithUserRole = Org & {
+type OrgWithUserRole = Org.Org & {
   membership: {
     role: string;
   };
 };
 
-export type UserWithOrgs = User & {
+export type UserWithOrgs = User.User & {
   orgs: Array<OrgWithUserRole>;
 };
 

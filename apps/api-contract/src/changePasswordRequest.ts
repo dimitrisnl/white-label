@@ -1,4 +1,5 @@
 import zod from 'zod';
+import * as Password from './domain/Password';
 
 export interface RequestData {
   oldPassword: string;
@@ -8,8 +9,8 @@ export interface RequestData {
 export interface ResponseData {}
 
 export const validationSchema = zod.object({
-  oldPassword: zod.string().min(8),
-  newPassword: zod.string().min(8),
+  oldPassword: Password.validationSchema,
+  newPassword: Password.validationSchema,
 });
 
 export function validate(data: Record<string, any>) {

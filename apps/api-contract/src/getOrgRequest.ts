@@ -1,11 +1,12 @@
-import {Org, User} from './domain';
+import * as Org from './domain/Org';
+import * as User from './domain/User';
 
 export interface RequestData {}
 
 export interface ResponseData {
-  org: Org;
+  org: Org.Org;
   users: Array<
-    User & {
+    User.User & {
       membership: {
         role: string;
       };

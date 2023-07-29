@@ -1,4 +1,5 @@
 import zod from 'zod';
+import * as Token from './domain/Token';
 
 export interface RequestData {
   token: string;
@@ -7,7 +8,7 @@ export interface RequestData {
 export interface ResponseData {}
 
 export const validationSchema = zod.object({
-  token: zod.string().uuid(),
+  token: Token.tokenIdValidationSchema
 });
 
 export function validate(data: Record<string, any>) {

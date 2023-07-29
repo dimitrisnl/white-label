@@ -1,5 +1,9 @@
-import {Token, User} from './domain';
 import zod from 'zod';
+import * as Password from './domain/Password';
+import * as Token from './domain/Token';
+import * as User from './domain/User';
+import * as Email from './domain/Email';
+
 
 export interface RequestData {
   name: string;
@@ -8,14 +12,14 @@ export interface RequestData {
 }
 
 export interface ResponseData {
-  token: Token;
-  user: User;
+  token: Token.Token;
+  user: User.User;
 }
 
 export const validationSchema = zod.object({
-  email: zod.string().email(),
-  password: zod.string().min(8),
-  name: zod.string(),
+  email: Email.validationSchema,
+  password: Password.validationSchema,
+  name: User.userNameValidationSchema,
 });
 
 export function validate(data: Record<string, any>) {

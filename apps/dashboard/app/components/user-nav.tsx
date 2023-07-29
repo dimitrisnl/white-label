@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from 'ui-core';
 
-export function UserNav({user}: {user: User}) {
+export function UserNav({user}: {user: User.User}) {
   const initials = user.name
     .split(' ')
     .map((words) => words[0])
