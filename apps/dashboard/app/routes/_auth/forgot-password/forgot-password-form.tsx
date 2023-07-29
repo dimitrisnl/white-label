@@ -13,7 +13,7 @@ import {
 } from 'ui-core';
 
 import {
-  UknownErrorMessage,
+  UnknownErrorMessage,
   ValidationErrorMessage,
 } from '@/components/error-feedback';
 
@@ -32,7 +32,13 @@ export function ForgotPasswordForm() {
           We've sent you an email with a link to reset your password.
         </CardContent>
         <CardFooter className="flex justify-end">
-          <Button>Back to Login</Button>
+          <Link
+            to="/login"
+            className={buttonVariants({variant: 'default'})}
+            tabIndex={-1}
+          >
+            Back to Login
+          </Link>
         </CardFooter>
       </Card>
     );
@@ -64,7 +70,7 @@ export function ForgotPasswordForm() {
               <ValidationErrorMessage errors={data.messageObj} />
             ) : null}
             {data?.ok === false && data.type === 'unknown' ? (
-              <UknownErrorMessage />
+              <UnknownErrorMessage />
             ) : null}
           </div>
         </CardContent>

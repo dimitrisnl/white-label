@@ -16,7 +16,7 @@ function handleNameChange({
   orgId: string;
   token: string;
 }) {
-  const validation = editUserRequest.validate(formData);
+  const validation = editUserRequest.validate(Object.fromEntries(formData));
 
   if (!validation.success) {
     // todo: fix

@@ -9,7 +9,7 @@ import {login} from './requests';
 
 export async function action({request}: {request: Request}) {
   const formData = await request.formData();
-  const validation = loginRequest.validate(formData);
+  const validation = loginRequest.validate(Object.fromEntries(formData));
 
   // todo: fix
   if (!validation.success) {

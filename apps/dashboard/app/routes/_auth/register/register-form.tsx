@@ -13,7 +13,7 @@ import {
 } from 'ui-core';
 
 import {
-  UknownErrorMessage,
+  UnknownErrorMessage,
   ValidationErrorMessage,
 } from '@/components/error-feedback';
 
@@ -66,7 +66,7 @@ export function RegisterForm() {
               <ValidationErrorMessage errors={data.messageObj} />
             ) : null}
             {data?.ok === false && data.type === 'unknown' ? (
-              <UknownErrorMessage />
+              <UnknownErrorMessage />
             ) : null}
           </div>
         </CardContent>

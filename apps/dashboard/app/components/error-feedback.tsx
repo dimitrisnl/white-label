@@ -10,8 +10,10 @@ export function ValidationErrorMessage({
       ? Object.keys(errors).map((key) => {
           const message = errors[key];
           return (
-            <li key={key}>
-              <AlertDescription>{message}</AlertDescription>
+            <li key={key} className="flex">
+              <AlertDescription className="inline-block">
+                {message}
+              </AlertDescription>
             </li>
           );
         })
@@ -25,10 +27,10 @@ export function ValidationErrorMessage({
   );
 }
 
-export function UknownErrorMessage() {
+export function UnknownErrorMessage() {
   return (
     <Alert variant="destructive">
-      <AlertTitle>Something went wrong</AlertTitle>
+      <AlertTitle className="mb-0">Something went wrong</AlertTitle>
     </Alert>
   );
 }

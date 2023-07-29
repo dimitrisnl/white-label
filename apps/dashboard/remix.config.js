@@ -13,7 +13,7 @@ module.exports = {
     v2_dev: true,
     v2_headers: true,
   },
-  serverDependenciesToBundle: ['axios', 'ui-core'],
+  serverDependenciesToBundle: ['axios', 'ui-core', 'api-contract'],
   ignoredRouteFiles: ['**/*'],
   routes: async (defineRoutes) => {
     return flatRoutes('routes', defineRoutes);

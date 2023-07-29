@@ -9,7 +9,7 @@ import {register} from './requests';
 
 export async function action({request}: {request: Request}) {
   const formData = await request.formData();
-  const validation = registerRequest.validate(formData);
+  const validation = registerRequest.validate(Object.fromEntries(formData));
 
   // todo: fix
   if (!validation.success) {
@@ -28,6 +28,7 @@ export async function action({request}: {request: Request}) {
       });
     })
     .catch((error: unknown) => {
+      console.log(error);
       if (isErrorObject(error)) {
         return respond.fail.validation(error.response.data);
       } else {

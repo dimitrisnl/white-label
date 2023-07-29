@@ -8,7 +8,9 @@ import {forgotPassword} from './requests';
 
 export async function action({request}: {request: Request}) {
   const formData = await request.formData();
-  const validation = requestPasswordResetRequest.validate(formData);
+  const validation = requestPasswordResetRequest.validate(
+    Object.fromEntries(formData)
+  );
 
   // todo: fix
   if (!validation.success) {

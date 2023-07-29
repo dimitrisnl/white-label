@@ -10,7 +10,9 @@ export async function action({request}: {request: Request}) {
   const formData = await request.formData();
   formData.delete('confirmPassword');
 
-  const validation = resetPasswordRequest.validate(formData);
+  const validation = resetPasswordRequest.validate(
+    Object.fromEntries(formData)
+  );
 
   // todo: fix
   if (!validation.success) {

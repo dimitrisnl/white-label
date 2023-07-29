@@ -8,7 +8,7 @@ import {requireToken} from '@/lib/session';
 import {changePassword, editUser} from './requests';
 
 function handleNameChange(formData: FormData, token: string) {
-  const validation = editUserRequest.validate(formData);
+  const validation = editUserRequest.validate(Object.fromEntries(formData));
 
   if (!validation.success) {
     // todo: fix
@@ -35,7 +35,9 @@ function handleNameChange(formData: FormData, token: string) {
 export type NameChangeAction = typeof handleNameChange;
 
 function handlePasswordChange(formData: FormData, token: string) {
-  const validation = changePasswordRequest.validate(formData);
+  const validation = changePasswordRequest.validate(
+    Object.fromEntries(formData)
+  );
 
   if (!validation.success) {
     // todo: fix

@@ -6,6 +6,7 @@
   "scripts": {
     "build": "remix build",
     "dev": "remix dev",
+    "format": "prettier --write .",
     "lint": "eslint --ext .ts,.tsx .",
     "start": "remix-serve build",
     "typecheck": "tsc"
