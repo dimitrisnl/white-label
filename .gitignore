@@ -10,4 +10,4 @@ tmp
 
 # temp
 docker
-/gitpod.yml
+.gitpod.yml
