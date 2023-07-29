@@ -12,6 +12,6 @@ export const validationSchema = zod.object({
   name: zod.string(),
 });
 
-export function validate(data: unknown) {
+export function validate(data: Record<string, any>) {
   return validationSchema.safeParse(data);
 }

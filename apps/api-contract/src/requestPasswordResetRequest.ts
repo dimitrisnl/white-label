@@ -10,6 +10,6 @@ export const validationSchema = zod.object({
   email: zod.string().email(),
 });
 
-export function validate(data: unknown) {
+export function validate(data: Record<string, any>) {
   return validationSchema.safeParse(data);
 }

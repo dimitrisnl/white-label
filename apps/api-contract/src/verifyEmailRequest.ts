@@ -10,6 +10,6 @@ export const validationSchema = zod.object({
   token: zod.string().uuid(),
 });
 
-export function validate(data: unknown) {
+export function validate(data: Record<string, any>) {
   return validationSchema.safeParse(data);
 }

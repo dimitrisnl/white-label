@@ -1,13 +1,17 @@
 {
   "name": "api-contract",
   "version": "1.0.0",
-  "main": "index.ts",
   "private": true,
   "sideEffects": false,
-  "engines": {
-    "node": ">=16"
+  "main": "index.ts",
+  "scripts": {
+    "format": "prettier --write .",
+    "typecheck": "tsc"
   },
   "dependencies": {
     "zod": "^3.21.4"
+  },
+  "engines": {
+    "node": ">=16"
   }
 }

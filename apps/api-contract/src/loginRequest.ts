@@ -15,6 +15,6 @@ export const validationSchema = zod.object({
   password: zod.string().min(8),
 });
 
-export function validate(data: unknown) {
+export function validate(data: Record<string, any>) {
   return validationSchema.safeParse(data);
 }
