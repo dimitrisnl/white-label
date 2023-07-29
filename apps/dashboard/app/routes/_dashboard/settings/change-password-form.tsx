@@ -1,4 +1,5 @@
 import {useFetcher} from '@remix-run/react';
+import React from 'react';
 import {
   Button,
   Card,
@@ -9,6 +10,7 @@ import {
   CardTitle,
   Input,
   Label,
+  useToast,
 } from 'ui-core';
 
 import {
@@ -20,9 +22,22 @@ import type {PasswordChangeAction} from './action.server';
 
 export function ChangePasswordForm() {
   const {Form, data, state} = useFetcher<PasswordChangeAction>();
+  const {toast} = useToast();
+  const formRef = React.useRef<HTMLFormElement>(null);
+
+  React.useEffect(() => {
+    if (data?.ok === true) {
+      formRef.current?.reset();
+      toast({
+        title: 'Password changed',
+        description: 'Your password has been changed successfully',
+        variant: 'success',
+      });
+    }
+  }, [toast, data]);
 
   return (
-    <Form action="/settings" method="patch">
+    <Form action="/settings" method="patch" ref={formRef}>
       <Card>
         <CardHeader>
           <CardTitle>Password</CardTitle>
@@ -59,11 +74,6 @@ export function ChangePasswordForm() {
           </div>
         </CardContent>
         <CardFooter className="flex justify-end">
-          {data?.ok === true ? (
-            <div className="mr-8 text-sm font-medium text-green-700">
-              Saved!
-            </div>
-          ) : null}
           <Button
             name="formName"
             value="CHANGE_PASSWORD_FORM"

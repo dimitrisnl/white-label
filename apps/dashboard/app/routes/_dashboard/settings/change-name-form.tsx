@@ -1,4 +1,5 @@
 import {useFetcher} from '@remix-run/react';
+import React from 'react';
 import {
   Button,
   Card,
@@ -9,6 +10,7 @@ import {
   CardTitle,
   Input,
   Label,
+  useToast,
 } from 'ui-core';
 
 import {
@@ -20,6 +22,17 @@ import type {NameChangeAction} from './action.server';
 
 export function ChangeNameForm({initialName}: {initialName: string}) {
   const {Form, state, data} = useFetcher<NameChangeAction>();
+  const {toast} = useToast();
+
+  React.useEffect(() => {
+    if (data?.ok === true) {
+      toast({
+        title: 'Name changed',
+        description: 'Your name has been changed successfully',
+        variant: 'success',
+      });
+    }
+  }, [toast, data]);
 
   return (
     <Form action="/settings" method="patch">
@@ -50,11 +63,6 @@ export function ChangeNameForm({initialName}: {initialName: string}) {
           </div>
         </CardContent>
         <CardFooter className="flex justify-end">
-          {data?.ok === true ? (
-            <div className="mr-8 text-sm font-medium text-green-700">
-              Saved!
-            </div>
-          ) : null}
           <Button
             name="formName"
             value="CHANGE_NAME_FORM"
