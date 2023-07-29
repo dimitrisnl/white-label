@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "api",
   "version": "1.0.0",
   "description": "Backend service built with AdonisJs",
   "main": "server.ts",

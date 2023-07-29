@@ -12,10 +12,15 @@ import {
   Label,
 } from 'ui-core';
 
-import {ErrorFeedback} from '@/components/error-feedback';
+import {
+  UnknownErrorMessage,
+  ValidationErrorMessage,
+} from '@/components/error-feedback';
+
+import type {RegisterRequestAction} from './action.server';
 
 export function RegisterForm() {
-  const {Form, data, state} = useFetcher();
+  const {Form, data, state} = useFetcher<RegisterRequestAction>();
 
   return (
     <Form action="/register" method="post">
@@ -57,8 +62,11 @@ export function RegisterForm() {
                 disabled={state !== 'idle'}
               />
             </div>
-            {data?.ok === false ? (
-              <ErrorFeedback errors={data.messageObject} />
+            {data?.ok === false && data.type === 'validation' ? (
+              <ValidationErrorMessage errors={data.messageObj} />
+            ) : null}
+            {data?.ok === false && data.type === 'unknown' ? (
+              <UnknownErrorMessage />
             ) : null}
           </div>
         </CardContent>

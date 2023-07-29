@@ -1,3 +1,4 @@
+import type {getOrgRequest} from 'api-contract';
 import {
   Badge,
   Card,
@@ -8,14 +9,8 @@ import {
   CardTitle,
 } from 'ui-core';
 
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  membership: {
-    role: string;
-  };
-};
+type Users = getOrgRequest.ResponseData['users'];
+type User = Users[number];
 
 function RoleBadge({role}: {role: string}) {
   return (
@@ -37,7 +32,7 @@ function UserTableEntry({user}: {user: User}) {
   );
 }
 
-export function TeamList({users}: {users: Array<User>}) {
+export function TeamList({users}: {users: Users}) {
   return (
     <Card>
       <CardHeader>

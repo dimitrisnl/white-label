@@ -27,7 +27,7 @@ export class OrgController {
     }
 
     const org = result.right;
-    return response.ok(org);
+    return response.ok({org});
   }
 
   async update({response, request, org, bouncer}: HttpContextContract) {
@@ -53,6 +53,6 @@ export class OrgController {
     }
 
     const updatedOrg = result.right;
-    return response.ok(updatedOrg);
+    return response.ok({org: updatedOrg});
   }
 }

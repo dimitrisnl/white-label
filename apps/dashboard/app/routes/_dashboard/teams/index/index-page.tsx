@@ -1,5 +1,4 @@
-import {BaseLayout} from '@/components/layouts/base-layout';
-import {useUser} from '@/lib/user';
+import {Link} from '@remix-run/react';
 import {
   Badge,
   Card,
@@ -8,11 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from 'ui-core';
-import {Link} from '@remix-run/react';
+
+import {BaseLayout} from '@/components/layouts/base-layout';
+import {useUser} from '@/lib/user';
 
 export function IndexPage() {
   const user = useUser();
-  const orgs = user?.orgs ?? [];
+  const orgs = user.orgs;
   return (
     <BaseLayout title="All Teams">
       <div className="mx-auto grid max-w-lg grid-cols-1 gap-8">
@@ -25,7 +26,10 @@ export function IndexPage() {
           </CardHeader>
           <CardContent className="grid gap-6">
             {orgs.map((org) => (
-              <div className="flex items-center justify-between space-x-4">
+              <div
+                className="flex items-center justify-between space-x-4"
+                key={org.id}
+              >
                 <div className="flex items-center space-x-4">
                   <div>
                     <Link

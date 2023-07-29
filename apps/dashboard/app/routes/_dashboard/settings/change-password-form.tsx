@@ -1,5 +1,4 @@
 import {useFetcher} from '@remix-run/react';
-import React from 'react';
 import {
   Button,
   Card,
@@ -12,10 +11,16 @@ import {
   Label,
 } from 'ui-core';
 
-import {ErrorFeedback} from '@/components/error-feedback';
+import {
+  UnknownErrorMessage,
+  ValidationErrorMessage,
+} from '@/components/error-feedback';
+
+import type {PasswordChangeAction} from './action.server';
 
 export function ChangePasswordForm() {
-  const {Form, data} = useFetcher();
+  const {Form, data, state} = useFetcher<PasswordChangeAction>();
+
   return (
     <Form action="/settings" method="patch">
       <Card>
@@ -32,6 +37,7 @@ export function ChangePasswordForm() {
                 name="oldPassword"
                 placeholder=""
                 type="password"
+                disabled={state !== 'idle'}
               />
             </div>
             <div className="flex flex-col space-y-2">
@@ -41,10 +47,14 @@ export function ChangePasswordForm() {
                 name="newPassword"
                 placeholder=""
                 type="password"
+                disabled={state !== 'idle'}
               />
             </div>
-            {data?.ok === false ? (
-              <ErrorFeedback errors={data.messageObject} />
+            {data?.ok === false && data.type === 'validation' ? (
+              <ValidationErrorMessage errors={data.messageObj} />
+            ) : null}
+            {data?.ok === false && data.type === 'unknown' ? (
+              <UnknownErrorMessage />
             ) : null}
           </div>
         </CardContent>
@@ -54,7 +64,11 @@ export function ChangePasswordForm() {
               Saved!
             </div>
           ) : null}
-          <Button name="formName" value="CHANGE_PASSWORD_FORM">
+          <Button
+            name="formName"
+            value="CHANGE_PASSWORD_FORM"
+            disabled={state !== 'idle'}
+          >
             Save
           </Button>
         </CardFooter>

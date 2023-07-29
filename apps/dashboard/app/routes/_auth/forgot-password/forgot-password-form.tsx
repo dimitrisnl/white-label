@@ -12,12 +12,17 @@ import {
   Label,
 } from 'ui-core';
 
-import {ErrorFeedback} from '@/components/error-feedback';
+import {
+  UnknownErrorMessage,
+  ValidationErrorMessage,
+} from '@/components/error-feedback';
+
+import type {ForgotPasswordAction} from './action.server';
 
 export function ForgotPasswordForm() {
-  const {Form, state, data} = useFetcher();
+  const {Form, state, data} = useFetcher<ForgotPasswordAction>();
 
-  if (data?.ok) {
+  if (data?.ok === true) {
     return (
       <Card className="w-[480px] border-t-4 border-t-blue-700 p-2">
         <CardHeader>
@@ -27,7 +32,13 @@ export function ForgotPasswordForm() {
           We've sent you an email with a link to reset your password.
         </CardContent>
         <CardFooter className="flex justify-end">
-          <Button>Back to Login</Button>
+          <Link
+            to="/login"
+            className={buttonVariants({variant: 'default'})}
+            tabIndex={-1}
+          >
+            Back to Login
+          </Link>
         </CardFooter>
       </Card>
     );
@@ -55,8 +66,11 @@ export function ForgotPasswordForm() {
               />
             </div>
 
-            {data?.ok === false ? (
-              <ErrorFeedback errors={data.messageObject} />
+            {data?.ok === false && data.type === 'validation' ? (
+              <ValidationErrorMessage errors={data.messageObj} />
+            ) : null}
+            {data?.ok === false && data.type === 'unknown' ? (
+              <UnknownErrorMessage />
             ) : null}
           </div>
         </CardContent>

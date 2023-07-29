@@ -1,11 +1,12 @@
 {
-  "name": "web",
+  "name": "dashboard",
   "version": "1.0.0",
   "private": true,
   "sideEffects": false,
   "scripts": {
     "build": "remix build",
     "dev": "remix dev",
+    "format": "prettier --write .",
     "lint": "eslint --ext .ts,.tsx .",
     "start": "remix-serve build",
     "typecheck": "tsc"
@@ -15,6 +16,7 @@
     "@remix-run/node": "^1.18.1",
     "@remix-run/react": "^1.18.1",
     "@remix-run/serve": "^1.18.1",
+    "api-contract": "workspace:*",
     "axios": "^1.4.0",
     "isbot": "^3.6.12",
     "lucide-react": "^0.258.0",
@@ -23,7 +25,8 @@
     "react-dom": "^18.2.0",
     "remix-flat-routes": "^0.5.10",
     "tailwindcss-animate": "^1.0.6",
-    "ui-core": "workspace:*"
+    "ui-core": "workspace:*",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@remix-run/dev": "^1.18.1",

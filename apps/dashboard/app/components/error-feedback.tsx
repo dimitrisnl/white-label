@@ -1,28 +1,36 @@
 import {Alert, AlertDescription, AlertTitle} from 'ui-core';
 
-export function ErrorFeedback({
+export function ValidationErrorMessage({
   errors = {},
 }: {
-  errors?: Record<string, string>;
+  errors: Record<string, string>;
 }) {
   const description =
-    Object.keys(errors).length > 0 ? (
-      Object.keys(errors).map((key) => {
-        const message = errors[key];
-        return (
-          <li key={key}>
-            <AlertDescription>{message}</AlertDescription>
-          </li>
-        );
-      })
-    ) : (
-      <AlertDescription>Let's try again, shall we?</AlertDescription>
-    );
+    Object.keys(errors).length > 0
+      ? Object.keys(errors).map((key) => {
+          const message = errors[key];
+          return (
+            <li key={key} className="flex">
+              <AlertDescription className="inline-block">
+                {message}
+              </AlertDescription>
+            </li>
+          );
+        })
+      : null;
 
   return (
     <Alert variant="destructive">
       <AlertTitle>Something went wrong</AlertTitle>
-      <ul className="list-disc pl-4">{description}</ul>
+      {description}
+    </Alert>
+  );
+}
+
+export function UnknownErrorMessage() {
+  return (
+    <Alert variant="destructive">
+      <AlertTitle className="mb-0">Something went wrong</AlertTitle>
     </Alert>
   );
 }

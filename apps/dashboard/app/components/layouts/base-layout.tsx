@@ -1,8 +1,7 @@
-import {Link} from '@remix-run/react';
+import {NavLink} from '@remix-run/react';
 import React from 'react';
 import {cn} from 'ui-core';
 
-import TeamSwitcher from '@/components/team-switcher';
 import {UserNav} from '@/components/user-nav';
 import {useUser} from '@/lib/user';
 
@@ -12,24 +11,36 @@ function MainNav({className, ...props}: React.HTMLAttributes<HTMLElement>) {
       className={cn('flex items-center space-x-4 lg:space-x-6', className)}
       {...props}
     >
-      <Link
+      <NavLink
         to="/"
-        className="hover:text-primary text-sm font-medium transition-colors"
+        className={({isActive}) =>
+          cn('hover:text-primary text-sm font-medium transition-colors', {
+            'text-primary': isActive,
+          })
+        }
       >
         Overview
-      </Link>
-      <Link
+      </NavLink>
+      <NavLink
         to="/teams"
-        className="text-muted-foreground hover:text-primary text-sm font-medium transition-colors"
+        className={({isActive}) =>
+          cn('hover:text-primary text-sm font-medium transition-colors', {
+            'text-primary': isActive,
+          })
+        }
       >
         Teams
-      </Link>
-      <Link
+      </NavLink>
+      <NavLink
         to="/settings"
-        className="text-muted-foreground hover:text-primary text-sm font-medium transition-colors"
+        className={({isActive}) =>
+          cn('hover:text-primary text-sm font-medium transition-colors', {
+            'text-primary': isActive,
+          })
+        }
       >
         Settings
-      </Link>
+      </NavLink>
     </nav>
   );
 }

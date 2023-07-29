@@ -1,4 +1,6 @@
 build
+public
+_shared
 node_modules
 tmp
 dist

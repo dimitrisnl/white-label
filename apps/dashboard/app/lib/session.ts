@@ -3,7 +3,8 @@ import {createCookieSessionStorage, redirect} from '@remix-run/node';
 
 import {logout as logoutFromServer, me} from '@/lib/client';
 
-const SESSION_SECRET = 'foobarbaz';
+const SESSION_SECRET = process.env.SESSION_SECRET!;
+const SESSION_KEY = 'token';
 
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
@@ -25,6 +26,14 @@ export async function logout(request: Request) {
   const session = await getSession(request);
   const token = session.get(SESSION_KEY);
 
+  if (!token) {
+    return redirect('/login', {
+      headers: {
+        'Set-Cookie': await sessionStorage.destroySession(session),
+      },
+    });
+  }
+
   try {
     await logoutFromServer(token);
   } catch (error) {
@@ -37,8 +46,6 @@ export async function logout(request: Request) {
     },
   });
 }
-
-const SESSION_KEY = 'token';
 
 export async function createUserSession({
   request,
@@ -63,20 +70,6 @@ export async function getAccessToken(request: Request) {
   return session.get(SESSION_KEY);
 }
 
-// export async function authenticate(request: Request) {
-//   const accessToken = await getAccessToken(request);
-
-//   if (!accessToken) {
-//     throw new Error('No access token');
-//   }
-
-//   //  if (new Date(session.get('expirationDate')) < new Date()) {
-//   //    throw new AuthorizationError('Session expired');
-//   //  }
-
-//   return accessToken;
-// }
-
 export async function getUser(request: Request) {
   const accessToken = await getAccessToken(request);
 
@@ -87,20 +80,16 @@ export async function getUser(request: Request) {
   try {
     const data = await me(accessToken);
     const user = data.data;
-
-    if (user) {
-      return user;
-    }
-
-    throw await logout(request);
+    return user;
   } catch (error) {
     throw await logout(request);
   }
 }
 
-export async function requireToken(request: Request) {
+export async function requireToken(request: Request): Promise<string> {
   const token = await getAccessToken(request);
   if (!token) {
+    // eslint-disable-next-line @typescript-eslint/no-throw-literal
     throw redirect('/login');
   }
   return token;

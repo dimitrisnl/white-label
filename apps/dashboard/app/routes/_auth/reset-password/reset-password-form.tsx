@@ -12,10 +12,15 @@ import {
   Label,
 } from 'ui-core';
 
-import {ErrorFeedback} from '@/components/error-feedback';
+import {
+  UnknownErrorMessage,
+  ValidationErrorMessage,
+} from '@/components/error-feedback';
+
+import type {ResetPasswordAction} from './action.server';
 
 export function ResetPasswordForm({token}: {token: string}) {
-  const {Form, state, data} = useFetcher();
+  const {Form, state, data} = useFetcher<ResetPasswordAction>();
 
   if (data?.ok === true) {
     return (
@@ -76,8 +81,11 @@ export function ResetPasswordForm({token}: {token: string}) {
               disabled={state !== 'idle'}
             />
 
-            {data?.ok === false ? (
-              <ErrorFeedback errors={data.messageObject} />
+            {data?.ok === false && data.type === 'validation' ? (
+              <ValidationErrorMessage errors={data.messageObj} />
+            ) : null}
+            {data?.ok === false && data.type === 'unknown' ? (
+              <UnknownErrorMessage />
             ) : null}
           </div>
         </CardContent>

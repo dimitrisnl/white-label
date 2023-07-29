@@ -13,12 +13,15 @@ import {
   Label,
 } from 'ui-core';
 
-import {ErrorFeedback} from '@/components/error-feedback';
+import {
+  UnknownErrorMessage,
+  ValidationErrorMessage,
+} from '@/components/error-feedback';
 
-type Data = {ok: false; messageObject: Record<string, string>} | undefined;
+import type {LoginRequestAction} from './action.server';
 
 export function LoginForm() {
-  const {Form, data, state} = useFetcher<Data>();
+  const {Form, data, state} = useFetcher<LoginRequestAction>();
 
   return (
     <Form action="/login" method="post">
@@ -61,8 +64,11 @@ export function LoginForm() {
                 disabled={state !== 'idle'}
               />
             </div>
-            {data?.ok === false ? (
-              <ErrorFeedback errors={data.messageObject} />
+            {data?.ok === false && data.type === 'validation' ? (
+              <ValidationErrorMessage errors={data.messageObj} />
+            ) : null}
+            {data?.ok === false && data.type === 'unknown' ? (
+              <UnknownErrorMessage />
             ) : null}
           </div>
         </CardContent>
