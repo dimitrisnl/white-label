@@ -1,4 +1,5 @@
 import type {Request} from '@remix-run/node';
+import {redirect} from '@remix-run/node';
 import {resetPasswordRequest} from 'api-contract';
 
 import {isErrorObject} from '@/lib/isErrorObject';
@@ -25,7 +26,7 @@ export async function action({request}: {request: Request}) {
 
   return resetPassword(payload)
     .then(() => {
-      return respond.ok.empty();
+      return redirect('/login?resetPassword=true');
     })
     .catch((error: unknown) => {
       if (isErrorObject(error)) {
