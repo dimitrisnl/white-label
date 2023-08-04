@@ -4,7 +4,7 @@ import {redirect} from '@remix-run/node';
 import {respond} from '@/lib/respond';
 import {requireToken} from '@/lib/session';
 
-import {getOrg} from './requests';
+import {getMembershipInvitations, getOrg} from './requests';
 
 export async function loader({
   request,
@@ -20,15 +20,24 @@ export async function loader({
   const {orgId} = params;
   const token = await requireToken(request);
 
-  return await getOrg({
+  const invitations = await getMembershipInvitations({
     token,
     orgId,
   }).then(({data}) => {
-    return respond.ok.data({
-      org: data.org,
-      users: data.users,
-    });
+    return data.membershipInvitations;
   });
+
+  const {users, org} = await getOrg({
+    token,
+    orgId,
+  }).then(({data}) => {
+    return {
+      users: data.users,
+      org: data.org,
+    };
+  });
+
+  return respond.ok.data({org, users, invitations});
 }
 
 export type GetOrgLoader = typeof loader;

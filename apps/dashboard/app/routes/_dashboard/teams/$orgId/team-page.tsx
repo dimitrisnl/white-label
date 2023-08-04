@@ -5,7 +5,7 @@ import {BaseLayout} from '@/components/layouts/base-layout';
 import type {GetOrgLoader} from './loader.server';
 import {TeamInfo} from './team-info';
 import {TeamInvitations} from './team-invitations';
-import {TeamList} from './team-list';
+import {Invitees, TeamList} from './team-list';
 
 export function TeamPage() {
   const {data} = useLoaderData<GetOrgLoader>();
@@ -19,6 +19,7 @@ export function TeamPage() {
         </div>
 
         <TeamList users={data.users} />
+        <Invitees invitations={data.invitations} />
       </div>
     </BaseLayout>
   );
