@@ -9,6 +9,8 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "fp-ts": "^2.16.0",
+    "uuid": "^9.0.0",
     "zod": "^3.21.4"
   },
   "engines": {

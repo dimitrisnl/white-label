@@ -11,8 +11,13 @@ export * as validatePasswordResetRequest from './src/validatePasswordResetReques
 export * as verifyEmailRequest from './src/verifyEmailRequest';
 
 
-export * as User from './src/domain/User';
+export * as AccessToken from './src/domain/AccessToken';
 export * as Email from './src/domain/Email';
+export * as InviteStatus from './src/domain/InviteStatus';
+export * as MembershipInvitation from './src/domain/MembershipInvitation';
+export * as MembershipRole from './src/domain/MembershipRole';
 export * as Org from './src/domain/Org';
+export * as Password from './src/domain/Password';
+export * as PasswordResetToken from './src/domain/PasswordResetToken';
+export * as User from './src/domain/User';
 export * as Uuid from './src/domain/Uuid';
-export * as Token from './src/domain/Token';
