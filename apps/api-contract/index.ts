@@ -9,7 +9,8 @@ export * as resetPasswordRequest from './src/resetPasswordRequest';
 export * as updateOrgRequest from './src/updateOrgRequest';
 export * as validatePasswordResetRequest from './src/validatePasswordResetRequest';
 export * as verifyEmailRequest from './src/verifyEmailRequest';
-
+export * as createMembershipInvitationRequest from './src/createMembershipInvitationRequest';
+export * as getMembershipInvitationsRequest from './src/getMembershipInvitationsRequest';
 
 export * as AccessToken from './src/domain/AccessToken';
 export * as Email from './src/domain/Email';
