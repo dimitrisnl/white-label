@@ -17,7 +17,7 @@ export class MembershipInvitationController {
     }
 
     const invitations = result.right;
-    return response.ok(invitations);
+    return response.ok({membershipInvitations: invitations});
   }
 
   async create({response, request, org, bouncer}: HttpContextContract) {
@@ -48,7 +48,7 @@ export class MembershipInvitationController {
     }
 
     const invitation = result.right;
-    return response.created(invitation);
+    return response.created({invitation});
   }
 
   async delete({response, request, org, bouncer}: HttpContextContract) {
