@@ -1,5 +1,11 @@
 # White Label
 
+![https://i.giphy.com/media/oCjCwnuLpiWbfMb1UA/giphy.webp](https://i.giphy.com/media/oCjCwnuLpiWbfMb1UA/giphy.webp)
+
+**Update**: I'll re-write everything and drop Adonis.js. I'll try to make the full-stack JS dream a reality using Remix. Right now it feels odd to validate my data twice, and I find myself dropping more and more of the out-of-the-box AdonisJS features.
+
+---
+
 ### 1. Motivation
 
 This is a ["white-label"](https://en.wikipedia.org/wiki/White-label_product) project I wanted to create to test various ideas. Currently, only the Back-end can be found under `/server`. That said, it's an in-progress project, and things can change rapidly.
