@@ -1,22 +1,23 @@
 import type {LoaderArgs, Request} from '@remix-run/node';
-import {createMembershipInvitationRequest, editUserRequest} from 'api-contract';
 
-import {isErrorObject} from '@/lib/isErrorObject';
-import {respond} from '@/lib/respond';
-import {requireToken} from '@/lib/session';
+import type {User} from '@/modules/domain/index.server';
+import {Org} from '@/modules/domain/index.server';
+import {requireUserId} from '@/modules/session.server';
+import {createInvitation, editOrg} from '@/modules/use-cases/index.server';
+import {E, pipe} from '@/utils/fp';
+import {respond} from '@/utils/respond.server';
 
-import {createMembershipInvitation, editOrg} from './requests';
-
-function handleNameChange({
+async function handleNameChange({
   formData,
   orgId,
-  token,
+  userId,
 }: {
   formData: FormData;
-  orgId: string;
-  token: string;
+  orgId: Org.Org['id'];
+  userId: User.User['id'];
 }) {
-  const validation = editUserRequest.validate(Object.fromEntries(formData));
+  const {validate, execute} = editOrg();
+  const validation = validate(Object.fromEntries(formData));
 
   if (!validation.success) {
     // todo: fix
@@ -27,37 +28,30 @@ function handleNameChange({
 
   const payload = validation.data;
 
-  return editOrg({
-    token,
-    data: payload,
-    orgId,
-  })
-    .then(() => {
-      return respond.ok.empty();
-    })
-    .catch((error: unknown) => {
-      if (isErrorObject(error)) {
-        return respond.fail.validation(error.response.data);
-      } else {
-        return respond.fail.unknown();
-      }
-    });
+  const response = await execute(payload, orgId, userId);
+
+  return pipe(
+    response,
+    E.matchW(
+      () => respond.fail.unknown(),
+      () => respond.ok.empty()
+    )
+  );
 }
 
 export type NameChangeAction = typeof handleNameChange;
 
-function handleMembershipInvitation({
+async function handleMembershipInvitation({
   formData,
   orgId,
-  token,
+  userId,
 }: {
   formData: FormData;
-  orgId: string;
-  token: string;
+  orgId: Org.Org['id'];
+  userId: User.User['id'];
 }) {
-  const validation = createMembershipInvitationRequest.validate(
-    Object.fromEntries(formData)
-  );
+  const {validate, execute} = createInvitation();
+  const validation = validate(Object.fromEntries(formData));
 
   if (!validation.success) {
     // todo: fix
@@ -68,21 +62,15 @@ function handleMembershipInvitation({
 
   const payload = validation.data;
 
-  return createMembershipInvitation({
-    token,
-    data: payload,
-    orgId,
-  })
-    .then(() => {
-      return respond.ok.empty();
-    })
-    .catch((error: unknown) => {
-      if (isErrorObject(error)) {
-        return respond.fail.validation(error.response.data);
-      } else {
-        return respond.fail.unknown();
-      }
-    });
+  const response = await execute(payload, orgId, userId);
+
+  return pipe(
+    response,
+    E.matchW(
+      () => respond.fail.unknown(),
+      () => respond.ok.empty()
+    )
+  );
 }
 
 export type CreateMembershipInvitationAction =
@@ -95,25 +83,32 @@ export async function action({
   request: Request;
   params: LoaderArgs['params'];
 }) {
-  const token = await requireToken(request);
-  const orgId = params.orgId!;
+  const userId = await requireUserId(request);
 
   const formData = await request.formData();
   const formName = formData.get('formName');
+
+  const parsedOrgId = Org.parseId(params.orgId);
+
+  if (E.isLeft(parsedOrgId)) {
+    return new Response('Invalid params', {status: 400});
+  }
+
+  const orgId = parsedOrgId.right;
 
   if (formName === 'EDIT_ORG_FORM') {
     formData.delete('formName');
     return handleNameChange({
       formData,
       orgId,
-      token,
+      userId,
     });
   } else if (formName === 'CREATE_MEMBERSHIP_INVITATION_FORM') {
     formData.delete('formName');
     return handleMembershipInvitation({
       formData,
       orgId,
-      token,
+      userId,
     });
   }
 

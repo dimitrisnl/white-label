@@ -1,4 +1,4 @@
-import {Alert, AlertDescription, AlertTitle} from 'ui-core';
+import {Alert, AlertDescription, AlertTitle} from '@white-label/ui-core';
 
 export function ValidationErrorMessage({
   errors = {},

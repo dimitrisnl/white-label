@@ -1,5 +1,3 @@
-import {useFetcher} from '@remix-run/react';
-import React from 'react';
 import {
   Button,
   Card,
@@ -11,7 +9,9 @@ import {
   Input,
   Label,
   useToast,
-} from 'ui-core';
+} from '@white-label/ui-core';
+import React from 'react';
+import {useTypedFetcher} from 'remix-typedjson';
 
 import {
   UnknownErrorMessage,
@@ -21,7 +21,9 @@ import {
 import type {PasswordChangeAction} from './action.server';
 
 export function ChangePasswordForm() {
-  const {Form, data, state} = useFetcher<PasswordChangeAction>();
+  const {Form, data, state} = useTypedFetcher<
+    PasswordChangeAction | undefined
+  >();
   const {toast} = useToast();
   const formRef = React.useRef<HTMLFormElement>(null);
 

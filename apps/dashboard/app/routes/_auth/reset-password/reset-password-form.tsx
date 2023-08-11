@@ -1,7 +1,5 @@
-import {Link, useFetcher} from '@remix-run/react';
 import {
   Button,
-  buttonVariants,
   Card,
   CardContent,
   CardDescription,
@@ -10,7 +8,8 @@ import {
   CardTitle,
   Input,
   Label,
-} from 'ui-core';
+} from '@white-label/ui-core';
+import {useTypedFetcher} from 'remix-typedjson';
 
 import {
   UnknownErrorMessage,
@@ -20,26 +19,9 @@ import {
 import type {ResetPasswordAction} from './action.server';
 
 export function ResetPasswordForm({token}: {token: string}) {
-  const {Form, state, data} = useFetcher<ResetPasswordAction>();
-
-  if (data?.ok === true) {
-    return (
-      <Card className="w-[480px] border-t-4 border-t-blue-700 p-2">
-        <CardHeader>
-          <CardTitle>Success!</CardTitle>
-        </CardHeader>
-        <CardContent>
-          Your password has been reset. You can now login with your new
-          password.
-        </CardContent>
-        <CardFooter className="flex justify-end">
-          <Link to="/login" className={buttonVariants({variant: 'default'})}>
-            Go to Login
-          </Link>
-        </CardFooter>
-      </Card>
-    );
-  }
+  const {Form, state, data} = useTypedFetcher<
+    ResetPasswordAction | undefined
+  >();
 
   // todo: ensure both passwords match
   return (
@@ -81,12 +63,10 @@ export function ResetPasswordForm({token}: {token: string}) {
               disabled={state !== 'idle'}
             />
 
-            {data?.ok === false && data.type === 'validation' ? (
+            {data?.type === 'validation' ? (
               <ValidationErrorMessage errors={data.messageObj} />
             ) : null}
-            {data?.ok === false && data.type === 'unknown' ? (
-              <UnknownErrorMessage />
-            ) : null}
+            {data?.type === 'unknown' ? <UnknownErrorMessage /> : null}
           </div>
         </CardContent>
         <CardFooter className="flex justify-end">

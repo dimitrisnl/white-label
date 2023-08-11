@@ -1,14 +1,16 @@
 import type {Request} from '@remix-run/node';
-import {changePasswordRequest, editUserRequest} from 'api-contract';
+import {pipe} from 'fp-ts/lib/function';
 
-import {isErrorObject} from '@/lib/isErrorObject';
-import {respond} from '@/lib/respond';
-import {requireToken} from '@/lib/session';
+import type {User} from '@/modules/domain/index.server';
+import {requireUserId} from '@/modules/session.server';
+import {changePassword, editUser} from '@/modules/use-cases/index.server';
+import {E} from '@/utils/fp';
+import {respond} from '@/utils/respond.server';
 
-import {changePassword, editUser} from './requests';
+async function handleNameChange(formData: FormData, userId: User.User['id']) {
+  const {validate, execute} = editUser();
 
-function handleNameChange(formData: FormData, token: string) {
-  const validation = editUserRequest.validate(Object.fromEntries(formData));
+  const validation = validate(Object.fromEntries(formData));
 
   if (!validation.success) {
     // todo: fix
@@ -18,26 +20,26 @@ function handleNameChange(formData: FormData, token: string) {
   }
 
   const payload = validation.data;
+  const response = await execute(payload, userId);
 
-  return editUser({data: payload, token})
-    .then(() => {
-      return respond.ok.empty();
-    })
-    .catch((error: unknown) => {
-      if (isErrorObject(error)) {
-        return respond.fail.validation(error.response.data);
-      } else {
-        return respond.fail.unknown();
-      }
-    });
+  return pipe(
+    response,
+    E.matchW(
+      () => respond.fail.unknown(),
+      () => respond.ok.empty()
+    )
+  );
 }
 
 export type NameChangeAction = typeof handleNameChange;
 
-function handlePasswordChange(formData: FormData, token: string) {
-  const validation = changePasswordRequest.validate(
-    Object.fromEntries(formData)
-  );
+async function handlePasswordChange(
+  formData: FormData,
+  userId: User.User['id']
+) {
+  const {validate, execute} = changePassword();
+
+  const validation = validate(Object.fromEntries(formData));
 
   if (!validation.success) {
     // todo: fix
@@ -47,34 +49,31 @@ function handlePasswordChange(formData: FormData, token: string) {
   }
 
   const payload = validation.data;
+  const response = await execute(payload, userId);
 
-  return changePassword({data: payload, token})
-    .then(() => {
-      return respond.ok.empty();
-    })
-    .catch((error: unknown) => {
-      if (isErrorObject(error)) {
-        return respond.fail.validation(error.response.data);
-      } else {
-        return respond.fail.unknown();
-      }
-    });
+  return pipe(
+    response,
+    E.matchW(
+      () => respond.fail.unknown(),
+      () => respond.ok.empty()
+    )
+  );
 }
 
 export type PasswordChangeAction = typeof handlePasswordChange;
 
 export async function action({request}: {request: Request}) {
-  const token = await requireToken(request);
+  const userId = await requireUserId(request);
 
   const formData = await request.formData();
   const formName = formData.get('formName');
 
   if (formName === 'CHANGE_NAME_FORM') {
     formData.delete('formName');
-    return handleNameChange(formData, token);
+    return handleNameChange(formData, userId);
   } else if (formName === 'CHANGE_PASSWORD_FORM') {
     formData.delete('formName');
-    return handlePasswordChange(formData, token);
+    return handlePasswordChange(formData, userId);
   }
 
   return new Response('Invalid form name', {status: 400});

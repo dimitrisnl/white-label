@@ -1,4 +1,4 @@
-import {Link, useFetcher} from '@remix-run/react';
+import {Link} from '@remix-run/react';
 import {
   Button,
   buttonVariants,
@@ -11,7 +11,8 @@ import {
   cn,
   Input,
   Label,
-} from 'ui-core';
+} from '@white-label/ui-core';
+import {useTypedFetcher} from 'remix-typedjson';
 
 import {
   UnknownErrorMessage,
@@ -21,7 +22,7 @@ import {
 import type {LoginRequestAction} from './action.server';
 
 export function LoginForm() {
-  const {Form, data, state} = useFetcher<LoginRequestAction>();
+  const {Form, data, state} = useTypedFetcher<LoginRequestAction | undefined>();
 
   return (
     <Form action="/login" method="post">

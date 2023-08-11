@@ -1,5 +1,3 @@
-import {useFetcher} from '@remix-run/react';
-import {useEffect, useRef} from 'react';
 import {
   Button,
   Card,
@@ -11,12 +9,16 @@ import {
   Input,
   Label,
   useToast,
-} from 'ui-core';
+} from '@white-label/ui-core';
+import {useEffect, useRef} from 'react';
+import {useTypedFetcher} from 'remix-typedjson';
 
 import type {CreateMembershipInvitationAction} from './action.server';
 
 export function TeamInvitations() {
-  const {Form, state, data} = useFetcher<CreateMembershipInvitationAction>();
+  const {Form, state, data} = useTypedFetcher<
+    CreateMembershipInvitationAction | undefined
+  >();
   const {toast} = useToast();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -27,6 +29,12 @@ export function TeamInvitations() {
         title: 'Invited!',
         description: 'You have invited a new team member successfully',
         variant: 'success',
+      });
+    } else if (data?.ok === false) {
+      toast({
+        title: 'An error occured',
+        description: 'Could not invite your teammate at this time',
+        variant: 'destructive',
       });
     }
   }, [toast, data]);

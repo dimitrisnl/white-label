@@ -1,19 +1,16 @@
 import type {Request} from '@remix-run/node';
-import {redirect} from '@remix-run/node';
-import {resetPasswordRequest} from 'api-contract';
+import {redirect} from 'remix-typedjson';
 
-import {isErrorObject} from '@/lib/isErrorObject';
-import {respond} from '@/lib/respond';
-
-import {resetPassword} from './requests';
+import {resetPassword} from '@/modules/use-cases/index.server';
+import {E, pipe} from '@/utils/fp';
+import {respond} from '@/utils/respond.server';
 
 export async function action({request}: {request: Request}) {
   const formData = await request.formData();
   formData.delete('confirmPassword');
 
-  const validation = resetPasswordRequest.validate(
-    Object.fromEntries(formData)
-  );
+  const {validate, execute} = resetPassword();
+  const validation = validate(Object.fromEntries(formData));
 
   // todo: fix
   if (!validation.success) {
@@ -22,19 +19,20 @@ export async function action({request}: {request: Request}) {
     });
   }
 
-  const payload = validation.data;
+  const data = validation.data;
+  const response = await execute(data);
 
-  return resetPassword(payload)
-    .then(() => {
-      return redirect('/login?resetPassword=true');
-    })
-    .catch((error: unknown) => {
-      if (isErrorObject(error)) {
-        return respond.fail.validation(error.response.data);
-      } else {
-        return respond.fail.unknown();
-      }
-    });
+  if (E.isLeft(response)) {
+    return respond.fail.unknown();
+  }
+
+  return pipe(
+    response,
+    E.match(
+      () => respond.fail.unknown(),
+      () => redirect('/login?resetPassword=true')
+    )
+  );
 }
 
 export type ResetPasswordAction = typeof action;

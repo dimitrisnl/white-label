@@ -1,0 +1,11 @@
+{
+  "name": "@white-label/eslint-config-remix",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.js",
+  "devDependencies": {
+    "@remix-run/eslint-config": "^1.18.1",
+    "@white-label/eslint-config-node": "workspace:*",
+    "@white-label/eslint-config-react": "workspace:*"
+  }
+}

@@ -6,16 +6,20 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from 'ui-core';
+} from '@white-label/ui-core';
+import {useTypedLoaderData} from 'remix-typedjson';
 
 import {BaseLayout} from '@/components/layouts/base-layout';
-import {useUser} from '@/lib/user';
+
+import type {IndexLoaderData} from './loader.server';
 
 export function IndexPage() {
-  const user = useUser();
-  const orgs = user.orgs;
+  const {
+    data: {currentUser},
+  } = useTypedLoaderData<IndexLoaderData>();
+
   return (
-    <BaseLayout title="All Teams">
+    <BaseLayout title="All Teams" user={currentUser.user}>
       <div className="mx-auto grid max-w-lg grid-cols-1 gap-8">
         <Card>
           <CardHeader>
@@ -25,25 +29,24 @@ export function IndexPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-6">
-            {orgs.map((org) => (
+            {currentUser.memberships.map((membership) => (
               <div
                 className="flex items-center justify-between space-x-4"
-                key={org.id}
+                key={membership.org.id}
               >
                 <div className="flex items-center space-x-4">
                   <div>
                     <Link
-                      to={`/teams/${org.id}`}
+                      to={`/teams/${membership.org.id}`}
                       className="text-primary hover:text-primary-dark text-md font-medium leading-none transition-colors"
                     >
-                      {org.name}
+                      {membership.org.name}
                     </Link>
-                    <p className="text-muted-foreground text-sm">{org.slug}</p>
                   </div>
                 </div>
 
                 <Badge variant="outline" className="ml-auto">
-                  {org.membership.role}
+                  {membership.role}
                 </Badge>
               </div>
             ))}

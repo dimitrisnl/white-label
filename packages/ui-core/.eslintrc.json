@@ -3,5 +3,5 @@
   "parserOptions": {
     "tsconfigRootDir": "."
   },
-  "extends": ["custom-react"]
+  "extends": ["@white-label/eslint-config-react"]
 }

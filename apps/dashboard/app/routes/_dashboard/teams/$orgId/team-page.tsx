@@ -1,4 +1,4 @@
-import {useLoaderData} from '@remix-run/react';
+import {useTypedLoaderData} from 'remix-typedjson';
 
 import {BaseLayout} from '@/components/layouts/base-layout';
 
@@ -8,10 +8,17 @@ import {TeamInvitations} from './team-invitations';
 import {Invitees, TeamList} from './team-list';
 
 export function TeamPage() {
-  const {data} = useLoaderData<GetOrgLoader>();
+  const response = useTypedLoaderData<GetOrgLoader>();
+
+  // todo: handle this
+  if (!response.ok) {
+    return <div>An error occured</div>;
+  }
+
+  const {data} = response;
 
   return (
-    <BaseLayout title="Team">
+    <BaseLayout title="Team" user={data.currentUser.user}>
       <div className="grid grid-cols-1 items-start gap-8">
         <div className="grid grid-cols-2 items-start gap-8">
           <TeamInfo initialName={data.org.name} />

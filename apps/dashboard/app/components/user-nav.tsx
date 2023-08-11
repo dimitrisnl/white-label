@@ -1,6 +1,4 @@
 import {Link} from '@remix-run/react';
-import type {User} from 'api-contract';
-import {LogOutIcon, SettingsIcon} from 'lucide-react';
 import {
   Avatar,
   AvatarFallback,
@@ -12,7 +10,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from 'ui-core';
+} from '@white-label/ui-core';
+import {LogOutIcon, SettingsIcon} from 'lucide-react';
+
+import type {User} from '@/modules/domain/index.server';
 
 export function UserNav({user}: {user: User.User}) {
   const initials = user.name
