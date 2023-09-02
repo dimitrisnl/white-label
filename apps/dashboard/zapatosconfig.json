@@ -1,6 +1,3 @@
 {
-  "db": {
-    "connectionString": "postgresql://postgres:BOBAe89xRLNZzFtr@db.hlrofqfyihqmbikdylxf.supabase.co:5432/postgres?sslmode=disable"
-  },
   "outDir": "./types"
 }
