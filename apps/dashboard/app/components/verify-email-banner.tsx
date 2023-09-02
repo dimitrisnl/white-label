@@ -1,5 +1,5 @@
+import {Button} from '@white-label/ui-core';
 import {AlertCircleIcon} from 'lucide-react';
-import {Button} from 'ui-core';
 
 export function VerifyEmailBanner() {
   return (

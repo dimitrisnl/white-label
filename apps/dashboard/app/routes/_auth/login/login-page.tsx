@@ -1,5 +1,5 @@
 import {useSearchParams} from '@remix-run/react';
-import {Alert, AlertDescription, AlertTitle} from 'ui-core';
+import {Alert, AlertDescription, AlertTitle} from '@white-label/ui-core';
 
 import {GuestLayout} from '@/components/layouts/guest-layout';
 

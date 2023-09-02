@@ -1,4 +1,4 @@
-import {useLoaderData} from '@remix-run/react';
+import {useTypedLoaderData} from 'remix-typedjson';
 
 import {GuestLayout} from '@/components/layouts/guest-layout';
 
@@ -7,7 +7,7 @@ import type {ResetPasswordLoader} from './loader.server';
 import {ResetPasswordForm} from './reset-password-form';
 
 export function ResetPasswordPage() {
-  const loaderData = useLoaderData<ResetPasswordLoader>();
+  const loaderData = useTypedLoaderData<ResetPasswordLoader>();
 
   if (!loaderData.ok) {
     return (

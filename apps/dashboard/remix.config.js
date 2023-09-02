@@ -13,7 +13,16 @@ module.exports = {
     v2_dev: true,
     v2_headers: true,
   },
-  serverDependenciesToBundle: ['axios', 'ui-core', 'api-contract'],
+
+  serverDependenciesToBundle: [
+    'axios',
+    '@white-label/ui-core',
+    // todo: replace bcrypt with something else
+    // https://github.com/kelektiv/node.bcrypt.js/issues/964
+    'nock',
+    'mock-aws-s3',
+    'aws-sdk',
+  ],
   ignoredRouteFiles: ['**/*'],
   routes: async (defineRoutes) => {
     return flatRoutes('routes', defineRoutes);

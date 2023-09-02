@@ -1,1 +1,0 @@
-export {getOrg} from './getOrg';

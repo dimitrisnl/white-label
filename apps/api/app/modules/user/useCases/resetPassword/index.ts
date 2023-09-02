@@ -1,1 +1,0 @@
-export {resetPassword} from './resetPassword';

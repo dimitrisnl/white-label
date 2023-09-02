@@ -1,10 +1,11 @@
 import type {LoaderArgs, Request} from '@remix-run/node';
 import {redirect} from '@remix-run/node';
 
-import {respond} from '@/lib/respond';
-import {requireToken} from '@/lib/session';
-
-import {getMembershipInvitations, getOrg} from './requests';
+import {Org} from '@/modules/domain/index.server';
+import {requireUser} from '@/modules/session.server';
+import {getInvitations, getOrg} from '@/modules/use-cases/index.server';
+import {E} from '@/utils/fp';
+import {respond} from '@/utils/respond.server';
 
 export async function loader({
   request,
@@ -14,30 +15,38 @@ export async function loader({
   params: LoaderArgs['params'];
 }) {
   if (!params.orgId) {
-    return redirect('/');
+    throw redirect('/');
+  }
+  const orgIdParsing = Org.parseId(params.orgId);
+
+  if (E.isLeft(orgIdParsing)) {
+    throw redirect('/');
   }
 
-  const {orgId} = params;
-  const token = await requireToken(request);
+  const orgId = orgIdParsing.right;
 
-  const invitations = await getMembershipInvitations({
-    token,
+  const {currentUser} = await requireUser(request);
+
+  const invitationsResponse = await getInvitations().execute(
     orgId,
-  }).then(({data}) => {
-    return data.membershipInvitations;
-  });
+    currentUser.user.id
+  );
 
-  const {users, org} = await getOrg({
-    token,
-    orgId,
-  }).then(({data}) => {
-    return {
-      users: data.users,
-      org: data.org,
-    };
-  });
+  if (E.isLeft(invitationsResponse)) {
+    return respond.fail.unknown();
+  }
 
-  return respond.ok.data({org, users, invitations});
+  const invitations = invitationsResponse.right;
+
+  const orgResponse = await getOrg().execute(orgId);
+
+  if (E.isLeft(orgResponse)) {
+    return respond.fail.unknown();
+  }
+
+  const {users, org} = orgResponse.right;
+
+  return respond.ok.data({org, users, invitations, currentUser});
 }
 
 export type GetOrgLoader = typeof loader;

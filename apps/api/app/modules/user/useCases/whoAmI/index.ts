@@ -1,1 +1,0 @@
-export {whoAmI} from './whoAmI';

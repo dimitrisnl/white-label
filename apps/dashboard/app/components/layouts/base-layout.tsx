@@ -1,9 +1,9 @@
 import {NavLink} from '@remix-run/react';
+import {cn} from '@white-label/ui-core';
 import React from 'react';
-import {cn} from 'ui-core';
 
 import {UserNav} from '@/components/user-nav';
-import {useUser} from '@/lib/user';
+import type {User} from '@/modules/domain/index.server';
 
 function MainNav({className, ...props}: React.HTMLAttributes<HTMLElement>) {
   return (
@@ -49,13 +49,13 @@ export function BaseLayout({
   children,
   title,
   titleSlot,
+  user,
 }: {
   children: React.ReactNode;
   title: string;
   titleSlot?: React.ReactNode;
+  user: User.User;
 }) {
-  const user = useUser();
-
   return (
     <div className="flex min-h-screen flex-col">
       <div className="border-b shadow-2xl">

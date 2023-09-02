@@ -1,1 +1,0 @@
-export {verifyPasswordReset} from './verifyPasswordReset';

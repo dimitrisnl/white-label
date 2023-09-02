@@ -1,8 +1,6 @@
-import type {Request, V2_MetaFunction} from '@remix-run/node';
+import type {V2_MetaFunction} from '@remix-run/node';
 
-import {requireToken} from '@/lib/session';
-
-import {IndexPage} from './index-page';
+export {IndexPage as default} from './index-page';
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -11,10 +9,4 @@ export const meta: V2_MetaFunction = () => {
   ];
 };
 
-export function loader({request}: {request: Request}) {
-  return requireToken(request);
-}
-
-export default function Index() {
-  return <IndexPage />;
-}
+export {loader} from './loader.server';

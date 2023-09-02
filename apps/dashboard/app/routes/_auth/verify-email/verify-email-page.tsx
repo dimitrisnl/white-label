@@ -1,5 +1,4 @@
-import {Link, useLoaderData} from '@remix-run/react';
-import {MailWarningIcon} from 'lucide-react';
+import {Link} from '@remix-run/react';
 import {
   buttonVariants,
   Card,
@@ -7,14 +6,16 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from 'ui-core';
+} from '@white-label/ui-core';
+import {MailWarningIcon} from 'lucide-react';
+import {useTypedLoaderData} from 'remix-typedjson';
 
 import {GuestLayout} from '@/components/layouts/guest-layout';
 
 import type {VerifyEmailLoader} from './loader.server';
 
 export function VerifyEmailPage() {
-  const data = useLoaderData<VerifyEmailLoader>();
+  const data = useTypedLoaderData<VerifyEmailLoader>();
 
   if (data.ok) {
     return (

@@ -1,27 +1,22 @@
-import type {V2_MetaFunction} from '@remix-run/node';
+import {useTypedLoaderData} from 'remix-typedjson';
 
 import {BaseLayout} from '@/components/layouts/base-layout';
-import {useUser} from '@/lib/user';
 
 import {ChangeNameForm} from './change-name-form';
 import {ChangePasswordForm} from './change-password-form';
-
-export {action} from './action.server';
-export {loader} from './loader.server';
+import type {SettingsLoaderData} from './loader.server';
 
 export function SettingsPage() {
-  const user = useUser();
+  const {
+    data: {currentUser},
+  } = useTypedLoaderData<SettingsLoaderData>();
 
   return (
-    <BaseLayout title="Settings">
+    <BaseLayout title="Settings" user={currentUser.user}>
       <div className="mx-auto grid max-w-lg grid-cols-1 gap-8">
-        <ChangeNameForm initialName={user.name} />
+        <ChangeNameForm initialName={currentUser.user.name} />
         <ChangePasswordForm />
       </div>
     </BaseLayout>
   );
 }
-
-export const meta: V2_MetaFunction = () => {
-  return [{title: 'Settings'}, {name: 'description', content: 'Settings page'}];
-};

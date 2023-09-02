@@ -1,16 +1,14 @@
 import type {Request} from '@remix-run/node';
-import {requestPasswordResetRequest} from 'api-contract';
 
-import {isErrorObject} from '@/lib/isErrorObject';
-import {respond} from '@/lib/respond';
-
-import {forgotPassword} from './requests';
+import {requestPasswordReset} from '@/modules/use-cases/index.server';
+import {E, pipe} from '@/utils/fp';
+import {respond} from '@/utils/respond.server';
 
 export async function action({request}: {request: Request}) {
   const formData = await request.formData();
-  const validation = requestPasswordResetRequest.validate(
-    Object.fromEntries(formData)
-  );
+
+  const {validate, execute} = requestPasswordReset();
+  const validation = validate(Object.fromEntries(formData));
 
   // todo: fix
   if (!validation.success) {
@@ -21,15 +19,15 @@ export async function action({request}: {request: Request}) {
 
   const payload = validation.data;
 
-  return forgotPassword(payload)
-    .then(() => respond.ok.empty())
-    .catch((error) => {
-      if (isErrorObject(error)) {
-        return respond.fail.validation(error.response.data);
-      } else {
-        return respond.fail.unknown();
-      }
-    });
+  const response = await execute(payload);
+
+  return pipe(
+    response,
+    E.matchW(
+      () => respond.fail.unknown(),
+      () => respond.ok.empty()
+    )
+  );
 }
 
 export type ForgotPasswordAction = typeof action;

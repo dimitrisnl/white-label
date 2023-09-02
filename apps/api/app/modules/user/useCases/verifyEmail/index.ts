@@ -1,1 +1,0 @@
-export {verifyEmail} from './verifyEmail';

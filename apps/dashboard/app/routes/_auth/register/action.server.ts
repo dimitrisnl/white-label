@@ -1,15 +1,15 @@
 import type {Request} from '@remix-run/node';
-import {registerRequest} from 'api-contract';
+import {pipe} from 'fp-ts/lib/function';
 
-import {isErrorObject} from '@/lib/isErrorObject';
-import {respond} from '@/lib/respond';
-import {createUserSession} from '@/lib/session';
-
-import {register} from './requests';
+import {createUserSession} from '@/modules/session.server';
+import {createUser} from '@/modules/use-cases/index.server';
+import {E} from '@/utils/fp';
+import {respond} from '@/utils/respond.server';
 
 export async function action({request}: {request: Request}) {
   const formData = await request.formData();
-  const validation = registerRequest.validate(Object.fromEntries(formData));
+  const {validate, execute} = createUser();
+  const validation = validate(Object.fromEntries(formData));
 
   // todo: fix
   if (!validation.success) {
@@ -18,23 +18,19 @@ export async function action({request}: {request: Request}) {
     });
   }
 
-  const payload = validation.data;
-
-  return register(payload)
-    .then(({data}) => {
-      return createUserSession({
-        request,
-        token: data.token.token,
-      });
-    })
-    .catch((error: unknown) => {
-      console.log(error);
-      if (isErrorObject(error)) {
-        return respond.fail.validation(error.response.data);
-      } else {
-        return respond.fail.unknown();
-      }
-    });
+  const response = await execute(validation.data);
+  return pipe(
+    response,
+    E.matchW(
+      () => respond.fail.unknown(),
+      ({user}) =>
+        createUserSession({
+          request,
+          userId: user.id,
+          remember: true,
+        })
+    )
+  );
 }
 
 export type RegisterRequestAction = typeof action;

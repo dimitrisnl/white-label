@@ -1,4 +1,4 @@
-import {Link, useFetcher} from '@remix-run/react';
+import {Link} from '@remix-run/react';
 import {
   Button,
   buttonVariants,
@@ -10,7 +10,8 @@ import {
   CardTitle,
   Input,
   Label,
-} from 'ui-core';
+} from '@white-label/ui-core';
+import {useTypedFetcher} from 'remix-typedjson';
 
 import {
   UnknownErrorMessage,
@@ -20,7 +21,9 @@ import {
 import type {RegisterRequestAction} from './action.server';
 
 export function RegisterForm() {
-  const {Form, data, state} = useFetcher<RegisterRequestAction>();
+  const {Form, data, state} = useTypedFetcher<
+    RegisterRequestAction | undefined
+  >();
 
   return (
     <Form action="/register" method="post">
@@ -62,12 +65,10 @@ export function RegisterForm() {
                 disabled={state !== 'idle'}
               />
             </div>
-            {data?.ok === false && data.type === 'validation' ? (
+            {data?.type === 'validation' ? (
               <ValidationErrorMessage errors={data.messageObj} />
             ) : null}
-            {data?.ok === false && data.type === 'unknown' ? (
-              <UnknownErrorMessage />
-            ) : null}
+            {data?.type === 'unknown' ? <UnknownErrorMessage /> : null}
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">

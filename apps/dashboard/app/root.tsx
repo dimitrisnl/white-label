@@ -1,5 +1,4 @@
-import type {LinksFunction, Request} from '@remix-run/node';
-import {json} from '@remix-run/node';
+import type {LinksFunction} from '@remix-run/node';
 import {
   Links,
   LiveReload,
@@ -9,12 +8,11 @@ import {
   ScrollRestoration,
   useNavigation,
 } from '@remix-run/react';
+import {Toaster} from '@white-label/ui-core';
+import tailwindStyles from '@white-label/ui-core/tailwind.css';
 import NProgress from 'nprogress';
 import {useEffect} from 'react';
-import {Toaster} from 'ui-core';
-import tailwindStyles from 'ui-core/tailwind.css';
 
-import {getUser} from './lib/session';
 import fontStyles from './styles/fonts.css';
 import nProgressStyles from './styles/nprogress.css';
 
@@ -23,12 +21,6 @@ export const links: LinksFunction = () => [
   {rel: 'stylesheet', href: tailwindStyles},
   {rel: 'stylesheet', href: nProgressStyles},
 ];
-
-export async function loader({request}: {request: Request}) {
-  return json({
-    user: await getUser(request),
-  });
-}
 
 export default function App() {
   const navigation = useNavigation();

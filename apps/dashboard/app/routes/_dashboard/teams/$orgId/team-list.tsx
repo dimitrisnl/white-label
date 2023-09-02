@@ -1,7 +1,3 @@
-import type {
-  getMembershipInvitationsRequest,
-  getOrgRequest,
-} from 'api-contract';
 import {
   Badge,
   Card,
@@ -10,13 +6,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from 'ui-core';
+} from '@white-label/ui-core';
 
-type Users = getOrgRequest.ResponseData['users'];
-type User = Users[number];
-
-type MembershipInvitations =
-  getMembershipInvitationsRequest.ResponseData['membershipInvitations'];
+import type {MembershipInvitation, User} from '@/modules/domain/index.server';
 
 function RoleBadge({role}: {role: string}) {
   return (
@@ -24,21 +16,21 @@ function RoleBadge({role}: {role: string}) {
   );
 }
 
-function UserTableEntry({user}: {user: User}) {
+function UserTableEntry({user}: {user: User.User}) {
   return (
     <div className="flex items-center">
       <div className="space-y-1">
         <p className="text-sm font-medium leading-none">{user.name}</p>
         <p className="text-muted-foreground text-sm">{user.email}</p>
       </div>
-      <div className="ml-auto font-medium">
+      {/* <div className="ml-auto font-medium">
         <RoleBadge role={user.membership.role} />
-      </div>
+      </div> */}
     </div>
   );
 }
 
-export function TeamList({users}: {users: Users}) {
+export function TeamList({users}: {users: Array<User.User>}) {
   return (
     <Card>
       <CardHeader>
@@ -51,12 +43,12 @@ export function TeamList({users}: {users: Users}) {
         <div className="space-y-8">
           <div className="space-y-4">
             {users
-              .filter((user) => user.membership.role === 'OWNER')
+              // .filter((user) => user.membership.role === 'OWNER')
               .map((user) => (
                 <UserTableEntry key={user.id} user={user} />
               ))}
           </div>
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             {users
               .filter((user) => user.membership.role === 'ADMIN')
               .map((user) => (
@@ -69,7 +61,7 @@ export function TeamList({users}: {users: Users}) {
               .map((user) => (
                 <UserTableEntry key={user.id} user={user} />
               ))}
-          </div>
+          </div> */}
         </div>
       </CardContent>
       <CardFooter className="flex justify-between"></CardFooter>
@@ -80,7 +72,7 @@ export function TeamList({users}: {users: Users}) {
 function InvitationTableEntry({
   invitation,
 }: {
-  invitation: MembershipInvitations[number];
+  invitation: MembershipInvitation.MembershipInvitation;
 }) {
   return (
     <div className="flex items-center">
@@ -95,7 +87,11 @@ function InvitationTableEntry({
   );
 }
 
-export function Invitees({invitations}: {invitations: MembershipInvitations}) {
+export function Invitees({
+  invitations,
+}: {
+  invitations: Array<MembershipInvitation.MembershipInvitation>;
+}) {
   return (
     <Card>
       <CardHeader>

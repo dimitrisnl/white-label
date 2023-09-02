@@ -1,1 +1,0 @@
-export {deleteInvitation} from './deleteInvitation';

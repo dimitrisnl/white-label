@@ -1,4 +1,4 @@
-import {Link, useFetcher} from '@remix-run/react';
+import {Link} from '@remix-run/react';
 import {
   Button,
   buttonVariants,
@@ -10,7 +10,8 @@ import {
   CardTitle,
   Input,
   Label,
-} from 'ui-core';
+} from '@white-label/ui-core';
+import {useTypedFetcher} from 'remix-typedjson';
 
 import {
   UnknownErrorMessage,
@@ -20,7 +21,9 @@ import {
 import type {ForgotPasswordAction} from './action.server';
 
 export function ForgotPasswordForm() {
-  const {Form, state, data} = useFetcher<ForgotPasswordAction>();
+  const {Form, state, data} = useTypedFetcher<
+    ForgotPasswordAction | undefined
+  >();
 
   if (data?.ok === true) {
     return (
