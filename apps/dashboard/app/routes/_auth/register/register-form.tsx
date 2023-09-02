@@ -13,10 +13,8 @@ import {
 } from '@white-label/ui-core';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import {
-  UnknownErrorMessage,
-  ValidationErrorMessage,
-} from '@/components/error-feedback';
+import {ErrorMessage} from '@/components/error-feedback';
+import {PasswordInput} from '@/components/password-input';
 
 import type {RegisterRequestAction} from './action.server';
 
@@ -43,6 +41,8 @@ export function RegisterForm() {
                 name="name"
                 placeholder="Your full name"
                 disabled={state !== 'idle'}
+                minLength={2}
+                required
               />
             </div>
             <div className="flex flex-col space-y-2">
@@ -53,22 +53,21 @@ export function RegisterForm() {
                 placeholder="Your email"
                 type="email"
                 disabled={state !== 'idle'}
+                required
               />
             </div>
             <div className="flex flex-col space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
+              <PasswordInput
                 id="password"
                 name="password"
                 placeholder="Your password"
-                type="password"
                 disabled={state !== 'idle'}
+                minLength={8}
+                required
               />
             </div>
-            {data?.type === 'validation' ? (
-              <ValidationErrorMessage errors={data.messageObj} />
-            ) : null}
-            {data?.type === 'unknown' ? <UnknownErrorMessage /> : null}
+            {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">

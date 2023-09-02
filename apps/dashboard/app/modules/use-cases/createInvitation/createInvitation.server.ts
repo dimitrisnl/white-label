@@ -1,70 +1,80 @@
+import * as Effect from 'effect/Effect';
+
 import {db, pool} from '@/database/db.server';
+import {sendEmail} from '@/mailer';
 import type {MembershipRole, Org, User} from '@/modules/domain/index.server';
 import {MembershipInvitation, Uuid} from '@/modules/domain/index.server';
 import {invitationAuthorizationService} from '@/modules/services/index.server';
-import {E} from '@/utils/fp';
 
+import {DatabaseError, InternalServerError} from '../../errors.server';
+import type {CreateInvitationProps} from './validation.server';
 import {validate} from './validation.server';
 
-interface Props {
-  email: string;
+function insertInvitation({
+  role,
+  email,
+  orgId,
+  invitationId,
+}: {
   role: MembershipRole.MembershipRole;
-}
-
-type Response = E.Either<
-  'ForbiddenAction' | 'InviteeExists' | 'UnknownError',
-  MembershipInvitation.MembershipInvitation
->;
-
-export function createInvitation() {
-  async function execute(
-    props: Props,
-    orgId: Org.Org['id'],
-    userId: User.User['id']
-  ): Promise<Response> {
-    const {email, role} = props;
-    try {
-      const hasAccess = await invitationAuthorizationService.canCreate(
-        userId,
-        orgId
-      );
-      if (!hasAccess) {
-        return E.left('ForbiddenAction');
-      }
-    } catch {
-      return E.left('ForbiddenAction');
-    }
-
-    // todo: ensure the user doesn't already exist in that org
-    try {
-      const invitationRecord = await db
+  email: string;
+  orgId: Org.Org['id'];
+  invitationId: Uuid.Uuid;
+}) {
+  return Effect.tryPromise({
+    try: () =>
+      db
         .insert('membership_invitations', {
-          id: Uuid.generate(),
+          id: invitationId,
           role: role,
-          email,
+          email: email,
           org_id: orgId,
         })
-        .run(pool);
-      const toInvitation =
-        MembershipInvitation.dbRecordToDomain(invitationRecord);
+        .run(pool),
+    // todo: could be a unique constraint error
+    catch: () => new DatabaseError(),
+  });
+}
 
-      if (E.isLeft(toInvitation)) {
-        return E.left('UnknownError');
-      }
+export function createInvitation() {
+  function execute(
+    props: CreateInvitationProps,
+    orgId: Org.Org['id'],
+    userId: User.User['id']
+  ) {
+    const {email, role} = props;
+    return Effect.gen(function* (_) {
+      yield* _(invitationAuthorizationService.canCreate(userId, orgId));
 
-      const invitation = toInvitation.right;
+      const invitationId = yield* _(Uuid.generate());
 
-      // todo: send invitation email
-      // await sendInvitationEmailEvent(invitation, org);
+      const invitationRecord = yield* _(
+        insertInvitation({email, role, orgId, invitationId})
+      );
+      const invitation = yield* _(
+        MembershipInvitation.dbRecordToDomain(invitationRecord)
+      );
 
-      return E.right(invitation);
-    } catch (error) {
-      // todo: Unique constraint violation
-      // if (error.code === UNIQUE_CONSTRAINT_VIOLATION) {
-      //   return E.left('InviteeExists');
-      // }
-      return E.left('UnknownError');
-    }
+      // todo: Get it from Context, Add message to queue, Write templates
+      yield* _(
+        sendEmail({
+          to: email,
+          subject: 'You have been invited to a team',
+          content: {
+            type: 'PLAIN',
+            message: `Here's your token: ${invitation.id}`,
+          },
+        })
+      );
+
+      return invitation;
+    }).pipe(
+      Effect.catchTags({
+        DatabaseError: () => Effect.fail(new InternalServerError()),
+        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        UUIDGenerationError: () => Effect.fail(new InternalServerError()),
+      })
+    );
   }
 
   return {

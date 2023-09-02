@@ -8,17 +8,20 @@ import {
   CardTitle,
   Input,
   Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   useToast,
 } from '@white-label/ui-core';
 import {useEffect, useRef} from 'react';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import type {CreateMembershipInvitationAction} from './action.server';
+import type {Action} from './action.server';
 
 export function TeamInvitations() {
-  const {Form, state, data} = useTypedFetcher<
-    CreateMembershipInvitationAction | undefined
-  >();
+  const {Form, state, data} = useTypedFetcher<Action | undefined>();
   const {toast} = useToast();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -59,16 +62,26 @@ export function TeamInvitations() {
                 placeholder=""
                 type="email"
                 disabled={state !== 'idle'}
+                required
               />
             </div>
-            <select
-              disabled={state !== 'idle'}
-              name="role"
-              defaultValue="MEMBER"
-            >
-              <option value="ADMIN">Admin</option>
-              <option value="MEMBER">Member</option>
-            </select>
+
+            <div className="flex w-[180px] flex-shrink-0 flex-col space-y-1.5">
+              <Label>Role</Label>
+              <Select
+                disabled={state !== 'idle'}
+                name="role"
+                defaultValue="MEMBER"
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="MEMBER" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ADMIN">Admin</SelectItem>
+                  <SelectItem value="MEMBER">Member</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardContent>
         <CardFooter className="flex justify-end">

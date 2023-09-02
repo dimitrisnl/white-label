@@ -8,25 +8,22 @@ import {TeamInvitations} from './team-invitations';
 import {Invitees, TeamList} from './team-list';
 
 export function TeamPage() {
-  const response = useTypedLoaderData<GetOrgLoader>();
-
-  // todo: handle this
-  if (!response.ok) {
-    return <div>An error occured</div>;
-  }
-
-  const {data} = response;
+  const {
+    data: {currentUser, org, memberships, invitations},
+  } = useTypedLoaderData<GetOrgLoader>();
 
   return (
-    <BaseLayout title="Team" user={data.currentUser.user}>
+    <BaseLayout title={org.name} currentUser={currentUser}>
       <div className="grid grid-cols-1 items-start gap-8">
         <div className="grid grid-cols-2 items-start gap-8">
-          <TeamInfo initialName={data.org.name} />
+          <TeamInfo initialName={org.name} />
           <TeamInvitations />
         </div>
 
-        <TeamList users={data.users} />
-        <Invitees invitations={data.invitations} />
+        <div className="grid grid-cols-2 items-start gap-8">
+          <TeamList memberships={memberships} />
+          <Invitees invitations={invitations} />
+        </div>
       </div>
     </BaseLayout>
   );

@@ -1,33 +1,38 @@
-import type {Request} from '@remix-run/node';
+import * as Effect from 'effect/Effect';
 
+import {BadRequest, Ok, ServerError} from '@/modules/responses.server';
 import {requestPasswordReset} from '@/modules/use-cases/index.server';
-import {E, pipe} from '@/utils/fp';
-import {respond} from '@/utils/respond.server';
+import {ActionArgs, withAction} from '@/modules/with-action.server';
 
-export async function action({request}: {request: Request}) {
-  const formData = await request.formData();
+export const action = withAction(
+  Effect.gen(function* (_) {
+    const {request} = yield* _(ActionArgs);
+    const formData = yield* _(Effect.promise(() => request.formData()));
+    const {validate, execute} = requestPasswordReset();
 
-  const {validate, execute} = requestPasswordReset();
-  const validation = validate(Object.fromEntries(formData));
+    const props = yield* _(validate(Object.fromEntries(formData)));
+    yield* _(execute(props));
 
-  // todo: fix
-  if (!validation.success) {
-    return respond.fail.validation({
-      email: 'Invalid email address',
-    });
-  }
-
-  const payload = validation.data;
-
-  const response = await execute(payload);
-
-  return pipe(
-    response,
-    E.matchW(
-      () => respond.fail.unknown(),
-      () => respond.ok.empty()
-    )
-  );
-}
+    return new Ok({data: null});
+  }).pipe(
+    Effect.catchTags({
+      InternalServerError: () => Effect.fail(new ServerError({})),
+      ValidationError: () =>
+        Effect.fail(
+          new BadRequest({
+            errors: ['The email you provided seems to be in the wrong format'],
+          })
+        ),
+      UserNotFoundError: () =>
+        Effect.fail(
+          new BadRequest({
+            errors: [
+              "We couldn't find an account with this email in our records",
+            ],
+          })
+        ),
+    })
+  )
+);
 
 export type ForgotPasswordAction = typeof action;

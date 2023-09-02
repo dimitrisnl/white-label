@@ -1,6 +1,7 @@
+import * as Effect from 'effect/Effect';
 import zod from 'zod';
 
-import {E} from '@/utils/fp';
+import {ValidationError} from '../errors.server';
 
 export const PENDING = 'PENDING' as const;
 export const ACCEPTED = 'ACCEPTED' as const;
@@ -13,10 +14,9 @@ export const validationSchema = zod
 
 export type InviteStatus = zod.infer<typeof validationSchema>;
 
-export function validate(data: Record<string, unknown>) {
-  return validationSchema.safeParse(data);
-}
-
-export function parse(value: unknown): E.Either<Error, InviteStatus> {
-  return E.tryCatch(() => validationSchema.parse(value), E.toError);
+export function parse(value: unknown) {
+  return Effect.try({
+    try: () => validationSchema.parse(value),
+    catch: () => new ValidationError(),
+  });
 }

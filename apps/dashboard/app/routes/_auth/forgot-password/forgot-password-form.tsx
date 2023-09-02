@@ -1,4 +1,4 @@
-import {Link} from '@remix-run/react';
+import {Form, Link} from '@remix-run/react';
 import {
   Button,
   buttonVariants,
@@ -11,19 +11,14 @@ import {
   Input,
   Label,
 } from '@white-label/ui-core';
-import {useTypedFetcher} from 'remix-typedjson';
+import {useTypedActionData} from 'remix-typedjson';
 
-import {
-  UnknownErrorMessage,
-  ValidationErrorMessage,
-} from '@/components/error-feedback';
+import {ErrorMessage} from '@/components/error-feedback';
 
 import type {ForgotPasswordAction} from './action.server';
 
 export function ForgotPasswordForm() {
-  const {Form, state, data} = useTypedFetcher<
-    ForgotPasswordAction | undefined
-  >();
+  const data = useTypedActionData<ForgotPasswordAction>();
 
   if (data?.ok === true) {
     return (
@@ -65,16 +60,11 @@ export function ForgotPasswordForm() {
                 name="email"
                 placeholder="Your email"
                 type="email"
-                disabled={state !== 'idle'}
+                required
               />
             </div>
 
-            {data?.ok === false && data.type === 'validation' ? (
-              <ValidationErrorMessage errors={data.messageObj} />
-            ) : null}
-            {data?.ok === false && data.type === 'unknown' ? (
-              <UnknownErrorMessage />
-            ) : null}
+            {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">

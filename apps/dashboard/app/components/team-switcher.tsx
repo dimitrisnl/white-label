@@ -13,27 +13,22 @@ import {
 import {CheckIcon, ChevronsUpDownIcon} from 'lucide-react';
 import * as React from 'react';
 
+import type {Membership} from '@/modules/domain/index.server';
+
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
 >;
 
-interface TeamSwitcherProps extends PopoverTriggerProps {
-  orgs: Array<{
-    id: string;
-    name: string;
-    membership: {
-      role: string;
-    };
-  }>;
-}
-
-export default function TeamSwitcher({className, orgs}: TeamSwitcherProps) {
+export default function TeamSwitcher({
+  className,
+  memberships,
+}: PopoverTriggerProps & {memberships: Array<Membership.Membership>}) {
   const groups = [
     {
       label: 'Teams',
-      teams: orgs.map((org) => ({
-        label: org.name,
-        value: org.id,
+      teams: memberships.map((membership) => ({
+        label: membership.org.name,
+        value: membership.org.id,
       })),
     },
   ];

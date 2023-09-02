@@ -1,7 +1,8 @@
+import * as Effect from 'effect/Effect';
 import {v4 as uuidv4} from 'uuid';
 import zod from 'zod';
 
-import {E} from '@/utils/fp';
+import {UUIDGenerationError, ValidationError} from '../errors.server';
 
 export const validationSchema = zod
   .string({
@@ -14,16 +15,17 @@ export const validationSchema = zod
 
 export type Uuid = zod.infer<typeof validationSchema>;
 
-export function validate(data: Record<string, unknown>) {
-  return validationSchema.safeParse(data);
+export function parse(value: unknown) {
+  return Effect.try({
+    try: () => validationSchema.parse(value),
+    catch: () => new ValidationError(),
+  });
 }
 
-export function parse(value: unknown): E.Either<Error, Uuid> {
-  return E.tryCatch(() => validationSchema.parse(value), E.toError);
-}
-
-// todo: IO
 export function generate() {
-  const uuid = uuidv4();
-  return uuid;
+  return Effect.gen(function* (_) {
+    const id = yield* _(Effect.sync(() => uuidv4()));
+    return yield* _(parse(id));
+    // no reason for this to fail the parsing
+  }).pipe(Effect.catchAll(() => Effect.fail(new UUIDGenerationError())));
 }

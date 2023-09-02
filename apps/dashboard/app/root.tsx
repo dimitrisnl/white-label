@@ -13,6 +13,7 @@ import tailwindStyles from '@white-label/ui-core/tailwind.css';
 import NProgress from 'nprogress';
 import {useEffect} from 'react';
 
+import {ErrorPage} from './components/error-page';
 import fontStyles from './styles/fonts.css';
 import nProgressStyles from './styles/nprogress.css';
 
@@ -46,4 +47,8 @@ export default function App() {
       </body>
     </html>
   );
+}
+
+export function ErrorBoundary() {
+  return <ErrorPage />;
 }

@@ -1,46 +1,58 @@
-import {db, pool} from '@/database/db.server';
-import type {Org, User} from '@/modules/domain/index.server';
-import {invitationAuthorizationService} from '@/modules/services/index.server';
-import {E} from '@/utils/fp';
+import * as Effect from 'effect/Effect';
 
+import {db, pool} from '@/database/db.server';
+import type {
+  MembershipInvitation,
+  Org,
+  User,
+} from '@/modules/domain/index.server';
+import {
+  DatabaseError,
+  InternalServerError,
+  InvitationNotFoundError,
+} from '@/modules/errors.server';
+import {invitationAuthorizationService} from '@/modules/services/index.server';
+
+import type {DeleteInvitationProps} from './validation.server';
 import {validate} from './validation.server';
 
-type Response = E.Either<'InvitationNotFound' | 'ForbiddenAction', null>;
-
-interface Props {
-  invitationId: string;
+function deleteInvitationRecord(
+  invitationId: MembershipInvitation.MembershipInvitation['id']
+) {
+  return Effect.tryPromise({
+    try: () =>
+      db
+        .deletes('membership_invitations', {
+          id: invitationId,
+        })
+        .run(pool),
+    catch: () => new DatabaseError(),
+  });
 }
 
 export function deleteInvitation() {
-  async function execute(
-    props: Props,
+  function execute(
+    props: DeleteInvitationProps,
     orgId: Org.Org['id'],
     userId: User.User['id']
-  ): Promise<Response> {
+  ) {
     const {invitationId} = props;
-    try {
-      const hasAccess = await invitationAuthorizationService.canCreate(
-        userId,
-        orgId
-      );
-      if (!hasAccess) {
-        return E.left('ForbiddenAction');
+    return Effect.gen(function* (_) {
+      yield* _(invitationAuthorizationService.canDelete(userId, orgId));
+
+      const invitationRecord = yield* _(deleteInvitationRecord(invitationId));
+
+      if (invitationRecord.length === 0) {
+        return yield* _(Effect.fail(new InvitationNotFoundError()));
       }
-    } catch {
-      return E.left('ForbiddenAction');
-    }
 
-    const invitationRecord = await db
-      .deletes('membership_invitations', {
-        id: invitationId,
+      return null;
+    }).pipe(
+      Effect.catchTags({
+        DatabaseError: () => Effect.fail(new InternalServerError()),
+        DbRecordParseError: () => Effect.fail(new InternalServerError()),
       })
-      .run(pool);
-
-    if (invitationRecord.length === 0) {
-      return E.left('InvitationNotFound');
-    }
-
-    return E.right(null);
+    );
   }
 
   return {

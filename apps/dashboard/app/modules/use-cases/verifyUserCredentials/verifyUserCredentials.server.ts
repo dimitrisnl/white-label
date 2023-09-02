@@ -1,51 +1,56 @@
+import * as Effect from 'effect/Effect';
+
 import {db, pool} from '@/database/db.server';
 import {Password, User} from '@/modules/domain/index.server';
-import {E} from '@/utils/fp';
+import {
+  DatabaseError,
+  InternalServerError,
+  InvalidCredentialsError,
+} from '@/modules/errors.server';
 
+import type {VerifyUserCredentialsProps} from './validation.server';
 import {validate} from './validation.server';
 
-type Response = E.Either<'InvalidCredentialsError' | 'UnknownError', User.User>;
-
-interface Props {
-  email: string;
-  password: string;
+function selectUserRecord(email: User.User['email']) {
+  return Effect.tryPromise({
+    try: () => db.selectOne('users', {email}).run(pool),
+    catch: (error) => {
+      return new DatabaseError();
+    },
+  });
 }
 
 export function verifyUserCredentials() {
-  async function execute(props: Props): Promise<Response> {
+  function execute(props: VerifyUserCredentialsProps) {
     const {email, password} = props;
+    return Effect.gen(function* (_) {
+      const userRecord = yield* _(selectUserRecord(email));
 
-    const userRecord = await db
-      .selectOne('users', {
-        email,
-      })
-      .run(pool);
-
-    if (!userRecord) {
-      return E.left('InvalidCredentialsError');
-    }
-
-    try {
-      const isPasswordValid = await Password.compare({
-        plainText: password,
-        hashValue: userRecord.password,
-      });
-      if (!isPasswordValid) {
-        return E.left('InvalidCredentialsError');
+      if (!userRecord) {
+        return yield* _(Effect.fail(new InvalidCredentialsError()));
       }
-    } catch {
-      return E.left('UnknownError');
-    }
 
-    const toUser = User.dbRecordToDomain(userRecord);
+      const isPasswordValid = yield* _(
+        Password.compare({
+          plainText: password,
+          hashValue: userRecord.password,
+        })
+      );
 
-    if (E.isLeft(toUser)) {
-      return E.left('UnknownError');
-    }
+      if (!isPasswordValid) {
+        return yield* _(Effect.fail(new InvalidCredentialsError()));
+      }
 
-    const user = toUser.right;
+      const user = yield* _(User.dbRecordToDomain(userRecord));
 
-    return E.right(user);
+      return user;
+    }).pipe(
+      Effect.catchTags({
+        DatabaseError: () => Effect.fail(new InternalServerError()),
+        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        PasswordHashError: () => Effect.fail(new InternalServerError()),
+      })
+    );
   }
 
   return {

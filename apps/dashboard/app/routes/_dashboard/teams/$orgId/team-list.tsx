@@ -8,7 +8,10 @@ import {
   CardTitle,
 } from '@white-label/ui-core';
 
-import type {MembershipInvitation, User} from '@/modules/domain/index.server';
+import type {
+  Membership,
+  MembershipInvitation,
+} from '@/modules/domain/index.server';
 
 function RoleBadge({role}: {role: string}) {
   return (
@@ -16,21 +19,27 @@ function RoleBadge({role}: {role: string}) {
   );
 }
 
-function UserTableEntry({user}: {user: User.User}) {
+function UserTableEntry({membership}: {membership: Membership.Membership}) {
   return (
     <div className="flex items-center">
       <div className="space-y-1">
-        <p className="text-sm font-medium leading-none">{user.name}</p>
-        <p className="text-muted-foreground text-sm">{user.email}</p>
+        <p className="text-sm font-medium leading-none">
+          {membership.user.name}
+        </p>
+        <p className="text-muted-foreground text-sm">{membership.user.email}</p>
       </div>
-      {/* <div className="ml-auto font-medium">
-        <RoleBadge role={user.membership.role} />
-      </div> */}
+      <div className="ml-auto font-medium">
+        <RoleBadge role={membership.role} />
+      </div>
     </div>
   );
 }
 
-export function TeamList({users}: {users: Array<User.User>}) {
+export function TeamList({
+  memberships,
+}: {
+  memberships: Array<Membership.Membership>;
+}) {
   return (
     <Card>
       <CardHeader>
@@ -42,26 +51,35 @@ export function TeamList({users}: {users: Array<User.User>}) {
       <CardContent>
         <div className="space-y-8">
           <div className="space-y-4">
-            {users
-              // .filter((user) => user.membership.role === 'OWNER')
-              .map((user) => (
-                <UserTableEntry key={user.id} user={user} />
-              ))}
-          </div>
-          {/* <div className="space-y-4">
-            {users
-              .filter((user) => user.membership.role === 'ADMIN')
-              .map((user) => (
-                <UserTableEntry key={user.id} user={user} />
+            {memberships
+              .filter((membership) => membership.role === 'OWNER')
+              .map((membership) => (
+                <UserTableEntry
+                  key={membership.user.id}
+                  membership={membership}
+                />
               ))}
           </div>
           <div className="space-y-4">
-            {users
-              .filter((user) => user.membership.role === 'MEMBER')
-              .map((user) => (
-                <UserTableEntry key={user.id} user={user} />
+            {memberships
+              .filter((membership) => membership.role === 'ADMIN')
+              .map((membership) => (
+                <UserTableEntry
+                  key={membership.user.id}
+                  membership={membership}
+                />
               ))}
-          </div> */}
+          </div>
+          <div className="space-y-4">
+            {memberships
+              .filter((membership) => membership.role === 'MEMBER')
+              .map((membership) => (
+                <UserTableEntry
+                  key={membership.user.id}
+                  membership={membership}
+                />
+              ))}
+          </div>
         </div>
       </CardContent>
       <CardFooter className="flex justify-between"></CardFooter>

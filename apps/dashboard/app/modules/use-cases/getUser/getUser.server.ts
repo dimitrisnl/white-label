@@ -1,29 +1,38 @@
+import * as Effect from 'effect/Effect';
+
 import {db, pool} from '@/database/db.server';
 import {User} from '@/modules/domain/index.server';
-import {E} from '@/utils/fp';
+import {
+  DatabaseError,
+  InternalServerError,
+  UserNotFoundError,
+} from '@/modules/errors.server';
 
-type Response = E.Either<'UnknownError' | 'UserNotFoundError', User.User>;
+function selectUserRecord(id: User.User['id']) {
+  return Effect.tryPromise({
+    try: () => db.selectOne('users', {id}).run(pool),
+    catch: () => new DatabaseError(),
+  });
+}
 
 export function getUser() {
-  async function execute(userId: User.User['id']): Promise<Response> {
-    const userRecord = await db
-      .selectOne('users', {
-        id: userId,
+  function execute(userId: User.User['id']) {
+    return Effect.gen(function* (_) {
+      const userRecord = yield* _(selectUserRecord(userId));
+
+      if (!userRecord) {
+        return yield* _(Effect.fail(new UserNotFoundError()));
+      }
+
+      const user = yield* _(User.dbRecordToDomain(userRecord));
+
+      return {user};
+    }).pipe(
+      Effect.catchTags({
+        DatabaseError: () => Effect.fail(new InternalServerError()),
+        DbRecordParseError: () => Effect.fail(new InternalServerError()),
       })
-      .run(pool);
-
-    if (!userRecord) {
-      return E.left('UserNotFoundError');
-    }
-
-    const toUser = User.dbRecordToDomain(userRecord);
-    if (E.isLeft(toUser)) {
-      return E.left('UnknownError');
-    }
-
-    const user = toUser.right;
-
-    return E.right(user);
+    );
   }
 
   return {execute};

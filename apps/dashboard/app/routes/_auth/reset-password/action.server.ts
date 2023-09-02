@@ -1,38 +1,34 @@
-import type {Request} from '@remix-run/node';
-import {redirect} from 'remix-typedjson';
+import * as Effect from 'effect/Effect';
 
+import {BadRequest, Redirect, ServerError} from '@/modules/responses.server';
 import {resetPassword} from '@/modules/use-cases/index.server';
-import {E, pipe} from '@/utils/fp';
-import {respond} from '@/utils/respond.server';
+import {ActionArgs, withAction} from '@/modules/with-action.server';
 
-export async function action({request}: {request: Request}) {
-  const formData = await request.formData();
-  formData.delete('confirmPassword');
+export const action = withAction(
+  Effect.gen(function* (_) {
+    const {request} = yield* _(ActionArgs);
+    const formData = yield* _(Effect.promise(() => request.formData()));
 
-  const {validate, execute} = resetPassword();
-  const validation = validate(Object.fromEntries(formData));
+    const {validate, execute} = resetPassword();
+    const props = yield* _(validate(Object.fromEntries(formData)));
 
-  // todo: fix
-  if (!validation.success) {
-    return respond.fail.validation({
-      password: 'Invalid credentials',
+    yield* _(execute(props));
+
+    return new Redirect({
+      to: '/login?resetPassword=true',
+      init: request,
     });
-  }
-
-  const data = validation.data;
-  const response = await execute(data);
-
-  if (E.isLeft(response)) {
-    return respond.fail.unknown();
-  }
-
-  return pipe(
-    response,
-    E.match(
-      () => respond.fail.unknown(),
-      () => redirect('/login?resetPassword=true')
-    )
-  );
-}
+  }).pipe(
+    Effect.catchTags({
+      InternalServerError: () => Effect.fail(new ServerError({})),
+      UserNotFoundError: () =>
+        Effect.fail(new BadRequest({errors: ['User not found']})),
+      PasswordResetTokenNotFoundError: () =>
+        Effect.fail(new BadRequest({errors: ['Token not found']})),
+      ValidationError: () =>
+        Effect.fail(new BadRequest({errors: ['Validation Error']})),
+    })
+  )
+);
 
 export type ResetPasswordAction = typeof action;

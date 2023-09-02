@@ -14,12 +14,14 @@ import {BaseLayout} from '@/components/layouts/base-layout';
 import type {IndexLoaderData} from './loader.server';
 
 export function IndexPage() {
+  const response = useTypedLoaderData<IndexLoaderData>();
+
   const {
     data: {currentUser},
-  } = useTypedLoaderData<IndexLoaderData>();
+  } = response;
 
   return (
-    <BaseLayout title="All Teams" user={currentUser.user}>
+    <BaseLayout title="All Teams" currentUser={currentUser}>
       <div className="mx-auto grid max-w-lg grid-cols-1 gap-8">
         <Card>
           <CardHeader>
