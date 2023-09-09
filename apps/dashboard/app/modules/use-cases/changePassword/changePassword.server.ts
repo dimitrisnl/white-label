@@ -1,52 +1,65 @@
+import * as Effect from 'effect/Effect';
+
 import {db, pool} from '@/database/db.server';
 import type {User} from '@/modules/domain/index.server';
 import {Password} from '@/modules/domain/index.server';
-import {E} from '@/utils/fp';
+import {
+  DatabaseError,
+  IncorrectPasswordError,
+  InternalServerError,
+  UserNotFoundError,
+} from '@/modules/errors.server';
 
+import type {ChangePasswordProps} from './validation.server';
 import {validate} from './validation.server';
 
-type Response = E.Either<'IncorrectPasswordError' | 'UnknownError', void>;
+function selectUserRecord(userId: User.User['id']) {
+  return Effect.tryPromise({
+    try: () => db.selectOne('users', {id: userId}).run(pool),
+    catch: () => new DatabaseError(),
+  });
+}
 
-interface Props {
-  newPassword: string;
-  oldPassword: string;
+function updateUserPassword(userId: User.User['id'], password: string) {
+  return Effect.tryPromise({
+    try: () => db.update('users', {password}, {id: userId}).run(pool),
+    catch: () => new DatabaseError(),
+  });
 }
 
 export function changePassword() {
-  async function execute(
-    props: Props,
-    userId: User.User['id']
-  ): Promise<Response> {
+  function execute(props: ChangePasswordProps, userId: User.User['id']) {
     const {newPassword, oldPassword} = props;
+    return Effect.gen(function* (_) {
+      const userRecord = yield* _(selectUserRecord(userId));
 
-    const userRecord = await db.selectOne('users', {id: userId}).run(pool);
-
-    if (!userRecord) {
-      return E.left('UnknownError');
-    }
-
-    try {
-      const isPasswordValid = await Password.compare({
-        plainText: oldPassword,
-        hashValue: userRecord.password,
-      });
-      if (!isPasswordValid) {
-        return E.left('IncorrectPasswordError');
+      if (!userRecord) {
+        return yield* _(Effect.fail(new UserNotFoundError()));
       }
-    } catch {
-      return E.left('UnknownError');
-    }
 
-    let hash;
-    try {
-      hash = await Password.hash(newPassword);
-    } catch {
-      return E.left('UnknownError');
-    }
+      const isPasswordValid = yield* _(
+        Password.compare({
+          plainText: oldPassword,
+          hashValue: userRecord.password,
+        })
+      );
 
-    await db.update('users', {password: hash}, {id: userId}).run(pool);
+      if (!isPasswordValid) {
+        return yield* _(Effect.fail(new IncorrectPasswordError()));
+      }
 
-    return E.right(undefined);
+      const hashedNewPassword = yield* _(Password.hash(newPassword));
+
+      yield* _(updateUserPassword(userId, hashedNewPassword));
+
+      return null;
+    }).pipe(
+      Effect.catchTags({
+        DatabaseError: () => Effect.fail(new InternalServerError()),
+        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        PasswordHashError: () => Effect.fail(new InternalServerError()),
+      })
+    );
   }
 
   return {

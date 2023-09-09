@@ -1,11 +1,12 @@
-import type {Request} from '@remix-run/node';
 import {createCookieSessionStorage} from '@remix-run/node';
-import {redirect} from 'remix-typedjson';
+import * as Effect from 'effect/Effect';
 import zod from 'zod';
 
 import {User} from '@/modules/domain/index.server';
 import {getUser, whoAmI} from '@/modules/use-cases/index.server';
-import {E} from '@/utils/fp';
+
+import {SessionNotFoundError} from './errors.server';
+import {Redirect} from './responses.server';
 
 const envValidationSchema = zod.object({
   SESSION_SECRET: zod.string().nonempty(),
@@ -27,102 +28,97 @@ export const sessionStorage = createCookieSessionStorage({
   },
 });
 
-export async function getSession(request: Request) {
+export function getSession(request: Request) {
   const cookie = request.headers.get('Cookie');
-  return sessionStorage.getSession(cookie);
+  return Effect.promise(() => sessionStorage.getSession(cookie));
 }
 
 // Full response, including memberships
-export async function requireUser(
-  request: Request,
-  redirectTo: string = new URL(request.url).pathname
-) {
-  const searchParams = new URLSearchParams([['redirectTo', redirectTo]]);
+export function requireUser(request: Request) {
+  return Effect.gen(function* (_) {
+    const session = yield* _(getSession(request));
+    const userId = yield* _(User.parseId(session.get(USER_SESSION_KEY)));
+    const {user, memberships} = yield* _(whoAmI().execute(userId));
 
-  const session = await getSession(request);
-  const parsed = User.parseId(session.get(USER_SESSION_KEY));
-  // No id, move to login
-  if (E.isLeft(parsed)) {
-    if (redirectTo && redirectTo !== '/') {
-      // eslint-disable-next-line
-      throw redirect(`/login?${searchParams.toString()}`);
-    } else {
-      // eslint-disable-next-line
-      throw redirect(`/login`);
-    }
-  }
-  const userId = parsed.right;
-
-  const response = await whoAmI().execute(userId);
-  // We have id, but no used (?!) - clear session
-  if (E.isLeft(response)) {
-    throw await logout(request);
-  }
-
-  return {
-    currentUser: response.right,
-  };
+    return {
+      currentUser: {user, memberships},
+    };
+  }).pipe(
+    Effect.catchTags({
+      ValidationError: () => Effect.fail(new SessionNotFoundError()),
+      UserNotFoundError: () => Effect.fail(new SessionNotFoundError()),
+    })
+  );
 }
 
 // Light response, ony user object
-export async function requireUserId(
-  request: Request,
-  redirectTo: string = new URL(request.url).pathname
-) {
-  const searchParams = new URLSearchParams([['redirectTo', redirectTo]]);
+export function requireUserId(request: Request) {
+  return Effect.gen(function* (_) {
+    const session = yield* _(getSession(request));
+    const userId = yield* _(User.parseId(session.get(USER_SESSION_KEY)));
+    const {user} = yield* _(getUser().execute(userId));
 
-  const session = await getSession(request);
-  const parsed = User.parseId(session.get(USER_SESSION_KEY));
-
-  // No id, move to login
-  if (E.isLeft(parsed)) {
-    if (redirectTo && redirectTo !== '/') {
-      throw redirect(`/login?${searchParams.toString()}`);
-    } else {
-      throw redirect(`/login`);
-    }
-  }
-
-  const userId = parsed.right;
-
-  const response = await getUser().execute(userId);
-  // We have id, but no used (?!) - clear session
-  if (E.isLeft(response)) {
-    throw await logout(request);
-  }
-
-  return response.right.id;
+    return user.id;
+  }).pipe(
+    Effect.catchTags({
+      ValidationError: () => Effect.fail(new SessionNotFoundError()),
+      UserNotFoundError: () => Effect.fail(new SessionNotFoundError()),
+    })
+  );
 }
 
-export async function createUserSession({
-  request,
-  userId,
-  remember,
-  redirectTo = '/',
-}: {
-  request: Request;
-  userId: string;
-  remember: boolean;
-  redirectTo?: string;
-}) {
-  const session = await getSession(request);
-  session.set(USER_SESSION_KEY, userId);
-  return redirect(redirectTo, {
-    headers: {
-      'Set-Cookie': await sessionStorage.commitSession(session, {
-        maxAge: remember
-          ? 60 * 60 * 24 * 7 // 7 days
-          : undefined,
-      }),
-    },
+export function logout(request: Request) {
+  return Effect.gen(function* (_) {
+    const session = yield* _(getSession(request));
+
+    const cookie: string = yield* _(
+      Effect.promise(() => sessionStorage.destroySession(session))
+    );
+
+    return new Redirect({
+      to: '/login',
+      init: {
+        headers: {
+          'Set-Cookie': cookie,
+        },
+      },
+    });
   });
 }
 
-export async function logout(request: Request) {
-  const session = await getSession(request);
-  return redirect('/login', {
-    headers: {
-      'Set-Cookie': await sessionStorage.destroySession(session),
-    },
+export function createUserSession({
+  userId,
+  remember = true,
+  redirectToPath = '/',
+  request,
+}: {
+  userId: string;
+  remember: boolean;
+  redirectToPath: string;
+  request: Request;
+}) {
+  return Effect.gen(function* (_) {
+    const session = yield* _(getSession(request));
+
+    session.set(USER_SESSION_KEY, userId);
+
+    const cookie: string = yield* _(
+      Effect.promise(() =>
+        sessionStorage.commitSession(session, {
+          maxAge: remember
+            ? 60 * 60 * 24 * 7 // 7 days
+            : undefined,
+        })
+      )
+    );
+
+    return new Redirect({
+      to: redirectToPath,
+      init: {
+        headers: {
+          'Set-Cookie': cookie,
+        },
+      },
+    });
   });
 }

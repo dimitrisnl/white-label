@@ -14,10 +14,8 @@ import {
 } from '@white-label/ui-core';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import {
-  UnknownErrorMessage,
-  ValidationErrorMessage,
-} from '@/components/error-feedback';
+import {ErrorMessage} from '@/components/error-feedback';
+import {PasswordInput} from '@/components/password-input';
 
 import type {LoginRequestAction} from './action.server';
 
@@ -41,6 +39,7 @@ export function LoginForm() {
                 placeholder="Your email"
                 type="email"
                 disabled={state !== 'idle'}
+                required
               />
             </div>
             <div className="flex flex-col space-y-2">
@@ -57,20 +56,16 @@ export function LoginForm() {
                   Forgot your password?
                 </Link>
               </div>
-              <Input
+              <PasswordInput
                 id="password"
                 name="password"
                 placeholder="Your password"
-                type="password"
                 disabled={state !== 'idle'}
+                required
+                minLength={8}
               />
             </div>
-            {data?.ok === false && data.type === 'validation' ? (
-              <ValidationErrorMessage errors={data.messageObj} />
-            ) : null}
-            {data?.ok === false && data.type === 'unknown' ? (
-              <UnknownErrorMessage />
-            ) : null}
+            {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">

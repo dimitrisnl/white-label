@@ -1,7 +1,7 @@
+import * as Effect from 'effect/Effect';
 import zod from 'zod';
 
-import {E} from '@/utils/fp';
-
+import {DbRecordParseError, ValidationError} from '../errors.server';
 import * as DateString from './date';
 import * as Email from './email';
 import * as InviteStatus from './invite-status';
@@ -22,12 +22,11 @@ export const validationSchema = zod
 
 export type MembershipInvitation = zod.infer<typeof validationSchema>;
 
-export function validate(data: Record<string, unknown>) {
-  return validationSchema.safeParse(data);
-}
-
-export function parse(value: unknown): E.Either<Error, MembershipInvitation> {
-  return E.tryCatch(() => validationSchema.parse(value), E.toError);
+export function parse(value: unknown) {
+  return Effect.try({
+    try: () => validationSchema.parse(value),
+    catch: () => new ValidationError(),
+  });
 }
 
 export function dbRecordToDomain(entity: {
@@ -47,5 +46,5 @@ export function dbRecordToDomain(entity: {
     role: entity.role,
     createdAt: entity.created_at,
     updatedAt: entity.updated_at,
-  });
+  }).pipe(Effect.catchAll(() => Effect.fail(new DbRecordParseError())));
 }

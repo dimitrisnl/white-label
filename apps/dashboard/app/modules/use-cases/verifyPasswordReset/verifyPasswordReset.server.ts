@@ -1,29 +1,41 @@
-import {db, pool} from '@/database/db.server';
-import {E} from '@/utils/fp';
+import * as Effect from 'effect/Effect';
 
+import {db, pool} from '@/database/db.server';
+import {
+  DatabaseError,
+  InternalServerError,
+  PasswordResetTokenNotFoundError,
+} from '@/modules/errors.server';
+
+import type {VerifyPasswordResetProps} from './validation.server';
 import {validate} from './validation.server';
 
-type Response = E.Either<'InvalidTokenError', string>;
-
-interface Props {
-  token: string;
+function selectPasswordResetTokenRecord(token: string) {
+  return Effect.tryPromise({
+    try: () => db.selectOne('password_reset_tokens', {id: token}).run(pool),
+    catch: () => new DatabaseError(),
+  });
 }
 
 export function verifyPasswordReset() {
-  async function execute(props: Props): Promise<Response> {
+  function execute(props: VerifyPasswordResetProps) {
     const {token} = props;
+    return Effect.gen(function* (_) {
+      const passwordResetTokenRecord = yield* _(
+        selectPasswordResetTokenRecord(token)
+      );
 
-    const verifyEmailTokenRecord = await db
-      .selectOne('verify_email_tokens', {
-        id: token,
+      if (!passwordResetTokenRecord) {
+        return yield* _(Effect.fail(new PasswordResetTokenNotFoundError()));
+      }
+
+      return null;
+    }).pipe(
+      Effect.catchTags({
+        DatabaseError: () => Effect.fail(new InternalServerError()),
+        DbRecordParseError: () => Effect.fail(new InternalServerError()),
       })
-      .run(pool);
-
-    if (!verifyEmailTokenRecord) {
-      return E.left('InvalidTokenError');
-    }
-
-    return E.right(verifyEmailTokenRecord.user_id);
+    );
   }
 
   return {

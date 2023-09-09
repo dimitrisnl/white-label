@@ -1,13 +1,19 @@
-import type {LoaderArgs, Request} from '@remix-run/node';
+import * as Effect from 'effect/Effect';
 
 import type {User} from '@/modules/domain/index.server';
 import {Org} from '@/modules/domain/index.server';
+import {
+  BadRequest,
+  Forbidden,
+  Ok,
+  Redirect,
+  ServerError,
+} from '@/modules/responses.server';
 import {requireUserId} from '@/modules/session.server';
 import {createInvitation, editOrg} from '@/modules/use-cases/index.server';
-import {E, pipe} from '@/utils/fp';
-import {respond} from '@/utils/respond.server';
+import {ActionArgs, withAction} from '@/modules/with-action.server';
 
-async function handleNameChange({
+function handleNameChange({
   formData,
   orgId,
   userId,
@@ -16,32 +22,30 @@ async function handleNameChange({
   orgId: Org.Org['id'];
   userId: User.User['id'];
 }) {
-  const {validate, execute} = editOrg();
-  const validation = validate(Object.fromEntries(formData));
+  return Effect.gen(function* (_) {
+    const {validate, execute} = editOrg();
+    const props = yield* _(validate(Object.fromEntries(formData)));
 
-  if (!validation.success) {
-    // todo: fix
-    return respond.fail.validation({
-      name: 'Invalid name',
-    });
-  }
+    yield* _(execute(props, orgId, userId));
 
-  const payload = validation.data;
-
-  const response = await execute(payload, orgId, userId);
-
-  return pipe(
-    response,
-    E.matchW(
-      () => respond.fail.unknown(),
-      () => respond.ok.empty()
-    )
+    return new Ok({data: null});
+  }).pipe(
+    Effect.catchTags({
+      DatabaseError: () => Effect.fail(new ServerError({})),
+      DbRecordParseError: () => Effect.fail(new ServerError({})),
+      ForbiddenActionError: () =>
+        Effect.fail(
+          new Forbidden({
+            errors: ["You don't have acess to change the team name"],
+          })
+        ),
+      ValidationError: () =>
+        Effect.fail(new BadRequest({errors: ['Validation Error']})),
+    })
   );
 }
 
-export type NameChangeAction = typeof handleNameChange;
-
-async function handleMembershipInvitation({
+function handleMembershipInvitation({
   formData,
   orgId,
   userId,
@@ -50,67 +54,66 @@ async function handleMembershipInvitation({
   orgId: Org.Org['id'];
   userId: User.User['id'];
 }) {
-  const {validate, execute} = createInvitation();
-  const validation = validate(Object.fromEntries(formData));
+  return Effect.gen(function* (_) {
+    const {validate, execute} = createInvitation();
+    const props = yield* _(validate(Object.fromEntries(formData)));
 
-  if (!validation.success) {
-    // todo: fix
-    return respond.fail.validation({
-      email: 'Invalid email',
-    });
-  }
+    yield* _(execute(props, orgId, userId));
 
-  const payload = validation.data;
-
-  const response = await execute(payload, orgId, userId);
-
-  return pipe(
-    response,
-    E.matchW(
-      () => respond.fail.unknown(),
-      () => respond.ok.empty()
-    )
+    return new Ok({data: null});
+  }).pipe(
+    Effect.catchTags({
+      DatabaseError: () => Effect.fail(new ServerError({})),
+      DbRecordParseError: () => Effect.fail(new ServerError({})),
+      ForbiddenActionError: () =>
+        Effect.fail(
+          new Forbidden({
+            errors: ["You don't have access to invite a team member"],
+          })
+        ),
+      ValidationError: () =>
+        Effect.fail(new BadRequest({errors: ['Validation Error']})),
+    })
   );
 }
 
-export type CreateMembershipInvitationAction =
-  typeof handleMembershipInvitation;
+export const action = withAction(
+  Effect.gen(function* (_) {
+    const {request, params} = yield* _(ActionArgs);
+    const userId = yield* _(requireUserId(request));
 
-export async function action({
-  request,
-  params,
-}: {
-  request: Request;
-  params: LoaderArgs['params'];
-}) {
-  const userId = await requireUserId(request);
+    const formData = yield* _(Effect.promise(() => request.formData()));
+    const formName = formData.get('formName');
 
-  const formData = await request.formData();
-  const formName = formData.get('formName');
+    const orgId = yield* _(Org.parseId(params.orgId));
 
-  const parsedOrgId = Org.parseId(params.orgId);
+    if (formName === 'EDIT_ORG_FORM') {
+      formData.delete('formName');
+      return yield* _(handleNameChange({formData, orgId, userId}));
+    } else if (formName === 'CREATE_MEMBERSHIP_INVITATION_FORM') {
+      formData.delete('formName');
+      return yield* _(handleMembershipInvitation({formData, orgId, userId}));
+    }
 
-  if (E.isLeft(parsedOrgId)) {
-    return new Response('Invalid params', {status: 400});
-  }
+    // no match
+    throw new BadRequest({errors: ['Invalid action']});
+  }).pipe(
+    Effect.catchTags({
+      InternalServerError: () => Effect.fail(new ServerError({})),
+      ValidationError: () =>
+        ActionArgs.pipe(
+          Effect.flatMap(({request}) =>
+            Effect.fail(new Redirect({to: '/login', init: request}))
+          )
+        ),
+      SessionNotFoundError: () =>
+        ActionArgs.pipe(
+          Effect.flatMap(({request}) =>
+            Effect.fail(new Redirect({to: '/login', init: request}))
+          )
+        ),
+    })
+  )
+);
 
-  const orgId = parsedOrgId.right;
-
-  if (formName === 'EDIT_ORG_FORM') {
-    formData.delete('formName');
-    return handleNameChange({
-      formData,
-      orgId,
-      userId,
-    });
-  } else if (formName === 'CREATE_MEMBERSHIP_INVITATION_FORM') {
-    formData.delete('formName');
-    return handleMembershipInvitation({
-      formData,
-      orgId,
-      userId,
-    });
-  }
-
-  return new Response('Invalid form name', {status: 400});
-}
+export type Action = typeof action;

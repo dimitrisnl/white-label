@@ -1,35 +1,38 @@
-import type {Request} from '@remix-run/node';
-import {pipe} from 'fp-ts/lib/function';
+import * as Effect from 'effect/Effect';
 
+import {PasswordResetTokenNotFoundError} from '@/modules/errors.server';
+import {BadRequest, Ok, ServerError} from '@/modules/responses.server';
 import {verifyPasswordReset} from '@/modules/use-cases/index.server';
-import {E} from '@/utils/fp';
-import {respond} from '@/utils/respond.server';
+import {LoaderArgs, withLoader} from '@/modules/with-loader.server';
 
-export async function loader({request}: {request: Request}) {
-  const token = new URL(request.url).searchParams.get('token');
-  if (!token) {
-    return respond.fail.unknown();
-  }
+export const loader = withLoader(
+  Effect.gen(function* (_) {
+    const {request} = yield* _(LoaderArgs);
 
-  const {validate, execute} = verifyPasswordReset();
+    const token = new URL(request.url).searchParams.get('token');
 
-  const validation = validate({token});
+    if (!token) {
+      return yield* _(Effect.fail(new PasswordResetTokenNotFoundError()));
+    }
 
-  if (!validation.success) {
-    return respond.fail.unknown();
-  }
+    const {validate, execute} = verifyPasswordReset();
 
-  const payload = validation.data;
+    const props = yield* _(validate({token}));
 
-  const response = await execute(payload);
+    yield* _(execute(props));
 
-  return pipe(
-    response,
-    E.matchW(
-      () => respond.fail.unknown(),
-      () => respond.ok.data({token})
-    )
-  );
-}
+    return new Ok({data: {token}});
+  }).pipe(
+    Effect.catchTags({
+      InternalServerError: () => Effect.fail(new ServerError({})),
+      PasswordResetTokenNotFoundError: () =>
+        Effect.fail(new BadRequest({errors: ['Token not found']})),
+      ValidationError: () =>
+        Effect.fail(
+          new BadRequest({errors: ['Token was in incorrect format']})
+        ),
+    })
+  )
+);
 
 export type ResetPasswordLoader = typeof loader;

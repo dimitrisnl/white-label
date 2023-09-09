@@ -1,75 +1,135 @@
+import * as Effect from 'effect/Effect';
+
 import {db, pool} from '@/database/db.server';
+import {UNIQUE_CONTRAINT} from '@/database/pg-error';
+import {sendEmail} from '@/mailer';
 import {
   MembershipRole,
   Password,
   User,
   Uuid,
 } from '@/modules/domain/index.server';
-import {E} from '@/utils/fp';
+import {
+  AccountAlreadyExistsError,
+  DatabaseError,
+  InternalServerError,
+} from '@/modules/errors.server';
 
+import type {CreateUserProps} from './validation.server';
 import {validate} from './validation.server';
 
-type Response = E.Either<
-  'AccountAlreadyExistsError' | 'UnknownError',
-  {user: User.User}
->;
+function createUserRecord({
+  email,
+  name,
+  passwordHash,
+  id,
+}: {
+  email: User.User['email'];
+  name: User.User['name'];
+  passwordHash: Password.Password;
+  id: Uuid.Uuid;
+}) {
+  return Effect.tryPromise({
+    try: () =>
+      db
+        .insert('users', {
+          id,
+          email,
+          email_verified: false,
+          password: passwordHash,
+          name,
+        })
+        .run(pool),
+    catch: (error) => {
+      // todo: fix
+      // @ts-expect-error
+      if (error && error.code === UNIQUE_CONTRAINT) {
+        return new AccountAlreadyExistsError();
+      }
 
-interface Props {
-  email: string;
-  password: string;
-  name: string;
+      return new DatabaseError();
+    },
+  });
+}
+
+function createOrgRecord({id, name}: {id: Uuid.Uuid; name: User.User['name']}) {
+  return Effect.tryPromise({
+    try: () => db.insert('orgs', {id, name}).run(pool),
+    catch: () => new DatabaseError(),
+  });
+}
+
+function createMembershipRecord({
+  orgId,
+  userId,
+}: {
+  orgId: Uuid.Uuid;
+  userId: Uuid.Uuid;
+}) {
+  return Effect.tryPromise({
+    try: () =>
+      db
+        .insert('memberships', {
+          org_id: orgId,
+          user_id: userId,
+          role: MembershipRole.OWNER,
+        })
+        .run(pool),
+    catch: () => new DatabaseError(),
+  });
+}
+
+function createVerifyEmailToken(tokenId: Uuid.Uuid, userId: User.User['id']) {
+  return Effect.tryPromise({
+    try: () =>
+      db
+        .insert('verify_email_tokens', {
+          id: tokenId,
+          user_id: userId,
+        })
+        .run(pool),
+    catch: () => new DatabaseError(),
+  });
 }
 
 export function createUser() {
-  async function execute(props: Props): Promise<Response> {
-    let user: User.User;
+  function execute(props: CreateUserProps) {
+    const {email, name, password} = props;
+    return Effect.gen(function* (_) {
+      const passwordHash = yield* _(Password.hash(password));
+      const userId = yield* _(Uuid.generate());
+      const userRecord = yield* _(
+        createUserRecord({email, name, passwordHash, id: userId})
+      );
+      const orgId = yield* _(Uuid.generate());
+      yield* _(createOrgRecord({name: 'My Team', id: orgId}));
+      yield* _(createMembershipRecord({orgId, userId}));
+      const user = yield* _(User.dbRecordToDomain(userRecord));
 
-    let hash;
-    try {
-      hash = await Password.hash(props.password);
-    } catch {
-      return E.left('UnknownError');
-    }
+      const verifyEmailTokenId = yield* _(Uuid.generate());
+      yield* _(createVerifyEmailToken(verifyEmailTokenId, user.id));
 
-    try {
-      const userRecord = await db
-        .insert('users', {
-          id: Uuid.generate(),
-          email: props.email,
-          email_verified: false,
-          password: hash,
-          name: props.email,
+      // todo: Get it from Context, Add message to queue, Write templates
+      yield* _(
+        sendEmail({
+          to: user.email,
+          subject: 'Verify your email',
+          content: {
+            type: 'PLAIN',
+            message: `Here's your token: ${verifyEmailTokenId}`,
+          },
         })
-        .run(pool);
-      const toUser = User.dbRecordToDomain(userRecord);
+      );
 
-      if (E.isLeft(toUser)) {
-        return E.left('UnknownError');
-      }
-      user = toUser.right;
-    } catch (error) {
-      return E.left('AccountAlreadyExistsError' as const);
-    }
-
-    // Create a default team
-    const defaultOrg = await db
-      .insert('orgs', {
-        id: Uuid.generate(),
-        name: 'My Team',
+      return {user};
+    }).pipe(
+      Effect.catchTags({
+        DatabaseError: () => Effect.fail(new InternalServerError()),
+        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        PasswordHashError: () => Effect.fail(new InternalServerError()),
+        UUIDGenerationError: () => Effect.fail(new InternalServerError()),
       })
-      .run(pool);
-
-    // Bind user to the org
-    await db
-      .insert('memberships', {
-        org_id: defaultOrg.id,
-        user_id: user.id,
-        role: MembershipRole.OWNER,
-      })
-      .run(pool);
-
-    // todo: Create Verification email
-    return E.right({user});
+    );
   }
 
   return {

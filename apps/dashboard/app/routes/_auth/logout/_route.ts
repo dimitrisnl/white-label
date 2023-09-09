@@ -1,11 +1,21 @@
-import type {Request} from '@remix-run/node';
+import * as Effect from 'effect/Effect';
 
 import {logout} from '@/modules/session.server';
+import {ActionArgs, withAction} from '@/modules/with-action.server';
+import {LoaderArgs, withLoader} from '@/modules/with-loader.server';
 
-export async function action({request}: {request: Request}) {
-  return logout(request);
-}
+export const action = withAction(
+  Effect.gen(function* (_) {
+    const {request} = yield* _(ActionArgs);
 
-export async function loader({request}: {request: Request}) {
-  return logout(request);
-}
+    return yield* _(logout(request));
+  })
+);
+
+export const loader = withLoader(
+  Effect.gen(function* (_) {
+    const {request} = yield* _(LoaderArgs);
+
+    return yield* _(logout(request));
+  })
+);

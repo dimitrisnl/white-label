@@ -1,80 +1,83 @@
-import type {Request} from '@remix-run/node';
-import {pipe} from 'fp-ts/lib/function';
+import * as Effect from 'effect/Effect';
 
 import type {User} from '@/modules/domain/index.server';
+import {
+  BadRequest,
+  Ok,
+  Redirect,
+  ServerError,
+} from '@/modules/responses.server';
 import {requireUserId} from '@/modules/session.server';
 import {changePassword, editUser} from '@/modules/use-cases/index.server';
-import {E} from '@/utils/fp';
-import {respond} from '@/utils/respond.server';
+import {ActionArgs, withAction} from '@/modules/with-action.server';
 
-async function handleNameChange(formData: FormData, userId: User.User['id']) {
-  const {validate, execute} = editUser();
+function handleNameChange(formData: FormData, userId: User.User['id']) {
+  return Effect.gen(function* (_) {
+    const {validate, execute} = editUser();
+    const props = yield* _(validate(Object.fromEntries(formData)));
 
-  const validation = validate(Object.fromEntries(formData));
+    yield* _(execute(props, userId));
 
-  if (!validation.success) {
-    // todo: fix
-    return respond.fail.validation({
-      name: 'Invalid name',
-    });
-  }
-
-  const payload = validation.data;
-  const response = await execute(payload, userId);
-
-  return pipe(
-    response,
-    E.matchW(
-      () => respond.fail.unknown(),
-      () => respond.ok.empty()
-    )
+    return new Ok({data: null});
+  }).pipe(
+    Effect.catchTags({
+      InternalServerError: () => Effect.fail(new ServerError({})),
+      ValidationError: () => {
+        return Effect.fail(new BadRequest({errors: ['Validation Error']}));
+      },
+    })
   );
 }
 
-export type NameChangeAction = typeof handleNameChange;
+function handlePasswordChange(formData: FormData, userId: User.User['id']) {
+  return Effect.gen(function* (_) {
+    const {validate, execute} = changePassword();
+    const props = yield* _(validate(Object.fromEntries(formData)));
 
-async function handlePasswordChange(
-  formData: FormData,
-  userId: User.User['id']
-) {
-  const {validate, execute} = changePassword();
+    yield* _(execute(props, userId));
 
-  const validation = validate(Object.fromEntries(formData));
-
-  if (!validation.success) {
-    // todo: fix
-    return respond.fail.validation({
-      password: 'Invalid password',
-    });
-  }
-
-  const payload = validation.data;
-  const response = await execute(payload, userId);
-
-  return pipe(
-    response,
-    E.matchW(
-      () => respond.fail.unknown(),
-      () => respond.ok.empty()
-    )
+    return new Ok({data: null});
+  }).pipe(
+    Effect.catchTags({
+      InternalServerError: () => Effect.fail(new ServerError({})),
+      ValidationError: () =>
+        Effect.fail(new BadRequest({errors: ['Validation Error']})),
+      UserNotFoundError: () =>
+        Effect.fail(new BadRequest({errors: ['User not found']})),
+      IncorrectPasswordError: () =>
+        Effect.fail(new BadRequest({errors: ['Incorrect password']})),
+    })
   );
 }
 
-export type PasswordChangeAction = typeof handlePasswordChange;
+export const action = withAction(
+  Effect.gen(function* (_) {
+    const {request} = yield* _(ActionArgs);
+    const userId = yield* _(requireUserId(request));
+    const formData = yield* _(Effect.promise(() => request.formData()));
+    const formName = formData.get('formName');
 
-export async function action({request}: {request: Request}) {
-  const userId = await requireUserId(request);
+    if (formName === 'CHANGE_NAME_FORM') {
+      formData.delete('formName');
+      return yield* _(handleNameChange(formData, userId));
+    } else if (formName === 'CHANGE_PASSWORD_FORM') {
+      formData.delete('formName');
+      return yield* _(handlePasswordChange(formData, userId));
+    }
 
-  const formData = await request.formData();
-  const formName = formData.get('formName');
+    // no match
+    throw new BadRequest({errors: ['Invalid action']});
+  }).pipe(
+    Effect.catchTags({
+      InternalServerError: () => Effect.fail(new ServerError({})),
+      SessionNotFoundError: () =>
+        ActionArgs.pipe(
+          Effect.flatMap(({request}) =>
+            Effect.fail(new Redirect({to: '/login', init: request}))
+          )
+        ),
+    })
+  )
+);
 
-  if (formName === 'CHANGE_NAME_FORM') {
-    formData.delete('formName');
-    return handleNameChange(formData, userId);
-  } else if (formName === 'CHANGE_PASSWORD_FORM') {
-    formData.delete('formName');
-    return handlePasswordChange(formData, userId);
-  }
-
-  return new Response('Invalid form name', {status: 400});
-}
+export type Action = typeof action;

@@ -23,6 +23,6 @@ const pool = new Pool({
   port: config.DB_PORT,
 });
 
-pool.on('error', (err) => console.error(err)); // don't let a pg restart kill your app
+pool.on('error', (err) => console.error(err)); // don't let a pg restart kill the app
 
 export {pool, db};

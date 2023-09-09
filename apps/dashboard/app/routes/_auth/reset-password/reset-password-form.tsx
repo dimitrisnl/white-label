@@ -11,10 +11,8 @@ import {
 } from '@white-label/ui-core';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import {
-  UnknownErrorMessage,
-  ValidationErrorMessage,
-} from '@/components/error-feedback';
+import {ErrorMessage} from '@/components/error-feedback';
+import {PasswordInput} from '@/components/password-input';
 
 import type {ResetPasswordAction} from './action.server';
 
@@ -37,20 +35,12 @@ export function ResetPasswordForm({token}: {token: string}) {
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-2">
               <Label htmlFor="password">New Password</Label>
-              <Input
+              <PasswordInput
                 id="password"
                 name="password"
-                type="password"
                 disabled={state !== 'idle'}
-              />
-            </div>
-            <div className="flex flex-col space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                disabled={state !== 'idle'}
+                required
+                minLength={8}
               />
             </div>
 
@@ -63,10 +53,7 @@ export function ResetPasswordForm({token}: {token: string}) {
               disabled={state !== 'idle'}
             />
 
-            {data?.type === 'validation' ? (
-              <ValidationErrorMessage errors={data.messageObj} />
-            ) : null}
-            {data?.type === 'unknown' ? <UnknownErrorMessage /> : null}
+            {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}
           </div>
         </CardContent>
         <CardFooter className="flex justify-end">

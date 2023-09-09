@@ -13,15 +13,12 @@ import {
 import React from 'react';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import {
-  UnknownErrorMessage,
-  ValidationErrorMessage,
-} from '@/components/error-feedback';
+import {ErrorMessage} from '@/components/error-feedback';
 
-import type {NameChangeAction} from './action.server';
+import type {Action} from './action.server';
 
 export function ChangeNameForm({initialName}: {initialName: string}) {
-  const {Form, state, data} = useTypedFetcher<NameChangeAction | undefined>();
+  const {Form, state, data} = useTypedFetcher<Action | undefined>();
   const {toast} = useToast();
 
   React.useEffect(() => {
@@ -52,14 +49,11 @@ export function ChangeNameForm({initialName}: {initialName: string}) {
                 placeholder=""
                 type="text"
                 disabled={state !== 'idle'}
+                minLength={2}
+                required
               />
             </div>
-            {!data?.ok && data?.type === 'validation' ? (
-              <ValidationErrorMessage errors={data.messageObj} />
-            ) : null}
-            {!data?.ok && data?.type === 'unknown' ? (
-              <UnknownErrorMessage />
-            ) : null}
+            {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}
           </div>
         </CardContent>
         <CardFooter className="flex justify-end">

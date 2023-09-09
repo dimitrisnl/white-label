@@ -1,53 +1,45 @@
+import * as Effect from 'effect/Effect';
+
 import {db, pool} from '@/database/db.server';
 import type {Org, User} from '@/modules/domain/index.server';
 import {MembershipInvitation} from '@/modules/domain/index.server';
+import {DatabaseError, InternalServerError} from '@/modules/errors.server';
 import {invitationAuthorizationService} from '@/modules/services/index.server';
-import {E} from '@/utils/fp';
 
-type Response = E.Either<
-  'UnknownError' | 'ForbiddenAction',
-  Array<MembershipInvitation.MembershipInvitation>
->;
-
-export function getInvitations() {
-  async function execute(
-    orgId: Org.Org['id'],
-    userId: User.User['id']
-  ): Promise<Response> {
-    try {
-      const hasAccess = await invitationAuthorizationService.canCreate(
-        userId,
-        orgId
-      );
-      if (!hasAccess) {
-        return E.left('ForbiddenAction');
-      }
-    } catch {
-      return E.left('ForbiddenAction');
-    }
-
-    const invitations = [];
-
-    try {
-      const invitationRecords = await db
+function getInvitationRecords(orgId: Org.Org['id']) {
+  return Effect.tryPromise({
+    try: () =>
+      db
         .select('membership_invitations', {
           org_id: orgId,
         })
-        .run(pool);
+        .run(pool),
+    catch: () => new DatabaseError(),
+  });
+}
 
-      for (const invitationRecord of invitationRecords) {
-        const toInvitation =
-          MembershipInvitation.dbRecordToDomain(invitationRecord);
-        if (E.isLeft(toInvitation)) {
-          return E.left('UnknownError');
-        }
-        invitations.push(toInvitation.right);
-      }
-    } catch (error) {
-      return E.left('UnknownError');
-    }
+export function getInvitations() {
+  function execute(orgId: Org.Org['id'], userId: User.User['id']) {
+    return Effect.gen(function* (_) {
+      yield* _(invitationAuthorizationService.canView(userId, orgId));
+      const invitationRecords = yield* _(getInvitationRecords(orgId));
 
-    return E.right(invitations);
+      const invitations = yield* _(
+        Effect.all(
+          invitationRecords.map((invitationRecord) =>
+            MembershipInvitation.dbRecordToDomain(invitationRecord)
+          ),
+          {concurrency: 'unbounded'}
+        )
+      );
+
+      return invitations;
+    }).pipe(
+      Effect.catchTags({
+        DatabaseError: () => Effect.fail(new InternalServerError()),
+        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+      })
+    );
   }
 
   return {execute};

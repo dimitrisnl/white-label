@@ -6,24 +6,19 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  Input,
   Label,
   useToast,
 } from '@white-label/ui-core';
 import React from 'react';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import {
-  UnknownErrorMessage,
-  ValidationErrorMessage,
-} from '@/components/error-feedback';
+import {ErrorMessage} from '@/components/error-feedback';
+import {PasswordInput} from '@/components/password-input';
 
-import type {PasswordChangeAction} from './action.server';
+import type {Action} from './action.server';
 
 export function ChangePasswordForm() {
-  const {Form, data, state} = useTypedFetcher<
-    PasswordChangeAction | undefined
-  >();
+  const {Form, data, state} = useTypedFetcher<Action | undefined>();
   const {toast} = useToast();
   const formRef = React.useRef<HTMLFormElement>(null);
 
@@ -49,30 +44,27 @@ export function ChangePasswordForm() {
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-2">
               <Label htmlFor="team-name">Current Password</Label>
-              <Input
+              <PasswordInput
                 id="old-password"
                 name="oldPassword"
                 placeholder=""
-                type="password"
                 disabled={state !== 'idle'}
+                minLength={8}
+                required
               />
             </div>
             <div className="flex flex-col space-y-2">
               <Label htmlFor="team-name">New Password</Label>
-              <Input
+              <PasswordInput
                 id="new-password"
                 name="newPassword"
                 placeholder=""
-                type="password"
                 disabled={state !== 'idle'}
+                minLength={8}
+                required
               />
             </div>
-            {data?.ok === false && data.type === 'validation' ? (
-              <ValidationErrorMessage errors={data.messageObj} />
-            ) : null}
-            {data?.ok === false && data.type === 'unknown' ? (
-              <UnknownErrorMessage />
-            ) : null}
+            {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}
           </div>
         </CardContent>
         <CardFooter className="flex justify-end">

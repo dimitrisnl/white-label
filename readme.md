@@ -10,7 +10,7 @@ This is a ["white-label"](https://en.wikipedia.org/wiki/White-label_product) pro
 
 - **Remix**
 - **PNPM Workspaces** 
-- **FP-TS** (soon to be replaced by `effect-ts/data`)
+- **Effect-TS**
 - **Zod**:(soon to be replaced by `effect-ts/schema`)
 - **RadixUI**
 - **Zapatos**

@@ -1,33 +1,38 @@
+import * as Effect from 'effect/Effect';
+
 import {db, pool} from '@/database/db.server';
 import {User} from '@/modules/domain/index.server';
-import {E} from '@/utils/fp';
+import {DatabaseError, InternalServerError} from '@/modules/errors.server';
 
+import type {EditUserProps} from './validation.server';
 import {validate} from './validation.server';
 
-interface Props {
-  name: string;
+function updateUserRecord({
+  id,
+  name,
+}: {
+  id: User.User['id'];
+  name: User.User['name'];
+}) {
+  return Effect.tryPromise({
+    try: () => db.update('users', {name}, {id}).run(pool),
+    catch: () => new DatabaseError(),
+  });
 }
 
-type Response = E.Either<'UnknownError', User.User>;
-
 export function editUser() {
-  async function execute(
-    props: Props,
-    userId: User.User['id']
-  ): Promise<Response> {
+  function execute(props: EditUserProps, userId: User.User['id']) {
     const {name} = props;
-
-    const [userRecord] = await db
-      .update('users', {name}, {id: userId})
-      .run(pool);
-
-    const toUser = User.dbRecordToDomain(userRecord);
-
-    if (E.isLeft(toUser)) {
-      return E.left('UnknownError');
-    }
-
-    return toUser;
+    return Effect.gen(function* (_) {
+      const [userRecord] = yield* _(updateUserRecord({id: userId, name}));
+      const user = yield* _(User.dbRecordToDomain(userRecord));
+      return user;
+    }).pipe(
+      Effect.catchTags({
+        DatabaseError: () => Effect.fail(new InternalServerError()),
+        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+      })
+    );
   }
 
   return {

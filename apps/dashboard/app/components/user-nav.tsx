@@ -1,8 +1,7 @@
-import {Link} from '@remix-run/react';
+import {Link, NavLink} from '@remix-run/react';
 import {
-  Avatar,
-  AvatarFallback,
   Button,
+  cn,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -11,24 +10,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@white-label/ui-core';
-import {LogOutIcon, SettingsIcon} from 'lucide-react';
+import Avatar from 'boring-avatars';
+import {Building2Icon, LogOutIcon, SettingsIcon} from 'lucide-react';
 
 import type {User} from '@/modules/domain/index.server';
 
 export function UserNav({user}: {user: User.User}) {
-  const initials = user.name
-    .split(' ')
-    .map((words) => words[0])
-    .join('')
-    .slice(0, 2);
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarFallback>{initials}</AvatarFallback>
-          </Avatar>
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full p-0">
+          <Avatar
+            size={32}
+            name={user.name}
+            variant="pixel"
+            colors={['#92A1C6', '#146A7C', '#F0AB3D', '#C271B4', '#C20D90']}
+          />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -43,10 +40,32 @@ export function UserNav({user}: {user: User.User}) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <Link to="/settings" className="flex w-full items-center">
+            <NavLink
+              to="/settings"
+              className={({isActive}) =>
+                cn('flex w-full items-center transition-colors', {
+                  'text-primary': isActive,
+                })
+              }
+            >
               <SettingsIcon className=" mr-2 h-4 w-4" />
               <span>Settings</span>
-            </Link>
+            </NavLink>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuGroup>
+          <DropdownMenuItem>
+            <NavLink
+              to="/teams"
+              className={({isActive}) =>
+                cn('flex w-full items-center transition-colors', {
+                  'text-primary': isActive,
+                })
+              }
+            >
+              <Building2Icon className=" mr-2 h-4 w-4" />
+              <span>Teams</span>
+            </NavLink>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

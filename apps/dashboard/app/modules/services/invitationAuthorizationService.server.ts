@@ -1,76 +1,75 @@
+import * as Effect from 'effect/Effect';
+
 import {db, pool} from '@/database/db.server';
 import type {Org, User} from '@/modules/domain/index.server';
 import {MembershipRole} from '@/modules/domain/index.server';
 
+import {DatabaseError, ForbiddenActionError} from '../errors.server';
+
+function getMembershipRecord(userId: User.User['id'], orgId: Org.Org['id']) {
+  return Effect.tryPromise({
+    try: () =>
+      db.selectOne('memberships', {org_id: orgId, user_id: userId}).run(pool),
+    catch: () => new DatabaseError(),
+  });
+}
+
 export const invitationAuthorizationService = {
-  async canView(userId: User.User['id'], orgId: Org.Org['id']) {
-    const membershipRecord = await db
-      .selectOne('memberships', {
-        org_id: orgId,
-        user_id: userId,
-      })
-      .run(pool);
+  canView: (userId: User.User['id'], orgId: Org.Org['id']) =>
+    Effect.gen(function* (_) {
+      const membershipRecord = yield* _(getMembershipRecord(userId, orgId));
 
-    return Boolean(membershipRecord);
-  },
+      return membershipRecord
+        ? yield* _(Effect.succeed(null))
+        : yield* _(Effect.fail(new ForbiddenActionError()));
+    }),
 
-  async canCreate(userId: User.User['id'], orgId: Org.Org['id']) {
-    const membershipRecord = await db
-      .selectOne('memberships', {
-        org_id: orgId,
-        user_id: userId,
-      })
-      .run(pool);
+  canCreate: (userId: User.User['id'], orgId: Org.Org['id']) =>
+    Effect.gen(function* (_) {
+      const membershipRecord = yield* _(getMembershipRecord(userId, orgId));
 
-    if (!membershipRecord) {
-      return false;
-    }
+      if (!membershipRecord) {
+        return yield* _(Effect.fail(new ForbiddenActionError()));
+      }
 
-    const role = membershipRecord.role;
-    const isOwner = role === MembershipRole.OWNER;
-    const isAdmin = role === MembershipRole.ADMIN;
-    const hasPermission = isOwner || isAdmin;
+      const isOwner = membershipRecord.role === MembershipRole.OWNER;
+      const isAdmin = membershipRecord.role === MembershipRole.ADMIN;
+      const hasPermission = isOwner || isAdmin;
 
-    return hasPermission;
-  },
+      return hasPermission
+        ? yield* _(Effect.succeed(null))
+        : yield* _(Effect.fail(new ForbiddenActionError()));
+    }),
 
-  async canUpdate(userId: User.User['id'], orgId: Org.Org['id']) {
-    const membershipRecord = await db
-      .selectOne('memberships', {
-        org_id: orgId,
-        user_id: userId,
-      })
-      .run(pool);
+  canUpdate: (userId: User.User['id'], orgId: Org.Org['id']) =>
+    Effect.gen(function* (_) {
+      const membershipRecord = yield* _(getMembershipRecord(userId, orgId));
 
-    if (!membershipRecord) {
-      return false;
-    }
+      if (!membershipRecord) {
+        return yield* _(Effect.fail(new ForbiddenActionError()));
+      }
 
-    const role = membershipRecord.role;
-    const isOwner = role === MembershipRole.OWNER;
-    const isAdmin = role === MembershipRole.ADMIN;
-    const hasPermission = isOwner || isAdmin;
+      const isOwner = membershipRecord.role === MembershipRole.OWNER;
+      const isAdmin = membershipRecord.role === MembershipRole.ADMIN;
+      const hasPermission = isOwner || isAdmin;
 
-    return hasPermission;
-  },
+      return hasPermission
+        ? yield* _(Effect.succeed(null))
+        : yield* _(Effect.fail(new ForbiddenActionError()));
+    }),
 
-  async canDelete(userId: User.User['id'], orgId: Org.Org['id']) {
-    const membershipRecord = await db
-      .selectOne('memberships', {
-        org_id: orgId,
-        user_id: userId,
-      })
-      .run(pool);
+  canDelete: (userId: User.User['id'], orgId: Org.Org['id']) =>
+    Effect.gen(function* (_) {
+      const membershipRecord = yield* _(getMembershipRecord(userId, orgId));
 
-    if (!membershipRecord) {
-      return false;
-    }
+      if (!membershipRecord) {
+        return yield* _(Effect.fail(new ForbiddenActionError()));
+      }
 
-    const role = membershipRecord.role;
-    const isOwner = role === MembershipRole.OWNER;
-    const isAdmin = role === MembershipRole.ADMIN;
-    const hasPermission = isOwner || isAdmin;
+      const hasPermission = membershipRecord.role === MembershipRole.OWNER;
 
-    return hasPermission;
-  },
+      return hasPermission
+        ? yield* _(Effect.succeed(null))
+        : yield* _(Effect.fail(new ForbiddenActionError()));
+    }),
 };

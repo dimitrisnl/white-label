@@ -1,45 +1,51 @@
+import * as Effect from 'effect/Effect';
+
 import {db, pool} from '@/database/db.server';
 import type {User} from '@/modules/domain/index.server';
 import {MembershipRole, Org, Uuid} from '@/modules/domain/index.server';
-import {E} from '@/utils/fp';
+import {DatabaseError, InternalServerError} from '@/modules/errors.server';
 
+import type {CreateOrgProps} from './validation.server';
 import {validate} from './validation.server';
 
-type Response = E.Either<'UnknownError', Org.Org>;
+function insertOrg({id, name}: {id: Uuid.Uuid; name: Org.Org['name']}) {
+  return Effect.tryPromise({
+    try: () => db.insert('orgs', {id, name: name}).run(pool),
+    catch: () => new DatabaseError(),
+  });
+}
 
-interface Props {
-  name: string;
+function insertMembership(orgId: Org.Org['id'], userId: User.User['id']) {
+  return Effect.tryPromise({
+    try: () =>
+      db
+        .insert('memberships', {
+          org_id: orgId,
+          user_id: userId,
+          role: MembershipRole.OWNER,
+        })
+        .run(pool),
+    catch: () => new DatabaseError(),
+  });
 }
 
 export function createOrg() {
-  async function execute(
-    props: Props,
-    userId: User.User['id']
-  ): Promise<Response> {
-    const orgRecord = await db
-      .insert('orgs', {
-        id: Uuid.generate(),
-        name: props.name,
+  function execute(props: CreateOrgProps, userId: User.User['id']) {
+    const {name} = props;
+    return Effect.gen(function* (_) {
+      const orgId = yield* _(Uuid.generate());
+      const orgRecord = yield* _(insertOrg({name, id: orgId}));
+      const org = yield* _(Org.dbRecordToDomain(orgRecord));
+      yield* _(insertMembership(org.id, userId));
+
+      return org;
+    }).pipe(
+      Effect.catchTags({
+        DatabaseError: () => Effect.fail(new InternalServerError()),
+        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        UUIDGenerationError: () => Effect.fail(new InternalServerError()),
       })
-      .run(pool);
-
-    const toOrg = Org.dbRecordToDomain(orgRecord);
-
-    if (E.isLeft(toOrg)) {
-      return E.left('UnknownError');
-    }
-
-    const org = toOrg.right;
-
-    await db
-      .insert('memberships', {
-        org_id: org.id,
-        user_id: userId,
-        role: MembershipRole.OWNER,
-      })
-      .run(pool);
-
-    return E.right(org);
+    );
   }
 
   return {

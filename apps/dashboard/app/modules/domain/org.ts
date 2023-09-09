@@ -1,7 +1,7 @@
+import * as Effect from 'effect/Effect';
 import zod from 'zod';
 
-import {E} from '@/utils/fp';
-
+import {DbRecordParseError, ValidationError} from '../errors.server';
 import * as DateString from './date';
 import * as Uuid from './uuid';
 
@@ -26,16 +26,18 @@ export const validationSchema = zod
 
 export type Org = zod.infer<typeof validationSchema>;
 
-export function validate(data: Record<string, unknown>) {
-  return validationSchema.safeParse(data);
+export function parse(value: unknown) {
+  return Effect.try({
+    try: () => validationSchema.parse(value),
+    catch: () => new ValidationError(),
+  });
 }
 
-export function parse(value: unknown): E.Either<Error, Org> {
-  return E.tryCatch(() => validationSchema.parse(value), E.toError);
-}
-
-export function parseId(value: unknown): E.Either<Error, Org['id']> {
-  return E.tryCatch(() => orgIdValidationSchema.parse(value), E.toError);
+export function parseId(value: unknown) {
+  return Effect.try({
+    try: () => orgIdValidationSchema.parse(value),
+    catch: () => new ValidationError(),
+  });
 }
 
 export function dbRecordToDomain(entity: {
@@ -49,5 +51,5 @@ export function dbRecordToDomain(entity: {
     name: entity.name,
     createdAt: entity.created_at,
     updatedAt: entity.updated_at,
-  });
+  }).pipe(Effect.catchAll(() => Effect.fail(new DbRecordParseError())));
 }

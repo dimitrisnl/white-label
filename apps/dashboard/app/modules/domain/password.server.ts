@@ -1,7 +1,10 @@
 import bcrypt from 'bcrypt';
+import * as Effect from 'effect/Effect';
 import zod from 'zod';
 
-import {E} from '@/utils/fp';
+import {PasswordHashError, ValidationError} from '../errors.server';
+
+const SALT_ROUNDS = 10;
 
 export const validationSchema = zod
   .string({
@@ -14,27 +17,32 @@ export const validationSchema = zod
 
 export type Password = zod.infer<typeof validationSchema>;
 
-export function validate(data: Record<string, unknown>) {
-  return validationSchema.safeParse(data);
+export function parse(value: unknown) {
+  return Effect.try({
+    try: () => validationSchema.parse(value),
+    catch: () => new ValidationError(),
+  });
 }
 
-export function parse(value: unknown): E.Either<Error, Password> {
-  return E.tryCatch(() => validationSchema.parse(value), E.toError);
+export function hash(password: string) {
+  return Effect.tryPromise({
+    try: () => bcrypt.hash(password, SALT_ROUNDS),
+    catch: () => new PasswordHashError(),
+  }).pipe(
+    Effect.flatMap(parse),
+    Effect.catchAll(() => Effect.fail(new PasswordHashError()))
+  );
 }
 
-const saltRounds = 10;
-
-export async function hash(passsword: string) {
-  const hash = await bcrypt.hash(passsword, saltRounds);
-  return hash;
-}
-
-export async function compare({
+export function compare({
   plainText,
   hashValue,
 }: {
   plainText: string;
   hashValue: string;
 }) {
-  return bcrypt.compare(plainText, hashValue);
+  return Effect.tryPromise({
+    try: () => bcrypt.compare(plainText, hashValue),
+    catch: () => new PasswordHashError(),
+  });
 }
