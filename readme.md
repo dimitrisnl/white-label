@@ -1,7 +1,5 @@
 # White Label
 
-> WIP. I'm refactoring the codebase from Adonis.js to fullstack Remix.
-
 This is a ["white-label"](https://en.wikipedia.org/wiki/White-label_product) project I wanted to create to test various ideas. It's a full-stack Typescript, powered by Remix.
 
 ---
@@ -48,10 +46,6 @@ I would like to work with [Paddle](https://www.paddle.com/) on this one. A Team 
 #### ... other stuff
 
 More ideas will be added in the GitHub Projects tab, where I'll be tracking everything.
-
-### Functional Programming
-
-For now I'm only using `Either` from `FP-TS` but I will progressivly introduce `effect-ts`, and I'm learning more about it.
 
 ### Testing
 
