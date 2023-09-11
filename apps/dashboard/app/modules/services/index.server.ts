@@ -1,2 +1,2 @@
-export {invitationAuthorizationService} from './invitationAuthorizationService.server';
-export {orgAuthorizationService} from './orgAuthorizationService.server';
+export {invitationAuthorizationService} from './invitation-authorization-service.server';
+export {orgAuthorizationService} from './org-authorization-service.server';

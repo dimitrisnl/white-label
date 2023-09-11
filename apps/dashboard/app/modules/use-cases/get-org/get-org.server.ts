@@ -8,7 +8,7 @@ import {
   InternalServerError,
   OrgNotFoundError,
 } from '@/modules/errors.server';
-import {orgAuthorizationService} from '@/modules/services/orgAuthorizationService.server';
+import {orgAuthorizationService} from '@/modules/services/index.server';
 
 function selectOrgRecord(id: Org.Org['id']) {
   return Effect.tryPromise({
