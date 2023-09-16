@@ -1,6 +1,7 @@
+import { ErrorPage } from '@/components/error-page';
 import type {MetaFunction} from '@remix-run/node';
 
-export {IndexPage as default, ErrorBoundary} from './index-page';
+export {IndexPage as default} from './index-page';
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,3 +11,7 @@ export const meta: MetaFunction = () => {
 };
 
 export {loader} from './loader.server';
+
+export function ErrorBoundary() {
+  return <ErrorPage />;
+}
