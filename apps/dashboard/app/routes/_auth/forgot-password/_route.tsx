@@ -1,7 +1,7 @@
-import type {V2_MetaFunction} from '@remix-run/node';
+import type {MetaFunction} from '@remix-run/node';
 export {ForgotPasswordPage as default} from './forgot-password-page';
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     {title: 'Reset Password'},
     {name: 'description', content: 'Request a password reset'},

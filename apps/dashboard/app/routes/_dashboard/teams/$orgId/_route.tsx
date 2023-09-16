@@ -1,11 +1,11 @@
-import type {V2_MetaFunction} from '@remix-run/node';
+import type {MetaFunction} from '@remix-run/node';
 import {isRouteErrorResponse, useRouteError} from '@remix-run/react';
 
 import {ErrorPage} from '@/components/error-page';
 
 export {TeamPage as default} from './team-page';
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     {title: 'Team'},
     {name: 'description', content: 'Team settings page'},

@@ -1,4 +1,4 @@
-import type {ActionArgs as RemixActionArgs} from '@remix-run/node';
+import type {ActionFunctionArgs} from '@remix-run/node';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import {pipe} from 'effect/Function';
@@ -7,14 +7,14 @@ import {redirect, typedjson} from 'remix-typedjson';
 import type {HttpResponse, HttpResponseError} from './responses.server';
 import {matchHttpResponse, matchHttpResponseError} from './responses.server';
 
-export const ActionArgs = Context.Tag<RemixActionArgs>('ActionArgs');
+export const ActionArgs = Context.Tag<ActionFunctionArgs>('ActionArgs');
 
 // Don't throw the Error requests, handle them in the normal UI. No ErrorBoundary
 export const withAction =
   <T>(
-    self: Effect.Effect<RemixActionArgs, HttpResponseError, HttpResponse<T>>
+    self: Effect.Effect<ActionFunctionArgs, HttpResponseError, HttpResponse<T>>
   ) =>
-  (args: RemixActionArgs) => {
+  (args: ActionFunctionArgs) => {
     const runnable = pipe(
       self,
       Effect.provideService(ActionArgs, args),

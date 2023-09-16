@@ -1,4 +1,4 @@
-import type {LoaderArgs as RemixLoaderArgs} from '@remix-run/node';
+import type {LoaderFunctionArgs} from '@remix-run/node';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
@@ -8,15 +8,15 @@ import {redirect, typedjson} from 'remix-typedjson';
 import type {HttpResponse, HttpResponseError} from './responses.server';
 import {matchHttpResponse, matchHttpResponseError} from './responses.server';
 
-export const LoaderArgs = Context.Tag<RemixLoaderArgs>('LoaderArgs');
+export const LoaderArgs = Context.Tag<LoaderFunctionArgs>('LoaderArgs');
 
 // Respond with OK, Redirect
 // Throw all else, and land on a ErrorBoundary
 export const withLoader =
   <T>(
-    self: Effect.Effect<RemixLoaderArgs, HttpResponseError, HttpResponse<T>>
+    self: Effect.Effect<LoaderFunctionArgs, HttpResponseError, HttpResponse<T>>
   ) =>
-  (args: RemixLoaderArgs) => {
+  (args: LoaderFunctionArgs) => {
     const runnable = pipe(self, Effect.provideService(LoaderArgs, args));
 
     return Effect.runPromiseExit(runnable).then(

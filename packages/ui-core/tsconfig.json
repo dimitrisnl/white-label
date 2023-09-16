@@ -4,9 +4,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "strict": true,
-    "lib": ["DOM", "DOM.Iterable", "ES2019"],
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
     "jsx": "react-jsx",
-    "target": "ES2019",
+    "target": "ES2020",
     "module": "ESNext",
     "moduleResolution": "NodeNext"
   }

@@ -1,1 +1,1 @@
-module.exports = require('ui-core/postcss.config.js');
+module.exports = require('@white-label/ui-core/postcss-config');

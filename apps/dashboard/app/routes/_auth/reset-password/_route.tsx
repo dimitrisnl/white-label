@@ -1,4 +1,4 @@
-import type {V2_MetaFunction} from '@remix-run/node';
+import type {MetaFunction} from '@remix-run/node';
 import {isRouteErrorResponse, useRouteError} from '@remix-run/react';
 
 import {ErrorPage} from '@/components/error-page';
@@ -7,7 +7,7 @@ import {InvalidTokenErrorPage} from './invalid-token-error-page';
 
 export {ResetPasswordPage as default} from './reset-password-page';
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     {title: 'Reset Password'},
     {name: 'description', content: 'Set a new password'},
