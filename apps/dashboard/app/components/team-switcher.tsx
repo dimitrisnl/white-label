@@ -19,10 +19,13 @@ type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
 >;
 
+// Todo: initial membership
 export default function TeamSwitcher({
   className,
   memberships,
-}: PopoverTriggerProps & {memberships: Array<Membership.Membership>}) {
+}: PopoverTriggerProps & {
+  memberships: Array<Membership.Membership>;
+}) {
   const groups = [
     {
       label: 'Teams',
@@ -34,10 +37,7 @@ export default function TeamSwitcher({
   ];
 
   const [open, setOpen] = React.useState(false);
-  const [selectedTeam, setSelectedTeam] = React.useState<{
-    label: string;
-    value: string;
-  }>(groups[0].teams[0]);
+  const [selectedTeam, setSelectedTeam] = React.useState(groups[0].teams[0]);
 
   const navigate = useNavigate();
 

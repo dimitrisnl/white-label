@@ -1,8 +1,10 @@
 import type {MetaFunction} from '@remix-run/node';
 
-export {RegisterPage as default} from './register-page';
+import {GuestLayout} from '@/components/guest-layout';
 
-export {action} from './action.server';
+import {RegisterForm} from './register-form';
+
+export {action} from './_action.server';
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,3 +12,11 @@ export const meta: MetaFunction = () => {
     {name: 'description', content: 'Register a new account'},
   ];
 };
+
+export default function RegisterPage() {
+  return (
+    <GuestLayout>
+      <RegisterForm />
+    </GuestLayout>
+  );
+}

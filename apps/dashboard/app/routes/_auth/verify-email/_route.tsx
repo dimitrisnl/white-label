@@ -2,11 +2,10 @@ import {isRouteErrorResponse, useRouteError} from '@remix-run/react';
 
 import {ErrorPage} from '@/components/error-page';
 
-import {InvalidTokenErrorPage} from './invalid-token-error-page';
+import {InvalidTokenErrorMessage} from './invalid-token-error-message';
+import {VerificationSuccessMessage} from './verification-success-message';
 
-export {VerifyEmailPage as default} from './verify-email-page';
-
-export {loader} from './loader.server';
+export {loader} from './_loader.server';
 
 export function ErrorBoundary() {
   const error = useRouteError();
@@ -16,8 +15,12 @@ export function ErrorBoundary() {
       return <ErrorPage />;
     }
 
-    return <InvalidTokenErrorPage />;
+    return <InvalidTokenErrorMessage />;
   }
 
   return <ErrorPage />;
+}
+
+export default function VerifyEmailPage() {
+  return <VerificationSuccessMessage />;
 }

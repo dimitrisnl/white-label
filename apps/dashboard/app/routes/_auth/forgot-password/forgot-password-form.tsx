@@ -15,7 +15,7 @@ import {useTypedActionData} from 'remix-typedjson';
 
 import {ErrorMessage} from '@/components/error-feedback';
 
-import type {ForgotPasswordAction} from './action.server';
+import type {ForgotPasswordAction} from './_action.server';
 
 export function ForgotPasswordForm() {
   const data = useTypedActionData<ForgotPasswordAction>();
@@ -43,7 +43,7 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <Form action="/forgot-password" method="post">
+    <Form method="post">
       <Card className="w-[480px] border-t-4 border-t-blue-700 p-2">
         <CardHeader>
           <CardTitle>Forgot your password?</CardTitle>

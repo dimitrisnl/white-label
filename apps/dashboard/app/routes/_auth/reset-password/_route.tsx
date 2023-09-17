@@ -1,11 +1,16 @@
 import type {MetaFunction} from '@remix-run/node';
 import {isRouteErrorResponse, useRouteError} from '@remix-run/react';
+import {useTypedLoaderData} from 'remix-typedjson';
 
 import {ErrorPage} from '@/components/error-page';
+import {GuestLayout} from '@/components/guest-layout';
 
+import {ResetPasswordLoader} from './_loader.server';
 import {InvalidTokenErrorPage} from './invalid-token-error-page';
+import {ResetPasswordForm} from './reset-password-form';
 
-export {ResetPasswordPage as default} from './reset-password-page';
+export {action} from './_action.server';
+export {loader} from './_loader.server';
 
 export const meta: MetaFunction = () => {
   return [
@@ -14,8 +19,15 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export {action} from './action.server';
-export {loader} from './loader.server';
+export function ResetPasswordPage() {
+  const loaderData = useTypedLoaderData<ResetPasswordLoader>();
+
+  return (
+    <GuestLayout>
+      <ResetPasswordForm token={loaderData.data.token} />
+    </GuestLayout>
+  );
+}
 
 export function ErrorBoundary() {
   const error = useRouteError();

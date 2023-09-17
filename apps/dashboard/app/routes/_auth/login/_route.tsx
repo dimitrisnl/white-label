@@ -1,8 +1,11 @@
 import type {MetaFunction} from '@remix-run/node';
 
-export {LoginPage as default} from './login-page';
+import {GuestLayout} from '@/components/guest-layout';
 
-export {action} from './action.server';
+import {LoginForm} from './login-form';
+import {PasswordResetBanner} from './password-reset-banner';
+
+export {action} from './_action.server';
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,3 +13,12 @@ export const meta: MetaFunction = () => {
     {name: 'description', content: 'Login to your account'},
   ];
 };
+
+export default function LoginPage() {
+  return (
+    <GuestLayout>
+      <PasswordResetBanner />
+      <LoginForm />
+    </GuestLayout>
+  );
+}

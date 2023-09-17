@@ -14,16 +14,15 @@ import {useTypedFetcher} from 'remix-typedjson';
 import {ErrorMessage} from '@/components/error-feedback';
 import {PasswordInput} from '@/components/password-input';
 
-import type {ResetPasswordAction} from './action.server';
+import type {ResetPasswordAction} from './_action.server';
 
 export function ResetPasswordForm({token}: {token: string}) {
   const {Form, state, data} = useTypedFetcher<
     ResetPasswordAction | undefined
   >();
 
-  // todo: ensure both passwords match
   return (
-    <Form action="/reset-password" method="post">
+    <Form method="post">
       <Card className="w-[480px] border-t-4 border-t-blue-700 p-2">
         <CardHeader>
           <CardTitle>Create a new password</CardTitle>

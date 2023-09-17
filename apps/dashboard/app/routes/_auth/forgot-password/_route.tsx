@@ -1,5 +1,10 @@
 import type {MetaFunction} from '@remix-run/node';
-export {ForgotPasswordPage as default} from './forgot-password-page';
+
+import {GuestLayout} from '@/components/guest-layout';
+
+import {ForgotPasswordForm} from './forgot-password-form';
+
+export {action} from './_action.server';
 
 export const meta: MetaFunction = () => {
   return [
@@ -8,4 +13,10 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export {action} from './action.server';
+export default function ForgotPasswordPage() {
+  return (
+    <GuestLayout>
+      <ForgotPasswordForm />
+    </GuestLayout>
+  );
+}

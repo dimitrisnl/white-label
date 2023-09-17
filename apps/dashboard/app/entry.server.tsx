@@ -4,13 +4,13 @@
  * For more information, see https://remix.run/docs/en/main/file-conventions/entry.server
  */
 
-import { PassThrough } from "node:stream";
+import {PassThrough} from 'node:stream';
 
-import type { EntryContext } from "@remix-run/node";
-import { createReadableStreamFromReadable } from "@remix-run/node";
-import { RemixServer } from "@remix-run/react";
-import isbot from "isbot";
-import { renderToPipeableStream } from "react-dom/server";
+import type {EntryContext} from '@remix-run/node';
+import {createReadableStreamFromReadable} from '@remix-run/node';
+import {RemixServer} from '@remix-run/react';
+import isbot from 'isbot';
+import {renderToPipeableStream} from 'react-dom/server';
 
 const ABORT_DELAY = 5_000;
 
@@ -18,20 +18,20 @@ export default function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext,
+  remixContext: EntryContext
 ) {
-  return isbot(request.headers.get("user-agent"))
+  return isbot(request.headers.get('user-agent'))
     ? handleBotRequest(
         request,
         responseStatusCode,
         responseHeaders,
-        remixContext,
+        remixContext
       )
     : handleBrowserRequest(
         request,
         responseStatusCode,
         responseHeaders,
-        remixContext,
+        remixContext
       );
 }
 
@@ -39,10 +39,10 @@ function handleBotRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext,
+  remixContext: EntryContext
 ) {
   return new Promise((resolve, reject) => {
-    const { abort, pipe } = renderToPipeableStream(
+    const {abort, pipe} = renderToPipeableStream(
       <RemixServer
         context={remixContext}
         url={request.url}
@@ -52,13 +52,13 @@ function handleBotRequest(
         onAllReady() {
           const body = new PassThrough();
 
-          responseHeaders.set("Content-Type", "text/html");
+          responseHeaders.set('Content-Type', 'text/html');
 
           resolve(
             new Response(createReadableStreamFromReadable(body), {
               headers: responseHeaders,
               status: responseStatusCode,
-            }),
+            })
           );
 
           pipe(body);
@@ -70,7 +70,7 @@ function handleBotRequest(
           responseStatusCode = 500;
           console.error(error);
         },
-      },
+      }
     );
 
     setTimeout(abort, ABORT_DELAY);
@@ -81,10 +81,10 @@ function handleBrowserRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext,
+  remixContext: EntryContext
 ) {
   return new Promise((resolve, reject) => {
-    const { abort, pipe } = renderToPipeableStream(
+    const {abort, pipe} = renderToPipeableStream(
       <RemixServer
         context={remixContext}
         url={request.url}
@@ -94,13 +94,13 @@ function handleBrowserRequest(
         onShellReady() {
           const body = new PassThrough();
 
-          responseHeaders.set("Content-Type", "text/html");
+          responseHeaders.set('Content-Type', 'text/html');
 
           resolve(
             new Response(createReadableStreamFromReadable(body), {
               headers: responseHeaders,
               status: responseStatusCode,
-            }),
+            })
           );
 
           pipe(body);
@@ -112,7 +112,7 @@ function handleBrowserRequest(
           console.error(error);
           responseStatusCode = 500;
         },
-      },
+      }
     );
 
     setTimeout(abort, ABORT_DELAY);

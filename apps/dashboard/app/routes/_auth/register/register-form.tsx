@@ -16,7 +16,7 @@ import {useTypedFetcher} from 'remix-typedjson';
 import {ErrorMessage} from '@/components/error-feedback';
 import {PasswordInput} from '@/components/password-input';
 
-import type {RegisterRequestAction} from './action.server';
+import type {RegisterRequestAction} from './_action.server';
 
 export function RegisterForm() {
   const {Form, data, state} = useTypedFetcher<
@@ -24,7 +24,7 @@ export function RegisterForm() {
   >();
 
   return (
-    <Form action="/register" method="post">
+    <Form method="post">
       <Card className="w-[480px] border-t-4 border-t-blue-700 p-2">
         <CardHeader>
           <CardTitle>Create an account</CardTitle>

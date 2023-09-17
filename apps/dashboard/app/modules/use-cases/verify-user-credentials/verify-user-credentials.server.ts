@@ -14,7 +14,7 @@ import {validate} from './validation.server';
 function selectUserRecord(email: User.User['email']) {
   return Effect.tryPromise({
     try: () => db.selectOne('users', {email}).run(pool),
-    catch: (error) => {
+    catch: () => {
       return new DatabaseError();
     },
   });

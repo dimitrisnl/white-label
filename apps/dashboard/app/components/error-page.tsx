@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from '@white-label/ui-core';
 
-import {GuestLayout} from './layouts/guest-layout';
+import {GuestLayout} from './guest-layout';
 
 export function ErrorPage({
   statusCode = 500,
