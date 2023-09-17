@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "devDependencies": {
-    "@remix-run/eslint-config": "^1.18.1",
+    "@remix-run/eslint-config": "^2.0.0",
     "@white-label/eslint-config-node": "workspace:*",
     "@white-label/eslint-config-react": "workspace:*"
   }

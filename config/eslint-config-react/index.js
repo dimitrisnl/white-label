@@ -6,10 +6,12 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'prettier',
     'plugin:prettier/recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:@typescript-eslint/strict',
+    'plugin:@typescript-eslint/strict-type-checked',
+    'plugin:@typescript-eslint/stylistic',
+    'plugin:@typescript-eslint/stylistic-type-checked',
   ],
   plugins: [
     'jsx-a11y',

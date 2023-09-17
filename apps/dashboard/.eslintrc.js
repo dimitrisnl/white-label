@@ -1,12 +1,10 @@
 module.exports = {
+  root: true,
   parserOptions: {
     tsconfigRootDir: __dirname,
     project: ['./tsconfig.json'],
   },
-  extends: [
-    '@white-label/eslint-config-remix',
-    '@white-label/eslint-config-node',
-  ],
+  extends: ['@white-label/eslint-config-remix'],
   rules: {
     '@typescript-eslint/no-throw-literal': 'off',
   },
