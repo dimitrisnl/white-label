@@ -33,6 +33,9 @@ export default function OrgLayout() {
           <li>
             <SubMenuLink to={`/teams/${orgId}/billing`}>Billing</SubMenuLink>
           </li>
+          <li>
+            <SubMenuLink to={`/teams/${orgId}/account`}>Account</SubMenuLink>
+          </li>
         </ul>
       }
     >

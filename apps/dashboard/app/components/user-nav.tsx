@@ -1,4 +1,4 @@
-import {Link, NavLink} from '@remix-run/react';
+import {Link, NavLink, useParams} from '@remix-run/react';
 import {
   Button,
   cn,
@@ -16,6 +16,7 @@ import {Building2Icon, LogOutIcon, SettingsIcon} from 'lucide-react';
 import type {User} from '@/modules/domain/index.server';
 
 export function UserNav({user}: {user: User.User}) {
+  const {orgId} = useParams();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -41,7 +42,7 @@ export function UserNav({user}: {user: User.User}) {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <NavLink
-              to="/settings"
+              to={`/teams/${orgId}/account`}
               className={({isActive}) =>
                 cn('flex w-full items-center transition-colors', {
                   'text-primary': isActive,
@@ -57,6 +58,7 @@ export function UserNav({user}: {user: User.User}) {
           <DropdownMenuItem>
             <NavLink
               to="/teams"
+              end={true}
               className={({isActive}) =>
                 cn('flex w-full items-center transition-colors', {
                   'text-primary': isActive,

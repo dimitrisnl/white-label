@@ -1,6 +1,6 @@
 import * as Effect from 'effect/Effect';
 
-import {Ok, Redirect, ServerError} from '@/modules/responses.server';
+import {Redirect, ServerError} from '@/modules/responses.server';
 import {requireUser} from '@/modules/session.server';
 import {LoaderArgs, withLoader} from '@/modules/with-loader.server';
 
@@ -10,14 +10,11 @@ export const loader = withLoader(
     const userData = yield* _(requireUser(request));
 
     const {memberships} = userData.currentUser;
-    if (memberships.length === 1) {
-      return new Redirect({
-        to: `/teams/${memberships[0].org.id}`,
-        init: request,
-      });
-    }
 
-    return new Ok({data: userData});
+    return new Redirect({
+      to: `/teams/${memberships[0].org.id}`,
+      init: request,
+    });
   }).pipe(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError({})),
