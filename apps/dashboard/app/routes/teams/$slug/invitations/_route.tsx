@@ -1,10 +1,12 @@
 import type {MetaFunction} from '@remix-run/node';
+import {useTypedLoaderData} from 'remix-typedjson';
 
-import {useOrgData} from '../use-org-data';
+import {InvitationsLoaderData} from './_loader.server';
 import {TeamInvitations} from './team-invitations';
 import {Invitees} from './team-list';
 
 export {action} from './_action.server';
+export {loader} from './_loader.server';
 
 export const meta: MetaFunction = () => {
   return [
@@ -14,7 +16,9 @@ export const meta: MetaFunction = () => {
 };
 
 export default function InvitationsPage() {
-  const {invitations} = useOrgData();
+  const {
+    data: {invitations},
+  } = useTypedLoaderData<InvitationsLoaderData>();
 
   return (
     <div className="grid grid-cols-2 items-start gap-8">

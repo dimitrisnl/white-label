@@ -18,7 +18,7 @@ function getInvitationRecords(orgId: Org.Org['id']) {
   });
 }
 
-export function getInvitations() {
+export function getOrgInvitations() {
   function execute(orgId: Org.Org['id'], userId: User.User['id']) {
     return Effect.gen(function* (_) {
       yield* _(invitationAuthorizationService.canView(userId, orgId));

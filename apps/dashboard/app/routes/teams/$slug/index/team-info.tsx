@@ -51,6 +51,8 @@ export function TeamInfo({initialName}: {initialName: string}) {
                 type="text"
                 defaultValue={initialName}
                 disabled={state !== 'idle'}
+                minLength={2}
+                required
               />
             </div>
             {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}

@@ -74,3 +74,19 @@ export class InternalServerError {
 export class SessionNotFoundError {
   readonly _tag = 'SessionNotFoundError';
 }
+
+export class SlugAlreadyExistsError {
+  readonly _tag = 'SlugAlreadyExistsError';
+}
+
+export class ParseOrgSlugError {
+  readonly _tag = 'ParseOrgSlugError';
+}
+
+export class ParseOrgIdError {
+  readonly _tag = 'ParseOrgIdError';
+}
+
+export class ParseUserIdError {
+  readonly _tag = 'ParseUserIdError';
+}

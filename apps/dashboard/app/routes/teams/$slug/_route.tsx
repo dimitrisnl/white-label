@@ -9,7 +9,7 @@ export {loader} from './_loader.server';
 
 export default function OrgLayout() {
   const {currentUser, org} = useOrgData();
-  const {orgId} = useParams();
+  const {slug} = useParams();
 
   return (
     <BaseLayout
@@ -18,23 +18,23 @@ export default function OrgLayout() {
       subMenu={
         <ul className="flex space-x-2">
           <li>
-            <SubMenuLink to={`/teams/${orgId}`} end>
+            <SubMenuLink to={`/teams/${slug}`} end>
               Index
             </SubMenuLink>
           </li>
           <li>
-            <SubMenuLink to={`/teams/${orgId}/invitations`}>
+            <SubMenuLink to={`/teams/${slug}/invitations`}>
               Invitations
             </SubMenuLink>
           </li>
           <li>
-            <SubMenuLink to={`/teams/${orgId}/members`}>Members</SubMenuLink>
+            <SubMenuLink to={`/teams/${slug}/members`}>Members</SubMenuLink>
           </li>
           <li>
-            <SubMenuLink to={`/teams/${orgId}/billing`}>Billing</SubMenuLink>
+            <SubMenuLink to={`/teams/${slug}/billing`}>Billing</SubMenuLink>
           </li>
           <li>
-            <SubMenuLink to={`/teams/${orgId}/account`}>Account</SubMenuLink>
+            <SubMenuLink to={`/teams/${slug}/account`}>Account</SubMenuLink>
           </li>
         </ul>
       }

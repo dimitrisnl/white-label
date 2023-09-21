@@ -16,7 +16,7 @@ import {Building2Icon, LogOutIcon, SettingsIcon} from 'lucide-react';
 import type {User} from '@/modules/domain/index.server';
 
 export function UserNav({user}: {user: User.User}) {
-  const {orgId} = useParams();
+  const {slug} = useParams();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -42,7 +42,7 @@ export function UserNav({user}: {user: User.User}) {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <NavLink
-              to={`/teams/${orgId}/account`}
+              to={`/teams/${slug}/account`}
               className={({isActive}) =>
                 cn('flex w-full items-center transition-colors', {
                   'text-primary': isActive,

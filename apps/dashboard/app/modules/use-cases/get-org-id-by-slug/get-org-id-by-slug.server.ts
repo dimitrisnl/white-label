@@ -1,39 +1,37 @@
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '@/database/db.server';
-import type {User} from '@/modules/domain/index.server';
 import {Org} from '@/modules/domain/index.server';
 import {
   DatabaseError,
   InternalServerError,
   OrgNotFoundError,
 } from '@/modules/errors.server';
-import {orgAuthorizationService} from '@/modules/services/index.server';
 
-function selectOrgRecord(id: Org.Org['id']) {
+function selectOrgRecord(slug: Org.Org['slug']) {
   return Effect.tryPromise({
-    try: () => db.selectOne('orgs', {id}).run(pool),
+    try: () => db.selectOne('orgs', {slug}, {columns: ['id']}).run(pool),
     catch: () => new DatabaseError(),
   });
 }
 
-export function getOrg() {
-  function execute(orgId: Org.Org['id'], userId: User.User['id']) {
+export function getOrgIdBySlug() {
+  function execute(slug: Org.Org['slug']) {
     return Effect.gen(function* (_) {
-      yield* _(orgAuthorizationService.canView(userId, orgId));
-      const orgRecord = yield* _(selectOrgRecord(orgId));
+      const orgRecord = yield* _(selectOrgRecord(slug));
 
       if (!orgRecord) {
         return yield* _(Effect.fail(new OrgNotFoundError()));
       }
 
-      const org = yield* _(Org.dbRecordToDomain(orgRecord));
+      const orgId = yield* _(Org.parseId(orgRecord.id));
 
-      return org;
+      return orgId;
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),
         DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        ParseOrgIdError: () => Effect.fail(new InternalServerError()),
       })
     );
   }

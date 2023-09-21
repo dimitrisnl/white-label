@@ -1,7 +1,6 @@
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '@/database/db.server';
-import {sendEmail} from '@/mailer';
 import type {MembershipRole, Org, User} from '@/modules/domain/index.server';
 import {MembershipInvitation, Uuid} from '@/modules/domain/index.server';
 import {invitationAuthorizationService} from '@/modules/services/index.server';
@@ -53,18 +52,6 @@ export function createInvitation() {
       );
       const invitation = yield* _(
         MembershipInvitation.dbRecordToDomain(invitationRecord)
-      );
-
-      // todo: Get it from Context, Add message to queue, Write templates
-      yield* _(
-        sendEmail({
-          to: email,
-          subject: 'You have been invited to a team',
-          content: {
-            type: 'PLAIN',
-            message: `Here's your token: ${invitation.id}`,
-          },
-        })
       );
 
       return invitation;

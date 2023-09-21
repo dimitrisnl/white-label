@@ -13,6 +13,7 @@ export const validationSchema = zod
     org: zod.object({
       name: Org.orgNameValidationSchema,
       id: Org.orgIdValidationSchema,
+      slug: Org.orgSlugValidationSchema,
     }),
     user: zod.object({
       name: User.userNameValidationSchema,
@@ -36,7 +37,7 @@ export function parse(value: unknown) {
 
 export function dbRecordToDomain(
   entity: {role: string; created_at: string; updated_at: string},
-  orgEntity: {id: string; name: string},
+  orgEntity: {id: string; name: string; slug: string},
   userEntity: {id: string; name: string; email: string}
 ) {
   return parse({
@@ -46,6 +47,7 @@ export function dbRecordToDomain(
     org: {
       id: orgEntity.id,
       name: orgEntity.name,
+      slug: orgEntity.slug,
     },
     user: {
       id: userEntity.id,

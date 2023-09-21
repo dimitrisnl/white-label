@@ -2,7 +2,7 @@ import * as Effect from 'effect/Effect';
 
 import {db, pool} from '@/database/db.server';
 import type {User} from '@/modules/domain/index.server';
-import {Org} from '@/modules/domain/index.server';
+import {Membership, Org} from '@/modules/domain/index.server';
 import {
   DatabaseError,
   InternalServerError,
@@ -17,7 +17,25 @@ function selectOrgRecord(id: Org.Org['id']) {
   });
 }
 
-export function getOrg() {
+function selectMembershipRecords(orgId: Org.Org['id']) {
+  return Effect.tryPromise({
+    try: () =>
+      db
+        .select(
+          'memberships',
+          {org_id: orgId},
+          {
+            lateral: {
+              user: db.select('users', {id: db.parent('user_id')}),
+            },
+          }
+        )
+        .run(pool),
+    catch: () => new DatabaseError(),
+  });
+}
+
+export function getOrgMemberships() {
   function execute(orgId: Org.Org['id'], userId: User.User['id']) {
     return Effect.gen(function* (_) {
       yield* _(orgAuthorizationService.canView(userId, orgId));
@@ -29,7 +47,25 @@ export function getOrg() {
 
       const org = yield* _(Org.dbRecordToDomain(orgRecord));
 
-      return org;
+      const membershipRecords = yield* _(selectMembershipRecords(orgId));
+
+      const memberships = yield* _(
+        Effect.all(
+          membershipRecords.map((membershipRecord) =>
+            Membership.dbRecordToDomain(
+              membershipRecord,
+              {name: org.name, id: org.id, slug: org.slug},
+              {
+                name: membershipRecord.user[0].name,
+                id: membershipRecord.user[0].id,
+                email: membershipRecord.user[0].email,
+              }
+            )
+          )
+        )
+      );
+
+      return {memberships};
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),

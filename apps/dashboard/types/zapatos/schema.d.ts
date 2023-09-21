@@ -8,29 +8,20 @@ Released under the MIT licence: see LICENCE file
 */
 
 declare module 'zapatos/schema' {
+
   import type * as db from 'zapatos/db';
 
   // got a type error on schemaVersionCanary below? update by running `npx zapatos`
-  export interface schemaVersionCanary extends db.SchemaVersionCanary {
-    version: 104;
-  }
+  export interface schemaVersionCanary extends db.SchemaVersionCanary { version: 104 }
+
 
   /* === schema: public === */
 
   /* --- enums --- */
 
-  export type membership_invite_status =
-    | 'ACCEPTED'
-    | 'DECLINED'
-    | 'EXPIRED'
-    | 'PENDING';
+  export type membership_invite_status = 'ACCEPTED' | 'DECLINED' | 'EXPIRED' | 'PENDING';
   export namespace every {
-    export type membership_invite_status = [
-      'ACCEPTED',
-      'DECLINED',
-      'EXPIRED',
-      'PENDING',
-    ];
+    export type membership_invite_status = ['ACCEPTED', 'DECLINED', 'EXPIRED', 'PENDING'];
   }
   export type membership_role = 'ADMIN' | 'MEMBER' | 'OWNER';
   export namespace every {
@@ -47,381 +38,228 @@ declare module 'zapatos/schema' {
     export type Table = 'membership_invitations';
     export interface Selectable {
       /**
-       * **membership_invitations.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **membership_invitations.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       id: string;
       /**
-       * **membership_invitations.email**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **membership_invitations.email**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       email: string;
       /**
-       * **membership_invitations.role**
-       * - `membership_role` in database
-       * - `NOT NULL`, default: `'MEMBER'::membership_role`
-       */
+      * **membership_invitations.role**
+      * - `membership_role` in database
+      * - `NOT NULL`, default: `'MEMBER'::membership_role`
+      */
       role: membership_role;
       /**
-       * **membership_invitations.status**
-       * - `membership_invite_status` in database
-       * - `NOT NULL`, default: `'PENDING'::membership_invite_status`
-       */
+      * **membership_invitations.status**
+      * - `membership_invite_status` in database
+      * - `NOT NULL`, default: `'PENDING'::membership_invite_status`
+      */
       status: membership_invite_status;
       /**
-       * **membership_invitations.org_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **membership_invitations.org_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       org_id: string;
       /**
-       * **membership_invitations.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **membership_invitations.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       created_at: Date;
       /**
-       * **membership_invitations.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **membership_invitations.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       updated_at: Date;
     }
     export interface JSONSelectable {
       /**
-       * **membership_invitations.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **membership_invitations.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       id: string;
       /**
-       * **membership_invitations.email**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **membership_invitations.email**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       email: string;
       /**
-       * **membership_invitations.role**
-       * - `membership_role` in database
-       * - `NOT NULL`, default: `'MEMBER'::membership_role`
-       */
+      * **membership_invitations.role**
+      * - `membership_role` in database
+      * - `NOT NULL`, default: `'MEMBER'::membership_role`
+      */
       role: membership_role;
       /**
-       * **membership_invitations.status**
-       * - `membership_invite_status` in database
-       * - `NOT NULL`, default: `'PENDING'::membership_invite_status`
-       */
+      * **membership_invitations.status**
+      * - `membership_invite_status` in database
+      * - `NOT NULL`, default: `'PENDING'::membership_invite_status`
+      */
       status: membership_invite_status;
       /**
-       * **membership_invitations.org_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **membership_invitations.org_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       org_id: string;
       /**
-       * **membership_invitations.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **membership_invitations.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       created_at: db.TimestampTzString;
       /**
-       * **membership_invitations.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **membership_invitations.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       updated_at: db.TimestampTzString;
     }
     export interface Whereable {
       /**
-       * **membership_invitations.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            string | db.Parameter<string> | db.SQLFragment | db.ParentColumn
-          >;
+      * **membership_invitations.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **membership_invitations.email**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
-      email?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            string | db.Parameter<string> | db.SQLFragment | db.ParentColumn
-          >;
+      * **membership_invitations.email**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      email?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **membership_invitations.role**
-       * - `membership_role` in database
-       * - `NOT NULL`, default: `'MEMBER'::membership_role`
-       */
-      role?:
-        | membership_role
-        | db.Parameter<membership_role>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | membership_role
-            | db.Parameter<membership_role>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **membership_invitations.role**
+      * - `membership_role` in database
+      * - `NOT NULL`, default: `'MEMBER'::membership_role`
+      */
+      role?: membership_role | db.Parameter<membership_role> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, membership_role | db.Parameter<membership_role> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **membership_invitations.status**
-       * - `membership_invite_status` in database
-       * - `NOT NULL`, default: `'PENDING'::membership_invite_status`
-       */
-      status?:
-        | membership_invite_status
-        | db.Parameter<membership_invite_status>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | membership_invite_status
-            | db.Parameter<membership_invite_status>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **membership_invitations.status**
+      * - `membership_invite_status` in database
+      * - `NOT NULL`, default: `'PENDING'::membership_invite_status`
+      */
+      status?: membership_invite_status | db.Parameter<membership_invite_status> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, membership_invite_status | db.Parameter<membership_invite_status> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **membership_invitations.org_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      org_id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            string | db.Parameter<string> | db.SQLFragment | db.ParentColumn
-          >;
+      * **membership_invitations.org_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      org_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **membership_invitations.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **membership_invitations.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **membership_invitations.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **membership_invitations.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
-       * **membership_invitations.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **membership_invitations.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       id: string | db.Parameter<string> | db.SQLFragment;
       /**
-       * **membership_invitations.email**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **membership_invitations.email**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       email: string | db.Parameter<string> | db.SQLFragment;
       /**
-       * **membership_invitations.role**
-       * - `membership_role` in database
-       * - `NOT NULL`, default: `'MEMBER'::membership_role`
-       */
-      role?:
-        | membership_role
-        | db.Parameter<membership_role>
-        | db.DefaultType
-        | db.SQLFragment;
+      * **membership_invitations.role**
+      * - `membership_role` in database
+      * - `NOT NULL`, default: `'MEMBER'::membership_role`
+      */
+      role?: membership_role | db.Parameter<membership_role> | db.DefaultType | db.SQLFragment;
       /**
-       * **membership_invitations.status**
-       * - `membership_invite_status` in database
-       * - `NOT NULL`, default: `'PENDING'::membership_invite_status`
-       */
-      status?:
-        | membership_invite_status
-        | db.Parameter<membership_invite_status>
-        | db.DefaultType
-        | db.SQLFragment;
+      * **membership_invitations.status**
+      * - `membership_invite_status` in database
+      * - `NOT NULL`, default: `'PENDING'::membership_invite_status`
+      */
+      status?: membership_invite_status | db.Parameter<membership_invite_status> | db.DefaultType | db.SQLFragment;
       /**
-       * **membership_invitations.org_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **membership_invitations.org_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       org_id: string | db.Parameter<string> | db.SQLFragment;
       /**
-       * **membership_invitations.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment;
+      * **membership_invitations.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
-       * **membership_invitations.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment;
+      * **membership_invitations.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
-       * **membership_invitations.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      * **membership_invitations.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-       * **membership_invitations.email**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
-      email?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      * **membership_invitations.email**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      email?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-       * **membership_invitations.role**
-       * - `membership_role` in database
-       * - `NOT NULL`, default: `'MEMBER'::membership_role`
-       */
-      role?:
-        | membership_role
-        | db.Parameter<membership_role>
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | membership_role
-            | db.Parameter<membership_role>
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **membership_invitations.role**
+      * - `membership_role` in database
+      * - `NOT NULL`, default: `'MEMBER'::membership_role`
+      */
+      role?: membership_role | db.Parameter<membership_role> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, membership_role | db.Parameter<membership_role> | db.DefaultType | db.SQLFragment>;
       /**
-       * **membership_invitations.status**
-       * - `membership_invite_status` in database
-       * - `NOT NULL`, default: `'PENDING'::membership_invite_status`
-       */
-      status?:
-        | membership_invite_status
-        | db.Parameter<membership_invite_status>
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | membership_invite_status
-            | db.Parameter<membership_invite_status>
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **membership_invitations.status**
+      * - `membership_invite_status` in database
+      * - `NOT NULL`, default: `'PENDING'::membership_invite_status`
+      */
+      status?: membership_invite_status | db.Parameter<membership_invite_status> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, membership_invite_status | db.Parameter<membership_invite_status> | db.DefaultType | db.SQLFragment>;
       /**
-       * **membership_invitations.org_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      org_id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      * **membership_invitations.org_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      org_id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-       * **membership_invitations.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **membership_invitations.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
-       * **membership_invitations.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **membership_invitations.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex =
-      | 'membership_invitations_email_key'
-      | 'membership_invitations_email_org_id_key'
-      | 'membership_invitations_pkey';
+    export type UniqueIndex = 'membership_invitations_email_key' | 'membership_invitations_email_org_id_key' | 'membership_invitations_pkey';
     export type Column = keyof Selectable;
-    export type OnlyCols<T extends readonly Column[]> = Pick<
-      Selectable,
-      T[number]
-    >;
-    export type SQLExpression =
-      | Table
-      | db.ColumnNames<Updatable | (keyof Updatable)[]>
-      | db.ColumnValues<Updatable>
-      | Whereable
-      | Column
-      | db.ParentColumn
-      | db.GenericSQLExpression;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
     export type SQL = SQLExpression | SQLExpression[];
   }
 
@@ -433,280 +271,168 @@ declare module 'zapatos/schema' {
     export type Table = 'memberships';
     export interface Selectable {
       /**
-       * **memberships.org_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **memberships.org_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       org_id: string;
       /**
-       * **memberships.user_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **memberships.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       user_id: string;
       /**
-       * **memberships.role**
-       * - `membership_role` in database
-       * - `NOT NULL`, default: `'MEMBER'::membership_role`
-       */
+      * **memberships.role**
+      * - `membership_role` in database
+      * - `NOT NULL`, default: `'MEMBER'::membership_role`
+      */
       role: membership_role;
       /**
-       * **memberships.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **memberships.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       created_at: Date;
       /**
-       * **memberships.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **memberships.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       updated_at: Date;
     }
     export interface JSONSelectable {
       /**
-       * **memberships.org_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **memberships.org_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       org_id: string;
       /**
-       * **memberships.user_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **memberships.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       user_id: string;
       /**
-       * **memberships.role**
-       * - `membership_role` in database
-       * - `NOT NULL`, default: `'MEMBER'::membership_role`
-       */
+      * **memberships.role**
+      * - `membership_role` in database
+      * - `NOT NULL`, default: `'MEMBER'::membership_role`
+      */
       role: membership_role;
       /**
-       * **memberships.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **memberships.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       created_at: db.TimestampTzString;
       /**
-       * **memberships.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **memberships.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       updated_at: db.TimestampTzString;
     }
     export interface Whereable {
       /**
-       * **memberships.org_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      org_id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            string | db.Parameter<string> | db.SQLFragment | db.ParentColumn
-          >;
+      * **memberships.org_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      org_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **memberships.user_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      user_id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            string | db.Parameter<string> | db.SQLFragment | db.ParentColumn
-          >;
+      * **memberships.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      user_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **memberships.role**
-       * - `membership_role` in database
-       * - `NOT NULL`, default: `'MEMBER'::membership_role`
-       */
-      role?:
-        | membership_role
-        | db.Parameter<membership_role>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | membership_role
-            | db.Parameter<membership_role>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **memberships.role**
+      * - `membership_role` in database
+      * - `NOT NULL`, default: `'MEMBER'::membership_role`
+      */
+      role?: membership_role | db.Parameter<membership_role> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, membership_role | db.Parameter<membership_role> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **memberships.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **memberships.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **memberships.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **memberships.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
-       * **memberships.org_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **memberships.org_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       org_id: string | db.Parameter<string> | db.SQLFragment;
       /**
-       * **memberships.user_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **memberships.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       user_id: string | db.Parameter<string> | db.SQLFragment;
       /**
-       * **memberships.role**
-       * - `membership_role` in database
-       * - `NOT NULL`, default: `'MEMBER'::membership_role`
-       */
-      role?:
-        | membership_role
-        | db.Parameter<membership_role>
-        | db.DefaultType
-        | db.SQLFragment;
+      * **memberships.role**
+      * - `membership_role` in database
+      * - `NOT NULL`, default: `'MEMBER'::membership_role`
+      */
+      role?: membership_role | db.Parameter<membership_role> | db.DefaultType | db.SQLFragment;
       /**
-       * **memberships.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment;
+      * **memberships.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
-       * **memberships.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment;
+      * **memberships.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
-       * **memberships.org_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      org_id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      * **memberships.org_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      org_id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-       * **memberships.user_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      user_id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      * **memberships.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      user_id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-       * **memberships.role**
-       * - `membership_role` in database
-       * - `NOT NULL`, default: `'MEMBER'::membership_role`
-       */
-      role?:
-        | membership_role
-        | db.Parameter<membership_role>
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | membership_role
-            | db.Parameter<membership_role>
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **memberships.role**
+      * - `membership_role` in database
+      * - `NOT NULL`, default: `'MEMBER'::membership_role`
+      */
+      role?: membership_role | db.Parameter<membership_role> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, membership_role | db.Parameter<membership_role> | db.DefaultType | db.SQLFragment>;
       /**
-       * **memberships.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **memberships.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
-       * **memberships.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **memberships.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'memberships_org_id_user_id_pk';
     export type Column = keyof Selectable;
-    export type OnlyCols<T extends readonly Column[]> = Pick<
-      Selectable,
-      T[number]
-    >;
-    export type SQLExpression =
-      | Table
-      | db.ColumnNames<Updatable | (keyof Updatable)[]>
-      | db.ColumnValues<Updatable>
-      | Whereable
-      | Column
-      | db.ParentColumn
-      | db.GenericSQLExpression;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
     export type SQL = SQLExpression | SQLExpression[];
   }
 
@@ -718,224 +444,168 @@ declare module 'zapatos/schema' {
     export type Table = 'orgs';
     export interface Selectable {
       /**
-       * **orgs.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **orgs.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       id: string;
       /**
-       * **orgs.name**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **orgs.name**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       name: string;
       /**
-       * **orgs.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **orgs.slug**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      slug: string;
+      /**
+      * **orgs.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       created_at: Date;
       /**
-       * **orgs.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **orgs.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       updated_at: Date;
     }
     export interface JSONSelectable {
       /**
-       * **orgs.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **orgs.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       id: string;
       /**
-       * **orgs.name**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **orgs.name**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       name: string;
       /**
-       * **orgs.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **orgs.slug**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      slug: string;
+      /**
+      * **orgs.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       created_at: db.TimestampTzString;
       /**
-       * **orgs.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **orgs.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       updated_at: db.TimestampTzString;
     }
     export interface Whereable {
       /**
-       * **orgs.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            string | db.Parameter<string> | db.SQLFragment | db.ParentColumn
-          >;
+      * **orgs.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **orgs.name**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
-      name?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            string | db.Parameter<string> | db.SQLFragment | db.ParentColumn
-          >;
+      * **orgs.name**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      name?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **orgs.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **orgs.slug**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      slug?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **orgs.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **orgs.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **orgs.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
-       * **orgs.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **orgs.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       id: string | db.Parameter<string> | db.SQLFragment;
       /**
-       * **orgs.name**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **orgs.name**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       name: string | db.Parameter<string> | db.SQLFragment;
       /**
-       * **orgs.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment;
+      * **orgs.slug**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      slug: string | db.Parameter<string> | db.SQLFragment;
       /**
-       * **orgs.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment;
+      * **orgs.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **orgs.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
-       * **orgs.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      * **orgs.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-       * **orgs.name**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
-      name?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      * **orgs.name**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      name?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-       * **orgs.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **orgs.slug**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      slug?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-       * **orgs.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **orgs.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **orgs.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'orgs_pkey';
+    export type UniqueIndex = 'orgs_pkey' | 'orgs_slug_key';
     export type Column = keyof Selectable;
-    export type OnlyCols<T extends readonly Column[]> = Pick<
-      Selectable,
-      T[number]
-    >;
-    export type SQLExpression =
-      | Table
-      | db.ColumnNames<Updatable | (keyof Updatable)[]>
-      | db.ColumnValues<Updatable>
-      | Whereable
-      | Column
-      | db.ParentColumn
-      | db.GenericSQLExpression;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
     export type SQL = SQLExpression | SQLExpression[];
   }
 
@@ -947,283 +617,168 @@ declare module 'zapatos/schema' {
     export type Table = 'password_reset_tokens';
     export interface Selectable {
       /**
-       * **password_reset_tokens.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **password_reset_tokens.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       id: string;
       /**
-       * **password_reset_tokens.user_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **password_reset_tokens.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       user_id: string;
       /**
-       * **password_reset_tokens.expires_at**
-       * - `timestamptz` in database
-       * - Nullable, no default
-       */
+      * **password_reset_tokens.expires_at**
+      * - `timestamptz` in database
+      * - Nullable, no default
+      */
       expires_at: Date | null;
       /**
-       * **password_reset_tokens.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **password_reset_tokens.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       created_at: Date;
       /**
-       * **password_reset_tokens.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **password_reset_tokens.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       updated_at: Date;
     }
     export interface JSONSelectable {
       /**
-       * **password_reset_tokens.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **password_reset_tokens.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       id: string;
       /**
-       * **password_reset_tokens.user_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **password_reset_tokens.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       user_id: string;
       /**
-       * **password_reset_tokens.expires_at**
-       * - `timestamptz` in database
-       * - Nullable, no default
-       */
+      * **password_reset_tokens.expires_at**
+      * - `timestamptz` in database
+      * - Nullable, no default
+      */
       expires_at: db.TimestampTzString | null;
       /**
-       * **password_reset_tokens.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **password_reset_tokens.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       created_at: db.TimestampTzString;
       /**
-       * **password_reset_tokens.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **password_reset_tokens.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       updated_at: db.TimestampTzString;
     }
     export interface Whereable {
       /**
-       * **password_reset_tokens.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            string | db.Parameter<string> | db.SQLFragment | db.ParentColumn
-          >;
+      * **password_reset_tokens.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **password_reset_tokens.user_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      user_id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            string | db.Parameter<string> | db.SQLFragment | db.ParentColumn
-          >;
+      * **password_reset_tokens.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      user_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **password_reset_tokens.expires_at**
-       * - `timestamptz` in database
-       * - Nullable, no default
-       */
-      expires_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **password_reset_tokens.expires_at**
+      * - `timestamptz` in database
+      * - Nullable, no default
+      */
+      expires_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **password_reset_tokens.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **password_reset_tokens.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **password_reset_tokens.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **password_reset_tokens.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
-       * **password_reset_tokens.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **password_reset_tokens.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       id: string | db.Parameter<string> | db.SQLFragment;
       /**
-       * **password_reset_tokens.user_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **password_reset_tokens.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       user_id: string | db.Parameter<string> | db.SQLFragment;
       /**
-       * **password_reset_tokens.expires_at**
-       * - `timestamptz` in database
-       * - Nullable, no default
-       */
-      expires_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | null
-        | db.DefaultType
-        | db.SQLFragment;
+      * **password_reset_tokens.expires_at**
+      * - `timestamptz` in database
+      * - Nullable, no default
+      */
+      expires_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment;
       /**
-       * **password_reset_tokens.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment;
+      * **password_reset_tokens.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
-       * **password_reset_tokens.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment;
+      * **password_reset_tokens.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
-       * **password_reset_tokens.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      * **password_reset_tokens.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-       * **password_reset_tokens.user_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      user_id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      * **password_reset_tokens.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      user_id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-       * **password_reset_tokens.expires_at**
-       * - `timestamptz` in database
-       * - Nullable, no default
-       */
-      expires_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | null
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | null
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **password_reset_tokens.expires_at**
+      * - `timestamptz` in database
+      * - Nullable, no default
+      */
+      expires_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment>;
       /**
-       * **password_reset_tokens.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **password_reset_tokens.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
-       * **password_reset_tokens.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **password_reset_tokens.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'password_reset_tokens_pkey';
     export type Column = keyof Selectable;
-    export type OnlyCols<T extends readonly Column[]> = Pick<
-      Selectable,
-      T[number]
-    >;
-    export type SQLExpression =
-      | Table
-      | db.ColumnNames<Updatable | (keyof Updatable)[]>
-      | db.ColumnValues<Updatable>
-      | Whereable
-      | Column
-      | db.ParentColumn
-      | db.GenericSQLExpression;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
     export type SQL = SQLExpression | SQLExpression[];
   }
 
@@ -1235,70 +790,48 @@ declare module 'zapatos/schema' {
     export type Table = 'schema_migrations';
     export interface Selectable {
       /**
-       * **schema_migrations.version**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **schema_migrations.version**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       version: string;
     }
     export interface JSONSelectable {
       /**
-       * **schema_migrations.version**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **schema_migrations.version**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       version: string;
     }
     export interface Whereable {
       /**
-       * **schema_migrations.version**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
-      version?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            string | db.Parameter<string> | db.SQLFragment | db.ParentColumn
-          >;
+      * **schema_migrations.version**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      version?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
-       * **schema_migrations.version**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **schema_migrations.version**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       version: string | db.Parameter<string> | db.SQLFragment;
     }
     export interface Updatable {
       /**
-       * **schema_migrations.version**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
-      version?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      * **schema_migrations.version**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      version?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
     }
     export type UniqueIndex = 'schema_migrations_pkey';
     export type Column = keyof Selectable;
-    export type OnlyCols<T extends readonly Column[]> = Pick<
-      Selectable,
-      T[number]
-    >;
-    export type SQLExpression =
-      | Table
-      | db.ColumnNames<Updatable | (keyof Updatable)[]>
-      | db.ColumnValues<Updatable>
-      | Whereable
-      | Column
-      | db.ParentColumn
-      | db.GenericSQLExpression;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
     export type SQL = SQLExpression | SQLExpression[];
   }
 
@@ -1310,358 +843,228 @@ declare module 'zapatos/schema' {
     export type Table = 'users';
     export interface Selectable {
       /**
-       * **users.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **users.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       id: string;
       /**
-       * **users.email**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **users.email**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       email: string;
       /**
-       * **users.name**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **users.name**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       name: string;
       /**
-       * **users.password**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **users.password**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       password: string;
       /**
-       * **users.email_verified**
-       * - `bool` in database
-       * - `NOT NULL`, default: `false`
-       */
+      * **users.email_verified**
+      * - `bool` in database
+      * - `NOT NULL`, default: `false`
+      */
       email_verified: boolean;
       /**
-       * **users.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **users.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       created_at: Date;
       /**
-       * **users.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **users.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       updated_at: Date;
     }
     export interface JSONSelectable {
       /**
-       * **users.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **users.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       id: string;
       /**
-       * **users.email**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **users.email**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       email: string;
       /**
-       * **users.name**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **users.name**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       name: string;
       /**
-       * **users.password**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **users.password**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       password: string;
       /**
-       * **users.email_verified**
-       * - `bool` in database
-       * - `NOT NULL`, default: `false`
-       */
+      * **users.email_verified**
+      * - `bool` in database
+      * - `NOT NULL`, default: `false`
+      */
       email_verified: boolean;
       /**
-       * **users.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **users.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       created_at: db.TimestampTzString;
       /**
-       * **users.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **users.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       updated_at: db.TimestampTzString;
     }
     export interface Whereable {
       /**
-       * **users.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            string | db.Parameter<string> | db.SQLFragment | db.ParentColumn
-          >;
+      * **users.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **users.email**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
-      email?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            string | db.Parameter<string> | db.SQLFragment | db.ParentColumn
-          >;
+      * **users.email**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      email?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **users.name**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
-      name?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            string | db.Parameter<string> | db.SQLFragment | db.ParentColumn
-          >;
+      * **users.name**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      name?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **users.password**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
-      password?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            string | db.Parameter<string> | db.SQLFragment | db.ParentColumn
-          >;
+      * **users.password**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      password?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **users.email_verified**
-       * - `bool` in database
-       * - `NOT NULL`, default: `false`
-       */
-      email_verified?:
-        | boolean
-        | db.Parameter<boolean>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn
-          >;
+      * **users.email_verified**
+      * - `bool` in database
+      * - `NOT NULL`, default: `false`
+      */
+      email_verified?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **users.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **users.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **users.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **users.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
-       * **users.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **users.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       id: string | db.Parameter<string> | db.SQLFragment;
       /**
-       * **users.email**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **users.email**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       email: string | db.Parameter<string> | db.SQLFragment;
       /**
-       * **users.name**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **users.name**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       name: string | db.Parameter<string> | db.SQLFragment;
       /**
-       * **users.password**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
+      * **users.password**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
       password: string | db.Parameter<string> | db.SQLFragment;
       /**
-       * **users.email_verified**
-       * - `bool` in database
-       * - `NOT NULL`, default: `false`
-       */
-      email_verified?:
-        | boolean
-        | db.Parameter<boolean>
-        | db.DefaultType
-        | db.SQLFragment;
+      * **users.email_verified**
+      * - `bool` in database
+      * - `NOT NULL`, default: `false`
+      */
+      email_verified?: boolean | db.Parameter<boolean> | db.DefaultType | db.SQLFragment;
       /**
-       * **users.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment;
+      * **users.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
-       * **users.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment;
+      * **users.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
-       * **users.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      * **users.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-       * **users.email**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
-      email?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      * **users.email**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      email?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-       * **users.name**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
-      name?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      * **users.name**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      name?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-       * **users.password**
-       * - `varchar` in database
-       * - `NOT NULL`, no default
-       */
-      password?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      * **users.password**
+      * - `varchar` in database
+      * - `NOT NULL`, no default
+      */
+      password?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-       * **users.email_verified**
-       * - `bool` in database
-       * - `NOT NULL`, default: `false`
-       */
-      email_verified?:
-        | boolean
-        | db.Parameter<boolean>
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            boolean | db.Parameter<boolean> | db.DefaultType | db.SQLFragment
-          >;
+      * **users.email_verified**
+      * - `bool` in database
+      * - `NOT NULL`, default: `false`
+      */
+      email_verified?: boolean | db.Parameter<boolean> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.DefaultType | db.SQLFragment>;
       /**
-       * **users.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **users.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
-       * **users.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **users.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'users_email_key' | 'users_pkey';
     export type Column = keyof Selectable;
-    export type OnlyCols<T extends readonly Column[]> = Pick<
-      Selectable,
-      T[number]
-    >;
-    export type SQLExpression =
-      | Table
-      | db.ColumnNames<Updatable | (keyof Updatable)[]>
-      | db.ColumnValues<Updatable>
-      | Whereable
-      | Column
-      | db.ParentColumn
-      | db.GenericSQLExpression;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
     export type SQL = SQLExpression | SQLExpression[];
   }
 
@@ -1673,376 +1076,191 @@ declare module 'zapatos/schema' {
     export type Table = 'verify_email_tokens';
     export interface Selectable {
       /**
-       * **verify_email_tokens.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **verify_email_tokens.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       id: string;
       /**
-       * **verify_email_tokens.user_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **verify_email_tokens.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       user_id: string;
       /**
-       * **verify_email_tokens.expires_at**
-       * - `timestamptz` in database
-       * - Nullable, no default
-       */
+      * **verify_email_tokens.expires_at**
+      * - `timestamptz` in database
+      * - Nullable, no default
+      */
       expires_at: Date | null;
       /**
-       * **verify_email_tokens.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **verify_email_tokens.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       created_at: Date;
       /**
-       * **verify_email_tokens.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **verify_email_tokens.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       updated_at: Date;
     }
     export interface JSONSelectable {
       /**
-       * **verify_email_tokens.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **verify_email_tokens.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       id: string;
       /**
-       * **verify_email_tokens.user_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **verify_email_tokens.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       user_id: string;
       /**
-       * **verify_email_tokens.expires_at**
-       * - `timestamptz` in database
-       * - Nullable, no default
-       */
+      * **verify_email_tokens.expires_at**
+      * - `timestamptz` in database
+      * - Nullable, no default
+      */
       expires_at: db.TimestampTzString | null;
       /**
-       * **verify_email_tokens.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **verify_email_tokens.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       created_at: db.TimestampTzString;
       /**
-       * **verify_email_tokens.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
+      * **verify_email_tokens.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
       updated_at: db.TimestampTzString;
     }
     export interface Whereable {
       /**
-       * **verify_email_tokens.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            string | db.Parameter<string> | db.SQLFragment | db.ParentColumn
-          >;
+      * **verify_email_tokens.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **verify_email_tokens.user_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      user_id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            string | db.Parameter<string> | db.SQLFragment | db.ParentColumn
-          >;
+      * **verify_email_tokens.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      user_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **verify_email_tokens.expires_at**
-       * - `timestamptz` in database
-       * - Nullable, no default
-       */
-      expires_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **verify_email_tokens.expires_at**
+      * - `timestamptz` in database
+      * - Nullable, no default
+      */
+      expires_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **verify_email_tokens.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **verify_email_tokens.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
-       * **verify_email_tokens.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.SQLFragment
-        | db.ParentColumn
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.SQLFragment
-            | db.ParentColumn
-          >;
+      * **verify_email_tokens.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
-       * **verify_email_tokens.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **verify_email_tokens.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       id: string | db.Parameter<string> | db.SQLFragment;
       /**
-       * **verify_email_tokens.user_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
+      * **verify_email_tokens.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
       user_id: string | db.Parameter<string> | db.SQLFragment;
       /**
-       * **verify_email_tokens.expires_at**
-       * - `timestamptz` in database
-       * - Nullable, no default
-       */
-      expires_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | null
-        | db.DefaultType
-        | db.SQLFragment;
+      * **verify_email_tokens.expires_at**
+      * - `timestamptz` in database
+      * - Nullable, no default
+      */
+      expires_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment;
       /**
-       * **verify_email_tokens.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment;
+      * **verify_email_tokens.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
-       * **verify_email_tokens.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment;
+      * **verify_email_tokens.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
-       * **verify_email_tokens.id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      * **verify_email_tokens.id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-       * **verify_email_tokens.user_id**
-       * - `uuid` in database
-       * - `NOT NULL`, no default
-       */
-      user_id?:
-        | string
-        | db.Parameter<string>
-        | db.SQLFragment
-        | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      * **verify_email_tokens.user_id**
+      * - `uuid` in database
+      * - `NOT NULL`, no default
+      */
+      user_id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-       * **verify_email_tokens.expires_at**
-       * - `timestamptz` in database
-       * - Nullable, no default
-       */
-      expires_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | null
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | null
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **verify_email_tokens.expires_at**
+      * - `timestamptz` in database
+      * - Nullable, no default
+      */
+      expires_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | null | db.DefaultType | db.SQLFragment>;
       /**
-       * **verify_email_tokens.created_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      created_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **verify_email_tokens.created_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      created_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
-       * **verify_email_tokens.updated_at**
-       * - `timestamptz` in database
-       * - `NOT NULL`, default: `now()`
-       */
-      updated_at?:
-        | (db.TimestampTzString | Date)
-        | db.Parameter<db.TimestampTzString | Date>
-        | db.DefaultType
-        | db.SQLFragment
-        | db.SQLFragment<
-            any,
-            | (db.TimestampTzString | Date)
-            | db.Parameter<db.TimestampTzString | Date>
-            | db.DefaultType
-            | db.SQLFragment
-          >;
+      * **verify_email_tokens.updated_at**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updated_at?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'verify_email_tokens_pkey';
     export type Column = keyof Selectable;
-    export type OnlyCols<T extends readonly Column[]> = Pick<
-      Selectable,
-      T[number]
-    >;
-    export type SQLExpression =
-      | Table
-      | db.ColumnNames<Updatable | (keyof Updatable)[]>
-      | db.ColumnValues<Updatable>
-      | Whereable
-      | Column
-      | db.ParentColumn
-      | db.GenericSQLExpression;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
     export type SQL = SQLExpression | SQLExpression[];
   }
 
   /* --- aggregate types --- */
 
-  export namespace public {
-    export type Table =
-      | membership_invitations.Table
-      | memberships.Table
-      | orgs.Table
-      | password_reset_tokens.Table
-      | schema_migrations.Table
-      | users.Table
-      | verify_email_tokens.Table;
-    export type Selectable =
-      | membership_invitations.Selectable
-      | memberships.Selectable
-      | orgs.Selectable
-      | password_reset_tokens.Selectable
-      | schema_migrations.Selectable
-      | users.Selectable
-      | verify_email_tokens.Selectable;
-    export type JSONSelectable =
-      | membership_invitations.JSONSelectable
-      | memberships.JSONSelectable
-      | orgs.JSONSelectable
-      | password_reset_tokens.JSONSelectable
-      | schema_migrations.JSONSelectable
-      | users.JSONSelectable
-      | verify_email_tokens.JSONSelectable;
-    export type Whereable =
-      | membership_invitations.Whereable
-      | memberships.Whereable
-      | orgs.Whereable
-      | password_reset_tokens.Whereable
-      | schema_migrations.Whereable
-      | users.Whereable
-      | verify_email_tokens.Whereable;
-    export type Insertable =
-      | membership_invitations.Insertable
-      | memberships.Insertable
-      | orgs.Insertable
-      | password_reset_tokens.Insertable
-      | schema_migrations.Insertable
-      | users.Insertable
-      | verify_email_tokens.Insertable;
-    export type Updatable =
-      | membership_invitations.Updatable
-      | memberships.Updatable
-      | orgs.Updatable
-      | password_reset_tokens.Updatable
-      | schema_migrations.Updatable
-      | users.Updatable
-      | verify_email_tokens.Updatable;
-    export type UniqueIndex =
-      | membership_invitations.UniqueIndex
-      | memberships.UniqueIndex
-      | orgs.UniqueIndex
-      | password_reset_tokens.UniqueIndex
-      | schema_migrations.UniqueIndex
-      | users.UniqueIndex
-      | verify_email_tokens.UniqueIndex;
-    export type Column =
-      | membership_invitations.Column
-      | memberships.Column
-      | orgs.Column
-      | password_reset_tokens.Column
-      | schema_migrations.Column
-      | users.Column
-      | verify_email_tokens.Column;
-
-    export type AllBaseTables = [
-      membership_invitations.Table,
-      memberships.Table,
-      orgs.Table,
-      password_reset_tokens.Table,
-      schema_migrations.Table,
-      users.Table,
-      verify_email_tokens.Table,
-    ];
+  export namespace public {  
+    export type Table = membership_invitations.Table | memberships.Table | orgs.Table | password_reset_tokens.Table | schema_migrations.Table | users.Table | verify_email_tokens.Table;
+    export type Selectable = membership_invitations.Selectable | memberships.Selectable | orgs.Selectable | password_reset_tokens.Selectable | schema_migrations.Selectable | users.Selectable | verify_email_tokens.Selectable;
+    export type JSONSelectable = membership_invitations.JSONSelectable | memberships.JSONSelectable | orgs.JSONSelectable | password_reset_tokens.JSONSelectable | schema_migrations.JSONSelectable | users.JSONSelectable | verify_email_tokens.JSONSelectable;
+    export type Whereable = membership_invitations.Whereable | memberships.Whereable | orgs.Whereable | password_reset_tokens.Whereable | schema_migrations.Whereable | users.Whereable | verify_email_tokens.Whereable;
+    export type Insertable = membership_invitations.Insertable | memberships.Insertable | orgs.Insertable | password_reset_tokens.Insertable | schema_migrations.Insertable | users.Insertable | verify_email_tokens.Insertable;
+    export type Updatable = membership_invitations.Updatable | memberships.Updatable | orgs.Updatable | password_reset_tokens.Updatable | schema_migrations.Updatable | users.Updatable | verify_email_tokens.Updatable;
+    export type UniqueIndex = membership_invitations.UniqueIndex | memberships.UniqueIndex | orgs.UniqueIndex | password_reset_tokens.UniqueIndex | schema_migrations.UniqueIndex | users.UniqueIndex | verify_email_tokens.UniqueIndex;
+    export type Column = membership_invitations.Column | memberships.Column | orgs.Column | password_reset_tokens.Column | schema_migrations.Column | users.Column | verify_email_tokens.Column;
+  
+    export type AllBaseTables = [membership_invitations.Table, memberships.Table, orgs.Table, password_reset_tokens.Table, schema_migrations.Table, users.Table, verify_email_tokens.Table];
     export type AllForeignTables = [];
     export type AllViews = [];
     export type AllMaterializedViews = [];
-    export type AllTablesAndViews = [
-      membership_invitations.Table,
-      memberships.Table,
-      orgs.Table,
-      password_reset_tokens.Table,
-      schema_migrations.Table,
-      users.Table,
-      verify_email_tokens.Table,
-    ];
+    export type AllTablesAndViews = [membership_invitations.Table, memberships.Table, orgs.Table, password_reset_tokens.Table, schema_migrations.Table, users.Table, verify_email_tokens.Table];
   }
+
+
 
   /* === global aggregate types === */
 
@@ -2063,85 +1281,87 @@ declare module 'zapatos/schema' {
   export type AllMaterializedViews = [...public.AllMaterializedViews];
   export type AllTablesAndViews = [...public.AllTablesAndViews];
 
+
   /* === lookups === */
 
   export type SelectableForTable<T extends Table> = {
-    membership_invitations: membership_invitations.Selectable;
-    memberships: memberships.Selectable;
-    orgs: orgs.Selectable;
-    password_reset_tokens: password_reset_tokens.Selectable;
-    schema_migrations: schema_migrations.Selectable;
-    users: users.Selectable;
-    verify_email_tokens: verify_email_tokens.Selectable;
+    "membership_invitations": membership_invitations.Selectable;
+    "memberships": memberships.Selectable;
+    "orgs": orgs.Selectable;
+    "password_reset_tokens": password_reset_tokens.Selectable;
+    "schema_migrations": schema_migrations.Selectable;
+    "users": users.Selectable;
+    "verify_email_tokens": verify_email_tokens.Selectable;
   }[T];
 
   export type JSONSelectableForTable<T extends Table> = {
-    membership_invitations: membership_invitations.JSONSelectable;
-    memberships: memberships.JSONSelectable;
-    orgs: orgs.JSONSelectable;
-    password_reset_tokens: password_reset_tokens.JSONSelectable;
-    schema_migrations: schema_migrations.JSONSelectable;
-    users: users.JSONSelectable;
-    verify_email_tokens: verify_email_tokens.JSONSelectable;
+    "membership_invitations": membership_invitations.JSONSelectable;
+    "memberships": memberships.JSONSelectable;
+    "orgs": orgs.JSONSelectable;
+    "password_reset_tokens": password_reset_tokens.JSONSelectable;
+    "schema_migrations": schema_migrations.JSONSelectable;
+    "users": users.JSONSelectable;
+    "verify_email_tokens": verify_email_tokens.JSONSelectable;
   }[T];
 
   export type WhereableForTable<T extends Table> = {
-    membership_invitations: membership_invitations.Whereable;
-    memberships: memberships.Whereable;
-    orgs: orgs.Whereable;
-    password_reset_tokens: password_reset_tokens.Whereable;
-    schema_migrations: schema_migrations.Whereable;
-    users: users.Whereable;
-    verify_email_tokens: verify_email_tokens.Whereable;
+    "membership_invitations": membership_invitations.Whereable;
+    "memberships": memberships.Whereable;
+    "orgs": orgs.Whereable;
+    "password_reset_tokens": password_reset_tokens.Whereable;
+    "schema_migrations": schema_migrations.Whereable;
+    "users": users.Whereable;
+    "verify_email_tokens": verify_email_tokens.Whereable;
   }[T];
 
   export type InsertableForTable<T extends Table> = {
-    membership_invitations: membership_invitations.Insertable;
-    memberships: memberships.Insertable;
-    orgs: orgs.Insertable;
-    password_reset_tokens: password_reset_tokens.Insertable;
-    schema_migrations: schema_migrations.Insertable;
-    users: users.Insertable;
-    verify_email_tokens: verify_email_tokens.Insertable;
+    "membership_invitations": membership_invitations.Insertable;
+    "memberships": memberships.Insertable;
+    "orgs": orgs.Insertable;
+    "password_reset_tokens": password_reset_tokens.Insertable;
+    "schema_migrations": schema_migrations.Insertable;
+    "users": users.Insertable;
+    "verify_email_tokens": verify_email_tokens.Insertable;
   }[T];
 
   export type UpdatableForTable<T extends Table> = {
-    membership_invitations: membership_invitations.Updatable;
-    memberships: memberships.Updatable;
-    orgs: orgs.Updatable;
-    password_reset_tokens: password_reset_tokens.Updatable;
-    schema_migrations: schema_migrations.Updatable;
-    users: users.Updatable;
-    verify_email_tokens: verify_email_tokens.Updatable;
+    "membership_invitations": membership_invitations.Updatable;
+    "memberships": memberships.Updatable;
+    "orgs": orgs.Updatable;
+    "password_reset_tokens": password_reset_tokens.Updatable;
+    "schema_migrations": schema_migrations.Updatable;
+    "users": users.Updatable;
+    "verify_email_tokens": verify_email_tokens.Updatable;
   }[T];
 
   export type UniqueIndexForTable<T extends Table> = {
-    membership_invitations: membership_invitations.UniqueIndex;
-    memberships: memberships.UniqueIndex;
-    orgs: orgs.UniqueIndex;
-    password_reset_tokens: password_reset_tokens.UniqueIndex;
-    schema_migrations: schema_migrations.UniqueIndex;
-    users: users.UniqueIndex;
-    verify_email_tokens: verify_email_tokens.UniqueIndex;
+    "membership_invitations": membership_invitations.UniqueIndex;
+    "memberships": memberships.UniqueIndex;
+    "orgs": orgs.UniqueIndex;
+    "password_reset_tokens": password_reset_tokens.UniqueIndex;
+    "schema_migrations": schema_migrations.UniqueIndex;
+    "users": users.UniqueIndex;
+    "verify_email_tokens": verify_email_tokens.UniqueIndex;
   }[T];
 
   export type ColumnForTable<T extends Table> = {
-    membership_invitations: membership_invitations.Column;
-    memberships: memberships.Column;
-    orgs: orgs.Column;
-    password_reset_tokens: password_reset_tokens.Column;
-    schema_migrations: schema_migrations.Column;
-    users: users.Column;
-    verify_email_tokens: verify_email_tokens.Column;
+    "membership_invitations": membership_invitations.Column;
+    "memberships": memberships.Column;
+    "orgs": orgs.Column;
+    "password_reset_tokens": password_reset_tokens.Column;
+    "schema_migrations": schema_migrations.Column;
+    "users": users.Column;
+    "verify_email_tokens": verify_email_tokens.Column;
   }[T];
 
   export type SQLForTable<T extends Table> = {
-    membership_invitations: membership_invitations.SQL;
-    memberships: memberships.SQL;
-    orgs: orgs.SQL;
-    password_reset_tokens: password_reset_tokens.SQL;
-    schema_migrations: schema_migrations.SQL;
-    users: users.SQL;
-    verify_email_tokens: verify_email_tokens.SQL;
+    "membership_invitations": membership_invitations.SQL;
+    "memberships": memberships.SQL;
+    "orgs": orgs.SQL;
+    "password_reset_tokens": password_reset_tokens.SQL;
+    "schema_migrations": schema_migrations.SQL;
+    "users": users.SQL;
+    "verify_email_tokens": verify_email_tokens.SQL;
   }[T];
+
 }

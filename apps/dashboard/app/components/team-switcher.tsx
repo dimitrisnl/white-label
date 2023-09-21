@@ -31,7 +31,7 @@ export default function TeamSwitcher({
       label: 'Teams',
       teams: memberships.map((membership) => ({
         label: membership.org.name,
-        value: membership.org.id,
+        value: membership.org.slug,
       })),
     },
   ];

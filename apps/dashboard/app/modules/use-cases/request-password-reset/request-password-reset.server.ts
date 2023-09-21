@@ -1,7 +1,6 @@
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '@/database/db.server';
-import {sendEmail} from '@/mailer';
 import {User, Uuid} from '@/modules/domain/index.server';
 import {
   DatabaseError,
@@ -49,22 +48,10 @@ export function requestPasswordReset() {
 
       const user = yield* _(User.dbRecordToDomain(userRecord));
 
-      const resetTokenId = yield* _(Uuid.generate());
-      yield* _(createPasswordResetToken(resetTokenId, user.id));
+      const resetPasswordTokenId = yield* _(Uuid.generate());
+      yield* _(createPasswordResetToken(resetPasswordTokenId, user.id));
 
-      // todo: Get it from Context, Add message to queue, Write templates
-      yield* _(
-        sendEmail({
-          to: user.email,
-          subject: 'Password Reset',
-          content: {
-            type: 'PLAIN',
-            message: `Here's your token: ${resetTokenId}`,
-          },
-        })
-      );
-
-      return null;
+      return {email: user.email, resetPasswordTokenId};
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),

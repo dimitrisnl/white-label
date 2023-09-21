@@ -4,7 +4,7 @@ import {SettingsLoaderData} from './_loader.server';
 
 export function useSettingsData() {
   const {data: currentUser} = useTypedRouteLoaderData<SettingsLoaderData>(
-    'routes/teams/$orgId/account/_route'
+    'routes/teams/$slug/account/_route'
   )!;
 
   return {currentUser};
