@@ -30,6 +30,7 @@
     "clsx": "^1.2.1",
     "cmdk": "^0.2.0",
     "lucide-react": "^0.258.0",
+    "sonner": "^1.0.3",
     "tailwind-merge": "^1.13.2",
     "tailwindcss-animate": "^1.0.6"
   },

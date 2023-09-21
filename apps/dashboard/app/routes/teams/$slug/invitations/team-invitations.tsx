@@ -13,7 +13,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  useToast,
+  toast,
 } from '@white-label/ui-core';
 import {useEffect, useRef} from 'react';
 import {useTypedFetcher} from 'remix-typedjson';
@@ -22,25 +22,16 @@ import type {Action} from './_action.server';
 
 export function TeamInvitations() {
   const {Form, state, data} = useTypedFetcher<Action | undefined>();
-  const {toast} = useToast();
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (data?.ok === true) {
       formRef.current?.reset();
-      toast({
-        title: 'Invited!',
-        description: 'You have invited a new team member successfully',
-        variant: 'success',
-      });
+      toast.success('Invitation sent');
     } else if (data?.ok === false) {
-      toast({
-        title: 'An error occured',
-        description: 'Could not invite your teammate at this time',
-        variant: 'destructive',
-      });
+      toast.error('Could not invite your teammate at this time');
     }
-  }, [toast, data]);
+  }, [data]);
 
   return (
     <Form method="post" ref={formRef}>

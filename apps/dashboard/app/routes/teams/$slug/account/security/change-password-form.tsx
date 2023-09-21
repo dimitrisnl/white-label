@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
   Label,
-  useToast,
+  toast,
 } from '@white-label/ui-core';
 import React from 'react';
 import {useTypedFetcher} from 'remix-typedjson';
@@ -19,19 +19,14 @@ import type {Action} from './_action.server';
 
 export function ChangePasswordForm() {
   const {Form, data, state} = useTypedFetcher<Action | undefined>();
-  const {toast} = useToast();
   const formRef = React.useRef<HTMLFormElement>(null);
 
   React.useEffect(() => {
     if (data?.ok === true) {
       formRef.current?.reset();
-      toast({
-        title: 'Password changed',
-        description: 'Your password has been changed successfully',
-        variant: 'success',
-      });
+      toast.success('Password changed');
     }
-  }, [toast, data]);
+  }, [data]);
 
   return (
     <Form method="patch" ref={formRef}>

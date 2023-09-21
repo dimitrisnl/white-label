@@ -8,7 +8,7 @@ import {
   CardTitle,
   Input,
   Label,
-  useToast,
+  toast,
 } from '@white-label/ui-core';
 import React from 'react';
 import {useTypedFetcher} from 'remix-typedjson';
@@ -19,17 +19,12 @@ import type {Action} from './_action.server';
 
 export function TeamInfo({initialName}: {initialName: string}) {
   const {Form, state, data} = useTypedFetcher<Action | undefined>();
-  const {toast} = useToast();
 
   React.useEffect(() => {
     if (data?.ok === true) {
-      toast({
-        title: 'Team name changed',
-        description: "Your team's name has been changed successfully",
-        variant: 'success',
-      });
+      toast.success('Team name changed');
     }
-  }, [toast, data]);
+  }, [data]);
 
   return (
     <Form method="patch">
