@@ -24,7 +24,7 @@ export function LoginForm() {
 
   return (
     <Form method="post">
-      <Card className="w-[480px] border-t-4 border-t-blue-700 p-2">
+      <Card className="w-[480px] border-t-4 border-t-blue-700">
         <CardHeader>
           <CardTitle>Log in to your account</CardTitle>
           <CardDescription>Welcome back!</CardDescription>

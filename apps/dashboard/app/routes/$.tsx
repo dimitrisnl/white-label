@@ -16,7 +16,7 @@ export default function FourOhFour() {
   return (
     <GuestLayout>
       <div className="flex h-full flex-col items-center justify-center">
-        <Card className="border-t-4 border-t-blue-700 p-2">
+        <Card className="border-t-4 border-t-blue-700">
           <CardHeader>
             <CardTitle>Page not found</CardTitle>
             <CardDescription>404</CardDescription>

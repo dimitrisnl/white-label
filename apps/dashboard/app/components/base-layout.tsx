@@ -10,7 +10,7 @@ import {MainNav} from './main-nav';
 function UpdatesPopover() {
   return (
     <Popover>
-      <PopoverTrigger className='   className="-m-2.5 hover:text-gray-500" p-2.5 text-gray-400'>
+      <PopoverTrigger className='hover:text-gray-500" -m-2.5 p-2.5 text-gray-400'>
         <span className="sr-only">View notifications</span>
         <BellIcon className="h-5 w-5" aria-hidden="true" />
       </PopoverTrigger>

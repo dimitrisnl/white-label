@@ -13,7 +13,7 @@ import {GuestLayout} from '@/components/guest-layout';
 export function VerificationSuccessMessage() {
   return (
     <GuestLayout>
-      <Card className="w-[480px] border-t-4 border-t-blue-700 p-2">
+      <Card className="w-[480px] border-t-4 border-t-blue-700">
         <CardHeader>
           <CardTitle>Success!</CardTitle>
         </CardHeader>

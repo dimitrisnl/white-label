@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@white-label/ui-core';
@@ -79,7 +78,6 @@ export function TeamList({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between"></CardFooter>
     </Card>
   );
 }

@@ -21,7 +21,7 @@ export function TeamInfo() {
 
   return (
     <Form method="post">
-      <Card className="min-w-[400px] border-t-4 border-t-blue-700 p-2">
+      <Card className="min-w-[400px] border-t-4 border-t-blue-700">
         <CardHeader>
           <CardTitle>Create your team</CardTitle>
           <CardDescription>
