@@ -21,7 +21,7 @@ export default function InvitationsPage() {
   } = useTypedLoaderData<InvitationsLoaderData>();
 
   return (
-    <div className="grid grid-cols-2 items-start gap-8">
+    <div className="grid gap-8">
       <TeamInvitations />
       <Invitees invitations={invitations} />
     </div>

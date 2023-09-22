@@ -5,7 +5,7 @@ import {BaseOrgLoader} from './_loader.server';
 export function useOrgData() {
   const {
     data: {org, currentUser},
-  } = useTypedRouteLoaderData<BaseOrgLoader>('routes/teams/$slug/_route')!;
+  } = useTypedRouteLoaderData<BaseOrgLoader>('routes/teams/$slug/_layout')!;
 
   return {
     org,

@@ -30,7 +30,7 @@ export function ErrorPage({
           </CardHeader>
           <CardContent>{messages}</CardContent>
           <CardFooter className="justify-center">
-            <Link to="/" className={buttonVariants({variant: 'default'})}>
+            <Link to="/teams" className={buttonVariants({variant: 'default'})}>
               Back to Home
             </Link>
           </CardFooter>

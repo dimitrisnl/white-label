@@ -39,38 +39,6 @@ export function UserNav({user}: {user: User.User}) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <NavLink
-              to={`/teams/${slug}/account`}
-              className={({isActive}) =>
-                cn('flex w-full items-center transition-colors', {
-                  'text-primary': isActive,
-                })
-              }
-            >
-              <SettingsIcon className=" mr-2 h-4 w-4" />
-              <span>Settings</span>
-            </NavLink>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <NavLink
-              to="/teams"
-              end={true}
-              className={({isActive}) =>
-                cn('flex w-full items-center transition-colors', {
-                  'text-primary': isActive,
-                })
-              }
-            >
-              <Building2Icon className=" mr-2 h-4 w-4" />
-              <span>Teams</span>
-            </NavLink>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Link to="/logout" className="flex w-full items-center">
             <LogOutIcon className="mr-2 h-4 w-4" />

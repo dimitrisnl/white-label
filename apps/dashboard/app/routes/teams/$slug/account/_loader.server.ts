@@ -24,4 +24,4 @@ export const loader = withLoader(
   )
 );
 
-export type SettingsLoaderData = typeof loader;
+export type AccountLoaderData = typeof loader;
