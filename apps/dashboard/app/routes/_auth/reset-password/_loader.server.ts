@@ -7,18 +7,15 @@ import {LoaderArgs, withLoader} from '@/modules/with-loader.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
-    const {request} = yield* _(LoaderArgs);
-
-    const token = new URL(request.url).searchParams.get('token');
+    const {params} = yield* _(LoaderArgs);
+    const {token} = params;
 
     if (!token) {
       return yield* _(Effect.fail(new PasswordResetTokenNotFoundError()));
     }
 
     const {validate, execute} = verifyPasswordReset();
-
     const props = yield* _(validate({token}));
-
     yield* _(execute(props));
 
     return new Ok({data: {token}});

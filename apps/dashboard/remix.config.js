@@ -11,6 +11,9 @@ module.exports = {
     'nock',
     'mock-aws-s3',
     'aws-sdk',
+    '@sindresorhus/slugify',
+    'escape-string-regexp',
+    '@sindresorhus/transliterate',
   ],
   ignoredRouteFiles: ['**/*'],
   routes: async (defineRoutes) => {

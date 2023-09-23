@@ -1,4 +1,4 @@
-import {Link, NavLink} from '@remix-run/react';
+import {Link, NavLink, useParams} from '@remix-run/react';
 import {
   Button,
   cn,
@@ -16,6 +16,7 @@ import {Building2Icon, LogOutIcon, SettingsIcon} from 'lucide-react';
 import type {User} from '@/modules/domain/index.server';
 
 export function UserNav({user}: {user: User.User}) {
+  const {slug} = useParams();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -37,37 +38,6 @@ export function UserNav({user}: {user: User.User}) {
             </p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <NavLink
-              to="/settings"
-              className={({isActive}) =>
-                cn('flex w-full items-center transition-colors', {
-                  'text-primary': isActive,
-                })
-              }
-            >
-              <SettingsIcon className=" mr-2 h-4 w-4" />
-              <span>Settings</span>
-            </NavLink>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <NavLink
-              to="/teams"
-              className={({isActive}) =>
-                cn('flex w-full items-center transition-colors', {
-                  'text-primary': isActive,
-                })
-              }
-            >
-              <Building2Icon className=" mr-2 h-4 w-4" />
-              <span>Teams</span>
-            </NavLink>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Link to="/logout" className="flex w-full items-center">

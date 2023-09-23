@@ -14,8 +14,6 @@ export * from './src/ui/label';
 export * from './src/ui/avatar';
 export * from './src/ui/alert';
 
-export * from './src/ui/toast/toast';
-export * from './src/ui/toast/toaster';
-export * from './src/ui/toast/use-toast';
+export * from './src/ui/toast';
 
 export {cn} from './src/lib/utils';

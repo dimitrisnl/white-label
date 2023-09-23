@@ -22,7 +22,7 @@ export function ForgotPasswordForm() {
 
   if (data?.ok === true) {
     return (
-      <Card className="w-[480px] border-t-4 border-t-blue-700 p-2">
+      <Card className="w-[480px] border-t-4 border-t-blue-700">
         <CardHeader>
           <CardTitle>Email sent</CardTitle>
         </CardHeader>
@@ -44,7 +44,7 @@ export function ForgotPasswordForm() {
 
   return (
     <Form method="post">
-      <Card className="w-[480px] border-t-4 border-t-blue-700 p-2">
+      <Card className="w-[480px] border-t-4 border-t-blue-700">
         <CardHeader>
           <CardTitle>Forgot your password?</CardTitle>
           <CardDescription className="pr-12">

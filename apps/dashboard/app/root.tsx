@@ -43,7 +43,7 @@ export default function App() {
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
-        <Toaster />
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );

@@ -23,14 +23,14 @@ export function ErrorPage({
   return (
     <GuestLayout>
       <div className="flex h-full flex-col items-center justify-center text-center">
-        <Card className="min-w-[400px] border-t-4 border-t-blue-700 p-2">
+        <Card className="min-w-[400px] border-t-4 border-t-blue-700">
           <CardHeader>
             <CardDescription>{statusCode}</CardDescription>
             <CardTitle>Something went wrong</CardTitle>
           </CardHeader>
           <CardContent>{messages}</CardContent>
           <CardFooter className="justify-center">
-            <Link to="/" className={buttonVariants({variant: 'default'})}>
+            <Link to="/teams" className={buttonVariants({variant: 'default'})}>
               Back to Home
             </Link>
           </CardFooter>

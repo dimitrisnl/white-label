@@ -14,7 +14,7 @@ import {GuestLayout} from '@/components/guest-layout';
 export function InvalidTokenErrorMessage() {
   return (
     <GuestLayout>
-      <Card className="w-[480px] border-t-4 border-t-blue-700 p-2">
+      <Card className="w-[480px] border-t-4 border-t-blue-700">
         <CardHeader>
           <div className="mb-4 h-10 w-10 rounded-full bg-red-100 p-2">
             <MailWarningIcon className="h-full w-full text-red-600" />

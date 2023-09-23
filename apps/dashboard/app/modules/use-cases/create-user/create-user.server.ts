@@ -2,13 +2,7 @@ import * as Effect from 'effect/Effect';
 
 import {db, pool} from '@/database/db.server';
 import {UNIQUE_CONTRAINT} from '@/database/pg-error';
-import {sendEmail} from '@/mailer';
-import {
-  MembershipRole,
-  Password,
-  User,
-  Uuid,
-} from '@/modules/domain/index.server';
+import {Password, User, Uuid} from '@/modules/domain/index.server';
 import {
   AccountAlreadyExistsError,
   DatabaseError,
@@ -43,39 +37,12 @@ function createUserRecord({
     catch: (error) => {
       // todo: fix
       // @ts-expect-error
-      if (error && error.code === UNIQUE_CONTRAINT) {
+      if (error && error.code == UNIQUE_CONTRAINT) {
         return new AccountAlreadyExistsError();
       }
 
       return new DatabaseError();
     },
-  });
-}
-
-function createOrgRecord({id, name}: {id: Uuid.Uuid; name: User.User['name']}) {
-  return Effect.tryPromise({
-    try: () => db.insert('orgs', {id, name}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
-function createMembershipRecord({
-  orgId,
-  userId,
-}: {
-  orgId: Uuid.Uuid;
-  userId: Uuid.Uuid;
-}) {
-  return Effect.tryPromise({
-    try: () =>
-      db
-        .insert('memberships', {
-          org_id: orgId,
-          user_id: userId,
-          role: MembershipRole.OWNER,
-        })
-        .run(pool),
-    catch: () => new DatabaseError(),
   });
 }
 
@@ -101,27 +68,12 @@ export function createUser() {
       const userRecord = yield* _(
         createUserRecord({email, name, passwordHash, id: userId})
       );
-      const orgId = yield* _(Uuid.generate());
-      yield* _(createOrgRecord({name: 'My Team', id: orgId}));
-      yield* _(createMembershipRecord({orgId, userId}));
       const user = yield* _(User.dbRecordToDomain(userRecord));
 
       const verifyEmailTokenId = yield* _(Uuid.generate());
       yield* _(createVerifyEmailToken(verifyEmailTokenId, user.id));
 
-      // todo: Get it from Context, Add message to queue, Write templates
-      yield* _(
-        sendEmail({
-          to: user.email,
-          subject: 'Verify your email',
-          content: {
-            type: 'PLAIN',
-            message: `Here's your token: ${verifyEmailTokenId}`,
-          },
-        })
-      );
-
-      return {user};
+      return {user, verifyEmailTokenId};
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),

@@ -10,24 +10,25 @@ import {
 
 function selectUserRecord(id: User.User['id']) {
   return Effect.tryPromise({
-    try: () => db.selectOne('users', {id}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
-function selectMembershipRecords(userId: User.User['id']) {
-  return Effect.tryPromise({
     try: () =>
       db
-        .select(
-          'memberships',
-          {user_id: userId},
+        .selectOne(
+          'users',
+          {id},
           {
             lateral: {
-              org: db.selectExactlyOne(
-                'orgs',
-                {id: db.parent('org_id')},
-                {columns: ['name']}
+              memberships: db.select(
+                'memberships',
+                {user_id: id},
+                {
+                  lateral: {
+                    org: db.selectExactlyOne(
+                      'orgs',
+                      {id: db.parent('org_id')},
+                      {columns: ['name', 'slug']}
+                    ),
+                  },
+                }
               ),
             },
           }
@@ -47,15 +48,18 @@ export function whoAmI() {
       }
 
       const user = yield* _(User.dbRecordToDomain(userRecord));
-
-      const membershipRecords = yield* _(selectMembershipRecords(userId));
+      const membershipRecords = userRecord.memberships;
 
       const memberships = yield* _(
         Effect.all(
           membershipRecords.map((membershipRecord) =>
             Membership.dbRecordToDomain(
               membershipRecord,
-              {name: membershipRecord.org.name, id: membershipRecord.org_id},
+              {
+                name: membershipRecord.org.name,
+                id: membershipRecord.org_id,
+                slug: membershipRecord.org.slug,
+              },
               {name: user.name, id: user.id, email: user.email}
             )
           )

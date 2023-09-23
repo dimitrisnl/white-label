@@ -1,17 +1,38 @@
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '@/database/db.server';
+import {UNIQUE_CONTRAINT} from '@/database/pg-error';
 import type {User} from '@/modules/domain/index.server';
 import {MembershipRole, Org, Uuid} from '@/modules/domain/index.server';
-import {DatabaseError, InternalServerError} from '@/modules/errors.server';
+import {
+  DatabaseError,
+  InternalServerError,
+  SlugAlreadyExistsError,
+} from '@/modules/errors.server';
 
 import type {CreateOrgProps} from './validation.server';
 import {validate} from './validation.server';
 
-function insertOrg({id, name}: {id: Uuid.Uuid; name: Org.Org['name']}) {
+function insertOrg({
+  id,
+  name,
+  slug,
+}: {
+  id: Uuid.Uuid;
+  name: Org.Org['name'];
+  slug: Org.Org['slug'];
+}) {
   return Effect.tryPromise({
-    try: () => db.insert('orgs', {id, name: name}).run(pool),
-    catch: () => new DatabaseError(),
+    try: () => db.insert('orgs', {id, name, slug}).run(pool),
+    catch: (error) => {
+      // todo: fix
+      // @ts-expect-error
+      if (error && error.code == UNIQUE_CONTRAINT) {
+        return new SlugAlreadyExistsError();
+      }
+
+      return new DatabaseError();
+    },
   });
 }
 
@@ -34,7 +55,8 @@ export function createOrg() {
     const {name} = props;
     return Effect.gen(function* (_) {
       const orgId = yield* _(Uuid.generate());
-      const orgRecord = yield* _(insertOrg({name, id: orgId}));
+      const slug = yield* _(Org.slugify(name));
+      const orgRecord = yield* _(insertOrg({name, id: orgId, slug}));
       const org = yield* _(Org.dbRecordToDomain(orgRecord));
       yield* _(insertMembership(org.id, userId));
 
@@ -44,6 +66,7 @@ export function createOrg() {
         DatabaseError: () => Effect.fail(new InternalServerError()),
         DbRecordParseError: () => Effect.fail(new InternalServerError()),
         UUIDGenerationError: () => Effect.fail(new InternalServerError()),
+        SlugAlreadyExistsError: () => Effect.fail(new InternalServerError()),
       })
     );
   }

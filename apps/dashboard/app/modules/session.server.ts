@@ -2,10 +2,6 @@ import {createCookieSessionStorage} from '@remix-run/node';
 import * as Effect from 'effect/Effect';
 import zod from 'zod';
 
-import {User} from '@/modules/domain/index.server';
-import {getUser, whoAmI} from '@/modules/use-cases/index.server';
-
-import {SessionNotFoundError} from './errors.server';
 import {Redirect} from './responses.server';
 
 const envValidationSchema = zod.object({
@@ -14,7 +10,7 @@ const envValidationSchema = zod.object({
 
 // Throw on-load if missing
 const config = envValidationSchema.parse(process.env);
-const USER_SESSION_KEY = 'userId';
+export const USER_SESSION_KEY = 'userId';
 
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
@@ -31,40 +27,6 @@ export const sessionStorage = createCookieSessionStorage({
 export function getSession(request: Request) {
   const cookie = request.headers.get('Cookie');
   return Effect.promise(() => sessionStorage.getSession(cookie));
-}
-
-// Full response, including memberships
-export function requireUser(request: Request) {
-  return Effect.gen(function* (_) {
-    const session = yield* _(getSession(request));
-    const userId = yield* _(User.parseId(session.get(USER_SESSION_KEY)));
-    const {user, memberships} = yield* _(whoAmI().execute(userId));
-
-    return {
-      currentUser: {user, memberships},
-    };
-  }).pipe(
-    Effect.catchTags({
-      ValidationError: () => Effect.fail(new SessionNotFoundError()),
-      UserNotFoundError: () => Effect.fail(new SessionNotFoundError()),
-    })
-  );
-}
-
-// Light response, ony user object
-export function requireUserId(request: Request) {
-  return Effect.gen(function* (_) {
-    const session = yield* _(getSession(request));
-    const userId = yield* _(User.parseId(session.get(USER_SESSION_KEY)));
-    const {user} = yield* _(getUser().execute(userId));
-
-    return user.id;
-  }).pipe(
-    Effect.catchTags({
-      ValidationError: () => Effect.fail(new SessionNotFoundError()),
-      UserNotFoundError: () => Effect.fail(new SessionNotFoundError()),
-    })
-  );
 }
 
 export function logout(request: Request) {

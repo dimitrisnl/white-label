@@ -2,29 +2,17 @@ import type {MetaFunction} from '@remix-run/node';
 import * as Effect from 'effect/Effect';
 
 import {ErrorPage} from '@/components/error-page';
+import {getCurrentUserDetails} from '@/modules/helpers.server';
+import {decideNextTeamRedirect} from '@/modules/navigation.server';
 import {Redirect, ServerError} from '@/modules/responses.server';
-import {requireUser} from '@/modules/session.server';
 import {LoaderArgs, withLoader} from '@/modules/with-loader.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
     const {request} = yield* _(LoaderArgs);
-    const {currentUser} = yield* _(requireUser(request));
+    const {memberships} = yield* _(getCurrentUserDetails(request));
 
-    const {memberships} = currentUser;
-
-    // Let them pick their org
-    if (memberships.length > 1) {
-      return new Redirect({
-        to: `/teams`,
-        init: request,
-      });
-    }
-
-    return new Redirect({
-      to: `/teams/${memberships[0].org.id}`,
-      init: request,
-    });
+    return decideNextTeamRedirect(memberships, request);
   }).pipe(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError({})),

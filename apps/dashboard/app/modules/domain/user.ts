@@ -1,7 +1,11 @@
 import * as Effect from 'effect/Effect';
 import zod from 'zod';
 
-import {DbRecordParseError, ValidationError} from '../errors.server';
+import {
+  DbRecordParseError,
+  ParseUserIdError,
+  ValidationError,
+} from '../errors.server';
 import * as DateString from './date';
 import * as Email from './email';
 import * as Uuid from './uuid';
@@ -41,7 +45,7 @@ export function parse(value: unknown) {
 export function parseId(value: unknown) {
   return Effect.try({
     try: () => userIdValidationSchema.parse(value),
-    catch: () => new ValidationError(),
+    catch: () => new ParseUserIdError(),
   });
 }
 
