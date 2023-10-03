@@ -1,19 +1,19 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
-import zod from 'zod';
 
 import {Password, Uuid} from '@/modules/domain/index.server';
 import {ValidationError} from '@/modules/errors.server';
 
-const validationSchema = zod.object({
-  password: Password.validationSchema,
-  token: Uuid.validationSchema,
+const validationSchema = Schema.struct({
+  password: Password.passwordSchema,
+  token: Uuid.uuidSchema,
 });
 
 export function validate(value: unknown) {
   return Effect.try({
-    try: () => validationSchema.parse(value),
+    try: () => Schema.parseSync(validationSchema)(value),
     catch: () => new ValidationError(),
   });
 }
 
-export type ResetPasswordProps = zod.infer<typeof validationSchema>;
+export type ResetPasswordProps = Schema.Schema.To<typeof validationSchema>;

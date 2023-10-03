@@ -1,21 +1,22 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
-import zod from 'zod';
 
 import {ValidationError} from '../errors.server';
 
-export const validationSchema = zod
-  .string({
-    required_error: 'Email is required',
-  })
-  .email({
-    message: 'Invalid email address',
-  });
+const emailRegex =
+  /^([A-Z0-9_+-]+\.?)*[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i;
 
-export type Email = zod.infer<typeof validationSchema>;
+const EmailBrand = Symbol.for('EmailBrand');
+
+export const emailSchema = Schema.string.pipe(
+  Schema.pattern(emailRegex),
+  Schema.brand(EmailBrand)
+);
+export type Email = Schema.Schema.To<typeof emailSchema>;
 
 export function parse(value: unknown) {
   return Effect.try({
-    try: () => validationSchema.parse(value),
+    try: () => Schema.parseSync(emailSchema)(value),
     catch: () => new ValidationError(),
   });
 }

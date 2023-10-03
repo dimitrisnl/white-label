@@ -1,25 +1,25 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
-import zod from 'zod';
 
 import {ValidationError} from '../errors.server';
 import * as DateString from './date';
 import * as Uuid from './uuid';
 
-const validationSchema = zod
-  .object({
-    id: Uuid.validationSchema,
-    userId: Uuid.validationSchema,
-    expiresAt: DateString.validationSchema,
-    createdAt: DateString.validationSchema,
-    updatedAt: DateString.validationSchema,
-  })
-  .brand('VerifyEmailToken');
+const VerifyEmailTokenBrand = Symbol.for('VerifyEmailTokenBrand');
 
-export type VerifyEmailToken = zod.infer<typeof validationSchema>;
+export const verifyEmailTokenSchema = Schema.struct({
+  id: Uuid.uuidSchema,
+  userId: Uuid.uuidSchema,
+  expiresAt: DateString.dateSchema,
+  createdAt: DateString.dateSchema,
+  updatedAt: DateString.dateSchema,
+}).pipe(Schema.brand(VerifyEmailTokenBrand));
+
+export type VerifyEmailToken = Schema.Schema.To<typeof verifyEmailTokenSchema>;
 
 export function parse(value: unknown) {
   return Effect.try({
-    try: () => validationSchema.parse(value),
+    try: () => Schema.parseSync(verifyEmailTokenSchema)(value),
     catch: () => new ValidationError(),
   });
 }

@@ -1,18 +1,18 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
-import zod from 'zod';
 
 import {Org} from '@/modules/domain/index.server';
 import {ValidationError} from '@/modules/errors.server';
 
-const validationSchema = zod.object({
-  name: Org.orgNameValidationSchema,
+const validationSchema = Schema.struct({
+  name: Org.orgNameSchema,
 });
 
 export function validate(value: unknown) {
   return Effect.try({
-    try: () => validationSchema.parse(value),
+    try: () => Schema.parseSync(validationSchema)(value),
     catch: () => new ValidationError(),
   });
 }
 
-export type EditOrgProps = zod.infer<typeof validationSchema>;
+export type EditOrgProps = Schema.Schema.To<typeof validationSchema>;

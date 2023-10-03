@@ -1,5 +1,5 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
-import zod from 'zod';
 
 import {ValidationError} from '../errors.server';
 
@@ -8,15 +8,20 @@ export const ACCEPTED = 'ACCEPTED' as const;
 export const DECLINED = 'DECLINED' as const;
 export const EXPIRED = 'EXPIRED' as const;
 
-export const validationSchema = zod
-  .enum([PENDING, ACCEPTED, DECLINED, EXPIRED])
-  .brand('InviteStatus');
+const InviteStatusBrand = Symbol.for('InviteStatusBrand');
 
-export type InviteStatus = zod.infer<typeof validationSchema>;
+export const inviteStatusSchema = Schema.literal(
+  PENDING,
+  ACCEPTED,
+  DECLINED,
+  EXPIRED
+).pipe(Schema.brand(InviteStatusBrand));
+
+export type InviteStatus = Schema.Schema.To<typeof inviteStatusSchema>;
 
 export function parse(value: unknown) {
   return Effect.try({
-    try: () => validationSchema.parse(value),
+    try: () => Schema.parseSync(inviteStatusSchema)(value),
     catch: () => new ValidationError(),
   });
 }

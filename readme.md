@@ -7,16 +7,14 @@ This is a ["white-label"](https://en.wikipedia.org/wiki/White-label_product) pro
 ### Technologies
 
 - **Remix**
-- **PNPM Workspaces** 
+- **PNPM Workspaces**
 - **Effect-TS**
-- **Zod**:(soon to be replaced by `effect-ts/schema`)
 - **RadixUI**
 - **Zapatos**
 
 As for the rest, I'll be using `PostgreSQL`, with the idea of dockerizing it all and deploying on Digital Ocean. [Postmark](https://postmarkapp.com/) was also very reliable in the past for me, so this would be my SMTP service of choice. For the dev environment, I use [Mailtrap](https://mailtrap.io/).
 
 As for the design approach, I don't use any specific (like DDD), although I try to make it as flexible as possible.
-
 
 ### Goals & Features
 

@@ -1,27 +1,27 @@
 import 'dotenv/config';
 
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 import {pipe} from 'effect/Function';
 import {createTransport} from 'nodemailer';
-import zod from 'zod';
 
-const envValidationSchema = zod.object({
-  SMTP_HOST: zod.string().min(2),
-  SMTP_SECURE: zod.coerce.boolean(),
-  SMTP_USER: zod.string().min(2),
-  SMTP_PASSWORD: zod.string().min(2),
-  SMTP_PORT: zod.coerce.number(),
-  //
-  EMAIL_FROM: zod.string().min(2),
+const envValidationSchema = Schema.struct({
+  SMTP_HOST: Schema.string.pipe(Schema.minLength(2)),
+  SMTP_USER: Schema.string.pipe(Schema.minLength(2)),
+  SMTP_PASSWORD: Schema.string.pipe(Schema.minLength(2)),
+  SMTP_PORT: Schema.NumberFromString,
+  SMTP_SECURE: Schema.string.pipe(Schema.nonEmpty()),
+
+  EMAIL_FROM: Schema.string.pipe(Schema.minLength(5), Schema.endsWith('.com')),
 });
 
 // Throw on-load if missing
-const config = envValidationSchema.parse(process.env);
+const config = Schema.parseSync(envValidationSchema)(process.env);
 
 const transporter = createTransport({
   host: config.SMTP_HOST,
   port: config.SMTP_PORT,
-  secure: config.SMTP_SECURE,
+  secure: config.SMTP_SECURE === 'true',
   auth: {
     user: config.SMTP_USER,
     pass: config.SMTP_PASSWORD,

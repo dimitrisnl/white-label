@@ -1,15 +1,15 @@
+import * as Schema from '@effect/schema/Schema';
 import {createCookieSessionStorage} from '@remix-run/node';
 import * as Effect from 'effect/Effect';
-import zod from 'zod';
 
 import {Redirect} from './responses.server';
 
-const envValidationSchema = zod.object({
-  SESSION_SECRET: zod.string().nonempty(),
+const envValidationSchema = Schema.struct({
+  SESSION_SECRET: Schema.string.pipe(Schema.nonEmpty()),
 });
 
 // Throw on-load if missing
-const config = envValidationSchema.parse(process.env);
+const config = Schema.parseSync(envValidationSchema)(process.env);
 export const USER_SESSION_KEY = 'userId';
 
 export const sessionStorage = createCookieSessionStorage({

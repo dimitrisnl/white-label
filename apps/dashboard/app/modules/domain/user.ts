@@ -1,5 +1,5 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
-import zod from 'zod';
 
 import {
   DbRecordParseError,
@@ -10,41 +10,38 @@ import * as DateString from './date';
 import * as Email from './email';
 import * as Uuid from './uuid';
 
-export const userNameValidationSchema = zod
-  .string({
-    required_error: 'Name is required',
-  })
-  .min(2, {
-    message: 'Name must be at least 2 characters',
-  });
+const UserBrand = Symbol.for('UserBrand');
+const UserIdBrand = Symbol.for('UserIdBrand');
 
-export const userIdValidationSchema = Uuid.validationSchema.brand('UserId');
+export const userNameSchema = Schema.string.pipe(
+  Schema.trim,
+  Schema.minLength(2),
+  Schema.maxLength(100)
+);
 
-export const validationSchema = zod
-  .object({
-    id: Uuid.validationSchema.brand('UserId'),
-    name: userNameValidationSchema,
-    email: Email.validationSchema,
-    emailVerified: zod.boolean({
-      required_error: 'Email verified is required',
-    }),
-    createdAt: DateString.validationSchema,
-    updatedAt: DateString.validationSchema,
-  })
-  .brand('User');
+export const userIdSchema = Uuid.uuidSchema.pipe(Schema.brand(UserIdBrand));
 
-export type User = zod.infer<typeof validationSchema>;
+export const userSchema = Schema.struct({
+  id: userIdSchema,
+  name: userNameSchema,
+  email: Email.emailSchema,
+  emailVerified: Schema.boolean,
+  createdAt: DateString.dateSchema,
+  updatedAt: DateString.dateSchema,
+}).pipe(Schema.brand(UserBrand));
+
+export type User = Schema.Schema.To<typeof userSchema>;
 
 export function parse(value: unknown) {
   return Effect.try({
-    try: () => validationSchema.parse(value),
+    try: () => Schema.parseSync(userSchema)(value),
     catch: () => new ValidationError(),
   });
 }
 
 export function parseId(value: unknown) {
   return Effect.try({
-    try: () => userIdValidationSchema.parse(value),
+    try: () => Schema.parseSync(userIdSchema)(value),
     catch: () => new ParseUserIdError(),
   });
 }

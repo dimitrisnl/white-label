@@ -1,23 +1,18 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 import {v4 as uuidv4} from 'uuid';
-import zod from 'zod';
 
 import {UUIDGenerationError, ValidationError} from '../errors.server';
 
-export const validationSchema = zod
-  .string({
-    required_error: 'Id is required',
-  })
-  .uuid({
-    message: 'Invalid id',
-  })
-  .brand('Uuid');
+const UuidBrand = Symbol.for('UuidBrand');
 
-export type Uuid = zod.infer<typeof validationSchema>;
+export const uuidSchema = Schema.UUID.pipe(Schema.brand(UuidBrand));
+
+export type Uuid = Schema.Schema.To<typeof uuidSchema>;
 
 export function parse(value: unknown) {
   return Effect.try({
-    try: () => validationSchema.parse(value),
+    try: () => Schema.parseSync(uuidSchema)(value),
     catch: () => new ValidationError(),
   });
 }
