@@ -1,18 +1,17 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
-import zod from 'zod';
 
 import {ValidationError} from '../errors.server';
 
-export const validationSchema = zod
-  .string()
-  .or(zod.date())
-  .transform((arg) => new Date(arg));
+const DateBrand = Symbol.for('DateBrand');
 
-export type DateString = zod.infer<typeof validationSchema>;
+export const dateSchema = Schema.Date.pipe(Schema.brand(DateBrand));
+
+export type Date = Schema.Schema.To<typeof dateSchema>;
 
 export function parse(value: unknown) {
   return Effect.try({
-    try: () => validationSchema.parse(value),
+    try: () => Schema.parseSync(dateSchema)(value),
     catch: () => new ValidationError(),
   });
 }

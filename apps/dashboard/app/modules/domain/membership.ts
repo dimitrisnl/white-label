@@ -1,5 +1,5 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
-import zod from 'zod';
 
 import {DbRecordParseError, ValidationError} from '../errors.server';
 import * as DateString from './date';
@@ -8,29 +8,29 @@ import * as MembershipRole from './membership-role';
 import * as Org from './org';
 import * as User from './user';
 
-export const validationSchema = zod
-  .object({
-    org: zod.object({
-      name: Org.orgNameValidationSchema,
-      id: Org.orgIdValidationSchema,
-      slug: Org.orgSlugValidationSchema,
-    }),
-    user: zod.object({
-      name: User.userNameValidationSchema,
-      id: User.userIdValidationSchema,
-      email: Email.validationSchema,
-    }),
-    role: MembershipRole.validationSchema,
-    createdAt: DateString.validationSchema,
-    updatedAt: DateString.validationSchema,
-  })
-  .brand('Membership');
+const MembershipBrand = Symbol.for('MembershipBrand');
 
-export type Membership = zod.infer<typeof validationSchema>;
+export const membershipSchema = Schema.struct({
+  org: Schema.struct({
+    name: Org.orgNameSchema,
+    id: Org.orgIdSchema,
+    slug: Org.orgSlugSchema,
+  }),
+  user: Schema.struct({
+    name: User.userNameSchema,
+    id: User.userIdSchema,
+    email: Email.emailSchema,
+  }),
+  role: MembershipRole.membershipRoleSchema,
+  createdAt: DateString.dateSchema,
+  updatedAt: DateString.dateSchema,
+}).pipe(Schema.brand(MembershipBrand));
+
+export type Membership = Schema.Schema.To<typeof membershipSchema>;
 
 export function parse(value: unknown) {
   return Effect.try({
-    try: () => validationSchema.parse(value),
+    try: () => Schema.parseSync(membershipSchema)(value),
     catch: () => new ValidationError(),
   });
 }

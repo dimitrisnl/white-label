@@ -1,19 +1,19 @@
 import 'dotenv/config';
 
+import * as Schema from '@effect/schema/Schema';
 import {Pool} from 'pg';
 import * as db from 'zapatos/db';
-import zod from 'zod';
 
-const envValidationSchema = zod.object({
-  DB_USER: zod.string().min(2),
-  DB_HOST: zod.string().min(2),
-  DB_NAME: zod.string().min(2),
-  DB_PASSWORD: zod.string().min(2),
-  DB_PORT: zod.coerce.number(),
+const envValidationSchema = Schema.struct({
+  DB_USER: Schema.string.pipe(Schema.minLength(2)),
+  DB_HOST: Schema.string.pipe(Schema.minLength(2)),
+  DB_NAME: Schema.string.pipe(Schema.minLength(2)),
+  DB_PASSWORD: Schema.string.pipe(Schema.minLength(2)),
+  DB_PORT: Schema.NumberFromString,
 });
 
 // Throw on-load if missing
-const config = envValidationSchema.parse(process.env);
+const config = Schema.parseSync(envValidationSchema)(process.env);
 
 const pool = new Pool({
   user: config.DB_USER,

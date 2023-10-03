@@ -1,19 +1,19 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
-import zod from 'zod';
 
 import {Email, MembershipRole} from '@/modules/domain/index.server';
 import {ValidationError} from '@/modules/errors.server';
 
-const validationSchema = zod.object({
-  email: Email.validationSchema,
-  role: MembershipRole.validationSchema,
+const validationSchema = Schema.struct({
+  email: Email.emailSchema,
+  role: MembershipRole.membershipRoleSchema,
 });
 
 export function validate(value: unknown) {
   return Effect.try({
-    try: () => validationSchema.parse(value),
+    try: () => Schema.parseSync(validationSchema)(value),
     catch: () => new ValidationError(),
   });
 }
 
-export type CreateInvitationProps = zod.infer<typeof validationSchema>;
+export type CreateInvitationProps = Schema.Schema.To<typeof validationSchema>;

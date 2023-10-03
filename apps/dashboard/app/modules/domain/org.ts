@@ -1,6 +1,6 @@
+import * as Schema from '@effect/schema/Schema';
 import baseSlugify from '@sindresorhus/slugify';
 import * as Effect from 'effect/Effect';
-import zod from 'zod';
 
 import {
   DbRecordParseError,
@@ -11,47 +11,45 @@ import {
 import * as DateString from './date';
 import * as Uuid from './uuid';
 
-export const orgNameValidationSchema = zod
-  .string({
-    required_error: 'Name is required',
-  })
-  .min(2, {
-    message: 'Name must be at least 2 characters',
-  });
+const OrgBrand = Symbol.for('OrgBrand');
+const OrgIdBrand = Symbol.for('OrgIdBrand');
 
-export const orgIdValidationSchema = Uuid.validationSchema.brand('OrgId');
+export const orgNameSchema = Schema.string.pipe(
+  Schema.trim,
+  Schema.minLength(2),
+  Schema.maxLength(120)
+);
 
-export const orgSlugValidationSchema = zod.string().min(2);
+export const orgIdSchema = Uuid.uuidSchema.pipe(Schema.brand(OrgIdBrand));
+export const orgSlugSchema = Schema.string.pipe(Schema.minLength(2));
 
-export const validationSchema = zod
-  .object({
-    id: orgIdValidationSchema,
-    name: orgNameValidationSchema,
-    createdAt: DateString.validationSchema,
-    updatedAt: DateString.validationSchema,
-    slug: orgSlugValidationSchema,
-  })
-  .brand('Org');
+export const orgSchema = Schema.struct({
+  id: orgIdSchema,
+  name: orgNameSchema,
+  slug: orgSlugSchema,
+  createdAt: DateString.dateSchema,
+  updatedAt: DateString.dateSchema,
+}).pipe(Schema.brand(OrgBrand));
 
-export type Org = zod.infer<typeof validationSchema>;
+export type Org = Schema.Schema.To<typeof orgSchema>;
 
 export function parse(value: unknown) {
   return Effect.try({
-    try: () => validationSchema.parse(value),
+    try: () => Schema.parseSync(orgSchema)(value),
     catch: () => new ValidationError(),
   });
 }
 
 export function parseId(value: unknown) {
   return Effect.try({
-    try: () => orgIdValidationSchema.parse(value),
+    try: () => Schema.parseSync(orgIdSchema)(value),
     catch: () => new ParseOrgIdError(),
   });
 }
 
 export function parseSlug(value: unknown) {
   return Effect.try({
-    try: () => orgSlugValidationSchema.parse(value),
+    try: () => Schema.parseSync(orgSlugSchema)(value),
     catch: () => new ParseOrgSlugError(),
   });
 }

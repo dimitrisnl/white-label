@@ -1,25 +1,24 @@
+import * as Schema from '@effect/schema/Schema';
 import bcrypt from 'bcrypt';
 import * as Effect from 'effect/Effect';
-import zod from 'zod';
 
 import {PasswordHashError, ValidationError} from '../errors.server';
 
 const SALT_ROUNDS = 10;
 
-export const validationSchema = zod
-  .string({
-    required_error: 'Password is required',
-  })
-  .min(8, {
-    message: 'Password must be at least 8 characters',
-  })
-  .brand('Password');
+const PasswordBrand = Symbol.for('PasswordBrand');
 
-export type Password = zod.infer<typeof validationSchema>;
+export const passwordSchema = Schema.string.pipe(
+  Schema.minLength(8),
+  Schema.maxLength(100),
+  Schema.brand(PasswordBrand)
+);
+
+export type Password = Schema.Schema.To<typeof passwordSchema>;
 
 export function parse(value: unknown) {
   return Effect.try({
-    try: () => validationSchema.parse(value),
+    try: () => Schema.parseSync(passwordSchema)(value),
     catch: () => new ValidationError(),
   });
 }

@@ -1,18 +1,18 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
-import zod from 'zod';
 
 import {Uuid} from '@/modules/domain/index.server';
 import {ValidationError} from '@/modules/errors.server';
 
-const validationSchema = zod.object({
-  token: Uuid.validationSchema,
+const validationSchema = Schema.struct({
+  token: Uuid.uuidSchema,
 });
 
 export function validate(value: unknown) {
   return Effect.try({
-    try: () => validationSchema.parse(value),
+    try: () => Schema.parseSync(validationSchema)(value),
     catch: () => new ValidationError(),
   });
 }
 
-export type VerifyEmailProps = zod.infer<typeof validationSchema>;
+export type VerifyEmailProps = Schema.Schema.To<typeof validationSchema>;

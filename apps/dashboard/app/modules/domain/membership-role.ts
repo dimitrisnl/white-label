@@ -1,5 +1,5 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
-import zod from 'zod';
 
 import {ValidationError} from '../errors.server';
 
@@ -7,15 +7,17 @@ export const OWNER = 'OWNER' as const;
 export const ADMIN = 'ADMIN' as const;
 export const MEMBER = 'MEMBER' as const;
 
-export const validationSchema = zod
-  .enum([OWNER, ADMIN, MEMBER])
-  .brand('MembershipRole');
+const MembershipRoleBrand = Symbol.for('MembershipRoleBrand');
 
-export type MembershipRole = zod.infer<typeof validationSchema>;
+export const membershipRoleSchema = Schema.literal(OWNER, ADMIN, MEMBER).pipe(
+  Schema.brand(MembershipRoleBrand)
+);
+
+export type MembershipRole = Schema.Schema.To<typeof membershipRoleSchema>;
 
 export function parse(value: unknown) {
   return Effect.try({
-    try: () => validationSchema.parse(value),
+    try: () => Schema.parseSync(membershipRoleSchema)(value),
     catch: () => new ValidationError(),
   });
 }

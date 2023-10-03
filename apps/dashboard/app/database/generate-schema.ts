@@ -1,15 +1,16 @@
+import * as Schema from '@effect/schema/Schema';
 import * as zg from 'zapatos/generate';
-import zod from 'zod';
 
-const envValidationSchema = zod.object({
-  DB_USER: zod.string().min(2),
-  DB_HOST: zod.string().min(2),
-  DB_NAME: zod.string().min(2),
-  DB_PASSWORD: zod.string().min(2),
-  DB_SSL: zod.string(),
+const envValidationSchema = Schema.struct({
+  DB_USER: Schema.string.pipe(Schema.minLength(2)),
+  DB_HOST: Schema.string.pipe(Schema.minLength(2)),
+  DB_NAME: Schema.string.pipe(Schema.minLength(2)),
+  DB_PASSWORD: Schema.string.pipe(Schema.minLength(2)),
+  DB_SSL: Schema.string.pipe(Schema.nonEmpty()),
 });
 
-const config = envValidationSchema.parse(process.env);
+// Throw on-load if missing
+const config = Schema.parseSync(envValidationSchema)(process.env);
 
 const zapCfg: zg.Config = {
   db: {
