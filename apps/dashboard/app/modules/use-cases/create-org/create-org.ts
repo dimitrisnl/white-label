@@ -25,7 +25,6 @@ function insertOrg({
   return Effect.tryPromise({
     try: () => db.insert('orgs', {id, name, slug}).run(pool),
     catch: (error) => {
-      // todo: fix
       // @ts-expect-error
       if (error && error.code == UNIQUE_CONTRAINT) {
         return new SlugAlreadyExistsError();
@@ -55,7 +54,11 @@ export function createOrg() {
     const {name} = props;
     return Effect.gen(function* (_) {
       const orgId = yield* _(Uuid.generate());
-      const slug = yield* _(Org.slugify(name));
+
+      const [orgIdPrefix] = orgId.split('-');
+      const baseSlug = yield* _(Org.slugify(name));
+      const slug = `${baseSlug}-${orgIdPrefix}`;
+
       const orgRecord = yield* _(insertOrg({name, id: orgId, slug}));
       const org = yield* _(Org.dbRecordToDomain(orgRecord));
       yield* _(insertMembership(org.id, userId));
