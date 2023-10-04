@@ -47,6 +47,10 @@ export const action = withAction(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError({})),
       ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
+      InviteeAlreadyMemberError: () =>
+        Effect.fail(
+          new BadRequest({errors: ['Invitee is already member of the team']})
+        ),
       ForbiddenActionError: () =>
         Effect.fail(
           new Forbidden({
