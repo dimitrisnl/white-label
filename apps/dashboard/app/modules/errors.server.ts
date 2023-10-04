@@ -8,6 +8,10 @@ export class InviteeExistsError {
   readonly _tag = 'InviteeExistsError';
 }
 
+export class InviteeAlreadyMemberError {
+  readonly _tag = 'InviteeAlreadyMemberError';
+}
+
 export class UnknownError {
   readonly _tag = 'UnknownError';
 }
