@@ -31,12 +31,7 @@ export const action = withAction(
   }).pipe(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError({})),
-      ValidationError: () =>
-        Effect.fail(
-          new BadRequest({
-            errors: ['The email you provided seems to be in the wrong format'],
-          })
-        ),
+      ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
       UserNotFoundError: () =>
         Effect.fail(
           new BadRequest({

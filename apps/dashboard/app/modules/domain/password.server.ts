@@ -2,24 +2,32 @@ import * as Schema from '@effect/schema/Schema';
 import bcrypt from 'bcrypt';
 import * as Effect from 'effect/Effect';
 
-import {PasswordHashError, ValidationError} from '../errors.server';
+import {PasswordHashError} from '../errors.server';
 
 const SALT_ROUNDS = 10;
 
 const PasswordBrand = Symbol.for('PasswordBrand');
 
 export const passwordSchema = Schema.string.pipe(
-  Schema.minLength(8),
-  Schema.maxLength(100),
+  Schema.minLength(8, {
+    message: () => 'Password should be at least 8 characters long',
+  }),
+  Schema.maxLength(100, {
+    message: () => 'Password should be at most 100 characters long',
+  }),
   Schema.brand(PasswordBrand)
 );
 
 export type Password = Schema.Schema.To<typeof passwordSchema>;
 
+export class ParsePasswordError {
+  readonly _tag = 'ParsePasswordError';
+}
+
 export function parse(value: unknown) {
   return Effect.try({
     try: () => Schema.parseSync(passwordSchema)(value),
-    catch: () => new ValidationError(),
+    catch: () => new ParsePasswordError(),
   });
 }
 

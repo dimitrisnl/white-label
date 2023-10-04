@@ -1,7 +1,12 @@
 import * as Effect from 'effect/Effect';
 
 import {VerifyEmailTokenNotFoundError} from '@/modules/errors.server';
-import {BadRequest, Ok, ServerError} from '@/modules/responses.server';
+import {
+  BadRequest,
+  Ok,
+  Redirect,
+  ServerError,
+} from '@/modules/responses.server';
 import {verifyEmailToken} from '@/modules/use-cases/index.server';
 import {LoaderArgs, withLoader} from '@/modules/with-loader.server';
 
@@ -21,15 +26,17 @@ export const loader = withLoader(
     return new Ok({data: null});
   }).pipe(
     Effect.catchTags({
+      ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
       InternalServerError: () => Effect.fail(new ServerError({})),
-      // Impossible, need to double check the implementation
-      UserNotFoundError: () =>
-        Effect.fail(new BadRequest({errors: ['User not found']})),
       VerifyEmailTokenNotFoundError: () =>
-        Effect.fail(new BadRequest({errors: ['Token not found']})),
-      ValidationError: () =>
         Effect.fail(
-          new BadRequest({errors: ['Token was in incorrect format']})
+          new BadRequest({errors: ['Verification email token is invalid']})
+        ),
+      UserNotFoundError: () =>
+        LoaderArgs.pipe(
+          Effect.flatMap(({request}) =>
+            Effect.fail(new Redirect({to: '/login', init: request}))
+          )
         ),
     })
   )

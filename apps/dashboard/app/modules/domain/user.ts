@@ -1,11 +1,7 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import {
-  DbRecordParseError,
-  ParseUserIdError,
-  ValidationError,
-} from '../errors.server';
+import {DbRecordParseError} from '../errors.server';
 import * as DateString from './date';
 import * as Email from './email';
 import * as Uuid from './uuid';
@@ -13,10 +9,22 @@ import * as Uuid from './uuid';
 const UserBrand = Symbol.for('UserBrand');
 const UserIdBrand = Symbol.for('UserIdBrand');
 
+class ParseUserIdError {
+  readonly _tag = 'ParseUserIdError';
+}
+
+class ParseUserError {
+  readonly _tag = 'ParseUserError';
+}
+
 export const userNameSchema = Schema.string.pipe(
   Schema.trim,
-  Schema.minLength(2),
-  Schema.maxLength(100)
+  Schema.minLength(2, {
+    message: () => 'Name must be at least 2 characters',
+  }),
+  Schema.maxLength(100, {
+    message: () => 'Name cannot be more than 120 characters',
+  })
 );
 
 export const userIdSchema = Uuid.uuidSchema.pipe(Schema.brand(UserIdBrand));
@@ -35,7 +43,7 @@ export type User = Schema.Schema.To<typeof userSchema>;
 export function parse(value: unknown) {
   return Effect.try({
     try: () => Schema.parseSync(userSchema)(value),
-    catch: () => new ValidationError(),
+    catch: () => new ParseUserError(),
   });
 }
 

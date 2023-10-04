@@ -24,13 +24,18 @@ export const action = withAction(
     return new Ok({data: null});
   }).pipe(
     Effect.catchTags({
-      ValidationError: () =>
-        Effect.fail(new BadRequest({errors: ['Validation Error']})),
-      UserNotFoundError: () =>
-        Effect.fail(new BadRequest({errors: ['User not found']})),
+      ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
       IncorrectPasswordError: () =>
-        Effect.fail(new BadRequest({errors: ['Incorrect password']})),
+        Effect.fail(
+          new BadRequest({errors: ['The provided password is incorrect']})
+        ),
       InternalServerError: () => Effect.fail(new ServerError({})),
+      UserNotFoundError: () =>
+        ActionArgs.pipe(
+          Effect.flatMap(({request}) =>
+            Effect.fail(new Redirect({to: '/login', init: request}))
+          )
+        ),
       SessionNotFoundError: () =>
         ActionArgs.pipe(
           Effect.flatMap(({request}) =>

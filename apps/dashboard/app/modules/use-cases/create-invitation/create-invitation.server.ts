@@ -47,6 +47,10 @@ export function createInvitation() {
 
       const invitationId = yield* _(Uuid.generate());
 
+      // todo:
+      // Check that the invitation mail doesn't exist
+      // Check that the invitation email isn't already an org user
+
       const invitationRecord = yield* _(
         insertInvitation({email, role, orgId, invitationId})
       );

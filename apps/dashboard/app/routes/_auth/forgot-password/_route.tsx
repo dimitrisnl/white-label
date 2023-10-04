@@ -8,7 +8,7 @@ export {action} from './_action.server';
 
 export const meta: MetaFunction = () => {
   return [
-    {title: 'Reset Password'},
+    {title: 'Forgot Password'},
     {name: 'description', content: 'Request a password reset'},
   ];
 };

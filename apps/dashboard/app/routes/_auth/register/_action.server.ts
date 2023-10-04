@@ -43,8 +43,7 @@ export const action = withAction(
         Effect.fail(
           new BadRequest({errors: ['The email you provided is taken']})
         ),
-      ValidationError: () =>
-        Effect.fail(new BadRequest({errors: ['Validation Error']})),
+      ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
     })
   )
 );

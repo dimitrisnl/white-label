@@ -1,7 +1,7 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import {DbRecordParseError, ValidationError} from '../errors.server';
+import {DbRecordParseError} from '../errors.server';
 import * as DateString from './date';
 import * as Email from './email';
 import * as MembershipRole from './membership-role';
@@ -28,10 +28,14 @@ export const membershipSchema = Schema.struct({
 
 export type Membership = Schema.Schema.To<typeof membershipSchema>;
 
+export class ParseMembershipError {
+  readonly _tag = 'ParseMembershipError';
+}
+
 export function parse(value: unknown) {
   return Effect.try({
     try: () => Schema.parseSync(membershipSchema)(value),
-    catch: () => new ValidationError(),
+    catch: () => new ParseMembershipError(),
   });
 }
 

@@ -19,7 +19,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export function ResetPasswordPage() {
+export default function ResetPasswordPage() {
   const loaderData = useTypedLoaderData<ResetPasswordLoader>();
 
   return (

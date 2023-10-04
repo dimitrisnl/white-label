@@ -22,12 +22,15 @@ export const action = withAction(
   }).pipe(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError({})),
-      UserNotFoundError: () =>
-        Effect.fail(new BadRequest({errors: ['User not found']})),
       PasswordResetTokenNotFoundError: () =>
-        Effect.fail(new BadRequest({errors: ['Token not found']})),
-      ValidationError: () =>
-        Effect.fail(new BadRequest({errors: ['Validation Error']})),
+        Effect.fail(
+          new BadRequest({errors: ['Password reset token is invalid']})
+        ),
+      UserNotFoundError: () =>
+        Effect.fail(
+          new BadRequest({errors: ['Password reset token is invalid']})
+        ),
+      ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
     })
   )
 );

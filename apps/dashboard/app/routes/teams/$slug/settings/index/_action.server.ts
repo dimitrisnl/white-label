@@ -38,8 +38,7 @@ export const action = withAction(
         new Forbidden({
           errors: ["You don't have acess to change the team name"],
         }),
-      ValidationError: () =>
-        Effect.fail(new BadRequest({errors: ['Validation Error']})),
+      ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
       ParseOrgSlugError: () =>
         ActionArgs.pipe(
           Effect.flatMap(({request}) =>

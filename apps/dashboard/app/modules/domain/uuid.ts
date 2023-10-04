@@ -2,18 +2,27 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 import {v4 as uuidv4} from 'uuid';
 
-import {UUIDGenerationError, ValidationError} from '../errors.server';
-
 const UuidBrand = Symbol.for('UuidBrand');
 
-export const uuidSchema = Schema.UUID.pipe(Schema.brand(UuidBrand));
+class UUIDGenerationError {
+  readonly _tag = 'UUIDGenerationError';
+}
+
+class ParseUuidError {
+  readonly _tag = 'ParseUuidError';
+}
+
+export const uuidSchema = Schema.UUID.pipe(
+  Schema.message(() => 'UUId is in invalid format'),
+  Schema.brand(UuidBrand)
+);
 
 export type Uuid = Schema.Schema.To<typeof uuidSchema>;
 
 export function parse(value: unknown) {
   return Effect.try({
     try: () => Schema.parseSync(uuidSchema)(value),
-    catch: () => new ValidationError(),
+    catch: () => new ParseUuidError(),
   });
 }
 
