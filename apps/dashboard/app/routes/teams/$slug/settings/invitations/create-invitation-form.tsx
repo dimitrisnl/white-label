@@ -20,7 +20,7 @@ import {useTypedFetcher} from 'remix-typedjson';
 
 import type {Action} from './_action.server';
 
-export function TeamInvitations() {
+export function CreateInvitationForm() {
   const {Form, state, data} = useTypedFetcher<Action | undefined>();
   const formRef = useRef<HTMLFormElement>(null);
 

@@ -2,8 +2,8 @@ import type {MetaFunction} from '@remix-run/node';
 import {useTypedLoaderData} from 'remix-typedjson';
 
 import {InvitationsLoaderData} from './_loader.server';
-import {TeamInvitations} from './team-invitations';
-import {Invitees} from './team-list';
+import {CreateInvitationForm} from './create-invitation-form';
+import {InvitationsList} from './invitations-list';
 
 export {action} from './_action.server';
 export {loader} from './_loader.server';
@@ -22,8 +22,8 @@ export default function InvitationsPage() {
 
   return (
     <div className="grid gap-8">
-      <TeamInvitations />
-      <Invitees invitations={invitations} />
+      <CreateInvitationForm />
+      <InvitationsList invitations={invitations} />
     </div>
   );
 }
