@@ -7,8 +7,10 @@ import {LoaderArgs, withLoader} from '@/modules/with-loader.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
-    const {params} = yield* _(LoaderArgs);
-    const {token} = params;
+    const {request} = yield* _(LoaderArgs);
+
+    const url = new URL(request.url);
+    const token = url.searchParams.get('token');
 
     if (!token) {
       return yield* _(Effect.fail(new PasswordResetTokenNotFoundError()));
@@ -23,11 +25,10 @@ export const loader = withLoader(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError({})),
       PasswordResetTokenNotFoundError: () =>
-        Effect.fail(new BadRequest({errors: ['Token not found']})),
-      ValidationError: () =>
         Effect.fail(
-          new BadRequest({errors: ['Token was in incorrect format']})
+          new BadRequest({errors: ['Password reset token is invalid']})
         ),
+      ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
     })
   )
 );

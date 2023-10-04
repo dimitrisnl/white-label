@@ -1,3 +1,5 @@
+import * as Data from 'effect/Data';
+
 export class ForbiddenActionError {
   readonly _tag = 'ForbiddenActionError';
 }
@@ -14,15 +16,6 @@ export class DatabaseError {
   readonly _tag = 'DatabaseError';
 }
 
-export class ValidationError {
-  readonly _tag = 'ValidationError';
-}
-
-// todo: embed the validation errors
-// export class ValidationError extends Data.TaggedClass('ValidationError')<{
-//   readonly messages: Array<string>;
-// }> {}
-
 export class InvitationNotFoundError {
   readonly _tag = 'InvitationNotFoundError';
 }
@@ -37,10 +30,6 @@ export class AccountAlreadyExistsError {
 
 export class PasswordHashError {
   readonly _tag = 'PasswordHashError';
-}
-
-export class UUIDGenerationError {
-  readonly _tag = 'UUIDGenerationError';
 }
 
 export class UserNotFoundError {
@@ -79,14 +68,6 @@ export class SlugAlreadyExistsError {
   readonly _tag = 'SlugAlreadyExistsError';
 }
 
-export class ParseOrgSlugError {
-  readonly _tag = 'ParseOrgSlugError';
-}
-
-export class ParseOrgIdError {
-  readonly _tag = 'ParseOrgIdError';
-}
-
-export class ParseUserIdError {
-  readonly _tag = 'ParseUserIdError';
-}
+export class ValidationError extends Data.TaggedClass('ValidationError')<{
+  readonly errors: Array<string>;
+}> {}

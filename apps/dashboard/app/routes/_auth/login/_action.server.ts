@@ -30,8 +30,7 @@ export const action = withAction(
         Effect.fail(
           new BadRequest({errors: ['The credentials you provided are wrong']})
         ),
-      ValidationError: () =>
-        Effect.fail(new BadRequest({errors: ['Validation Error']})),
+      ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
     })
   )
 );

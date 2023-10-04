@@ -29,7 +29,9 @@ export function TeamInvitations() {
       formRef.current?.reset();
       toast.success('Invitation sent');
     } else if (data?.ok === false) {
-      toast.error('Could not invite your teammate at this time');
+      const message =
+        data.errors[0] ?? 'Could not invite your teammate at this time';
+      toast.error(message);
     }
   }, [data]);
 

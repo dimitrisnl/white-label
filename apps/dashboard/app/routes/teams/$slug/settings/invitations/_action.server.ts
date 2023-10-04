@@ -46,8 +46,13 @@ export const action = withAction(
   }).pipe(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError({})),
-      OrgNotFoundError: () =>
-        Effect.fail(new BadRequest({errors: ["We couldn't find this team"]})),
+      ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
+      ForbiddenActionError: () =>
+        Effect.fail(
+          new Forbidden({
+            errors: ["You don't have access to invite a team member"],
+          })
+        ),
       ParseOrgSlugError: () =>
         ActionArgs.pipe(
           Effect.flatMap(({request}) =>
@@ -60,14 +65,12 @@ export const action = withAction(
             Effect.fail(new Redirect({to: '/login', init: request}))
           )
         ),
-      ForbiddenActionError: () =>
-        Effect.fail(
-          new Forbidden({
-            errors: ["You don't have access to invite a team member"],
-          })
+      OrgNotFoundError: () =>
+        ActionArgs.pipe(
+          Effect.flatMap(({request}) =>
+            Effect.fail(new Redirect({to: '/login', init: request}))
+          )
         ),
-      ValidationError: () =>
-        Effect.fail(new BadRequest({errors: ['Validation Error']})),
     })
   )
 );

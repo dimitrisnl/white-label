@@ -1,7 +1,7 @@
 import * as Effect from 'effect/Effect';
 
 import {getCurrentUserId, parseFormData} from '@/modules/helpers.server';
-import {Redirect, ServerError} from '@/modules/responses.server';
+import {BadRequest, Redirect, ServerError} from '@/modules/responses.server';
 import {createOrg} from '@/modules/use-cases/index.server';
 import {ActionArgs, withAction} from '@/modules/with-action.server';
 
@@ -23,12 +23,7 @@ export const action = withAction(
   }).pipe(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError({})),
-      ValidationError: () =>
-        ActionArgs.pipe(
-          Effect.flatMap(({request}) =>
-            Effect.fail(new Redirect({to: '/login', init: request}))
-          )
-        ),
+      ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
       SessionNotFoundError: () =>
         ActionArgs.pipe(
           Effect.flatMap(({request}) =>

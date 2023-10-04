@@ -2,22 +2,33 @@ import * as Schema from '@effect/schema/Schema';
 import baseSlugify from '@sindresorhus/slugify';
 import * as Effect from 'effect/Effect';
 
-import {
-  DbRecordParseError,
-  ParseOrgIdError,
-  ParseOrgSlugError,
-  ValidationError,
-} from '../errors.server';
+import {DbRecordParseError} from '../errors.server';
 import * as DateString from './date';
 import * as Uuid from './uuid';
 
 const OrgBrand = Symbol.for('OrgBrand');
 const OrgIdBrand = Symbol.for('OrgIdBrand');
 
+class ParseOrgError {
+  readonly _tag = 'ParseOrgError';
+}
+
+class ParseOrgSlugError {
+  readonly _tag = 'ParseOrgSlugError';
+}
+
+class ParseOrgIdError {
+  readonly _tag = 'ParseOrgIdError';
+}
+
 export const orgNameSchema = Schema.string.pipe(
   Schema.trim,
-  Schema.minLength(2),
-  Schema.maxLength(120)
+  Schema.minLength(2, {
+    message: () => 'Organization name must be at least 2 characters',
+  }),
+  Schema.maxLength(120, {
+    message: () => 'Organization name cannot be more than 120 characters',
+  })
 );
 
 export const orgIdSchema = Uuid.uuidSchema.pipe(Schema.brand(OrgIdBrand));
@@ -36,7 +47,7 @@ export type Org = Schema.Schema.To<typeof orgSchema>;
 export function parse(value: unknown) {
   return Effect.try({
     try: () => Schema.parseSync(orgSchema)(value),
-    catch: () => new ValidationError(),
+    catch: () => new ParseOrgError(),
   });
 }
 
