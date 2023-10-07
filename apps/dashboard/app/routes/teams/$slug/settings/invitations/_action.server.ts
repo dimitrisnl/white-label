@@ -34,7 +34,7 @@ export const action = withAction(
     yield* _(
       sendEmail({
         to: invitation.email,
-        subject: 'You have been invited to a team',
+        subject: `You have been invited to join ${invitation.org.name}`,
         content: {
           type: 'PLAIN',
           message: `Here's your token: ${invitation.id}`,

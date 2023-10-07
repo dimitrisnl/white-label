@@ -9,6 +9,7 @@ import {
   DatabaseError,
   InternalServerError,
   InviteeAlreadyMemberError,
+  OrgNotFoundError,
 } from '../../errors.server';
 import type {CreateInvitationProps} from './validation.server';
 import {validate} from './validation.server';
@@ -34,6 +35,15 @@ function insertInvitation({
           org_id: orgId,
         })
         .run(pool),
+    catch: () => {
+      return new DatabaseError();
+    },
+  });
+}
+
+function getOrgRecord(id: Org.Org['id']) {
+  return Effect.tryPromise({
+    try: () => db.selectOne('orgs', {id}).run(pool),
     catch: () => new DatabaseError(),
   });
 }
@@ -100,11 +110,23 @@ export function createInvitation() {
         return yield* _(Effect.fail(new InviteeAlreadyMemberError()));
       }
 
+      // todo: avoid doing this extra query, select org fields during insert
+      const orgRecord = yield* _(getOrgRecord(orgId));
+
+      if (!orgRecord) {
+        return yield* _(Effect.fail(new OrgNotFoundError()));
+      }
+
       const invitationRecord = yield* _(
         insertInvitation({email, role, orgId, invitationId})
       );
+
       const invitation = yield* _(
-        MembershipInvitation.dbRecordToDomain(invitationRecord)
+        MembershipInvitation.dbRecordToDomain(invitationRecord, {
+          slug: orgRecord.slug,
+          name: orgRecord.name,
+          id: orgRecord.id,
+        })
       );
 
       return invitation;

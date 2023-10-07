@@ -3,7 +3,7 @@ CREATE TYPE membership_invite_status AS ENUM ('PENDING', 'ACCEPTED', 'DECLINED',
 
 CREATE TABLE membership_invitations (
   id uuid PRIMARY KEY NOT NULL,
-  email varchar NOT NULL UNIQUE,
+  email varchar NOT NULL,
   role membership_role DEFAULT 'MEMBER' NOT NULL,
   status membership_invite_status DEFAULT 'PENDING' NOT NULL,
   

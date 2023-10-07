@@ -5,7 +5,6 @@ CREATE TABLE orgs (
   slug varchar(255) UNIQUE NOT NULL,
   created_at timestamptz DEFAULT now() NOT NULL,
   updated_at timestamptz DEFAULT now() NOT NULL
-  
 );
 
 

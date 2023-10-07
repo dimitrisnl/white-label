@@ -6,18 +6,23 @@ import * as DateString from './date';
 import * as Email from './email';
 import * as InviteStatus from './invite-status';
 import * as MembershipRole from './membership-role';
+import * as Org from './org';
 import * as Uuid from './uuid';
 
 const MembershipInvitationBrand = Symbol.for('MembershipInvitationBrand');
 
 export const membershipInvitationSchema = Schema.struct({
   id: Uuid.uuidSchema,
-  orgId: Uuid.uuidSchema,
   email: Email.emailSchema,
   status: InviteStatus.inviteStatusSchema,
   role: MembershipRole.membershipRoleSchema,
   createdAt: DateString.dateSchema,
   updatedAt: DateString.dateSchema,
+  org: Schema.struct({
+    name: Org.orgNameSchema,
+    id: Org.orgIdSchema,
+    slug: Org.orgSlugSchema,
+  }),
 }).pipe(Schema.brand(MembershipInvitationBrand));
 
 export type MembershipInvitation = Schema.Schema.To<
@@ -35,18 +40,24 @@ export function parse(value: unknown) {
   });
 }
 
-export function dbRecordToDomain(entity: {
-  id: string;
-  org_id: string;
-  email: string;
-  status: string;
-  role: string;
-  created_at: string;
-  updated_at: string;
-}) {
+export function dbRecordToDomain(
+  entity: {
+    id: string;
+    email: string;
+    status: string;
+    role: string;
+    created_at: string;
+    updated_at: string;
+  },
+  orgEntity: {id: string; name: string; slug: string}
+) {
   return parse({
     id: entity.id,
-    orgId: entity.org_id,
+    org: {
+      id: orgEntity.id,
+      name: orgEntity.name,
+      slug: orgEntity.slug,
+    },
     email: entity.email,
     status: entity.status,
     role: entity.role,
