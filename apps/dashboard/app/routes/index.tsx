@@ -36,7 +36,3 @@ export const meta: MetaFunction = () => {
     {name: 'description', content: 'Main dashboard'},
   ];
 };
-
-export default function Index() {
-  return <div>asdasdasd</div>;
-}

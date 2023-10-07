@@ -25,7 +25,11 @@ export default function FourOhFour() {
             The page you requested was not found, or has been moved.
           </CardContent>
           <CardFooter>
-            <Link to="/" className={buttonVariants({variant: 'default'})}>
+            <Link
+              to="/"
+              reloadDocument
+              className={buttonVariants({variant: 'default'})}
+            >
               Back to Home
             </Link>
           </CardFooter>
