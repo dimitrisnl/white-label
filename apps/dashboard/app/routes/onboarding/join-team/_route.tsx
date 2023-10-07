@@ -1,14 +1,14 @@
 import {GuestLayout} from '@/components/guest-layout';
 
-import {JoinMyTeam} from './join-team';
+import {InvitationsList} from './invitations-list';
 
 export {loader} from './_loader.server';
 export {action} from './_action.server';
 
-export default function JoinMyTeamPage() {
+export default function JoinTeamPage() {
   return (
     <GuestLayout>
-      <JoinMyTeam />
+      <InvitationsList />
     </GuestLayout>
   );
 }
