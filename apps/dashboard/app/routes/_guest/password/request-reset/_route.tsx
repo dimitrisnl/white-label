@@ -2,21 +2,21 @@ import type {MetaFunction} from '@remix-run/node';
 
 import {GuestLayout} from '@/components/guest-layout';
 
-import {ForgotPasswordForm} from './forgot-password-form';
+import {RequestPasswordResetForm} from './request-password-reset-form';
 
 export {action} from './_action.server';
 
 export const meta: MetaFunction = () => {
   return [
-    {title: 'Forgot Password'},
+    {title: 'Request Password Reset'},
     {name: 'description', content: 'Request a password reset'},
   ];
 };
 
-export default function ForgotPasswordPage() {
+export default function RequestPasswordReset() {
   return (
     <GuestLayout>
-      <ForgotPasswordForm />
+      <RequestPasswordResetForm />
     </GuestLayout>
   );
 }

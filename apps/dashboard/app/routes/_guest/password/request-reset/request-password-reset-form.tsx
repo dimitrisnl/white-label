@@ -15,10 +15,10 @@ import {useTypedActionData} from 'remix-typedjson';
 
 import {ErrorMessage} from '@/components/error-feedback';
 
-import type {ForgotPasswordAction} from './_action.server';
+import type {RequestPasswordResetAction} from './_action.server';
 
-export function ForgotPasswordForm() {
-  const data = useTypedActionData<ForgotPasswordAction>();
+export function RequestPasswordResetForm() {
+  const data = useTypedActionData<RequestPasswordResetAction>();
 
   if (data?.ok === true) {
     return (

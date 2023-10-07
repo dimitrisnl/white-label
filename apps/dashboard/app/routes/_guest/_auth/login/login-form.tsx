@@ -46,7 +46,7 @@ export function LoginForm() {
               <div className="flex items-end justify-between">
                 <Label htmlFor="password">Password</Label>
                 <Link
-                  to="/forgot-password"
+                  to="/password/request-reset"
                   className={cn(
                     buttonVariants({variant: 'link'}),
                     'h-auto p-0'

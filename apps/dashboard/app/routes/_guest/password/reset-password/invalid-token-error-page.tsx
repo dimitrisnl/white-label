@@ -33,7 +33,7 @@ export function InvalidTokenErrorPage() {
             Back to Login
           </Link>
           <Link
-            to="/forgot-password"
+            to="/password/request-reset"
             className={buttonVariants({variant: 'default'})}
           >
             Request a new Password Reset link

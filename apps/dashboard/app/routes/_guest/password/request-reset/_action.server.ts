@@ -44,4 +44,4 @@ export const action = withAction(
   )
 );
 
-export type ForgotPasswordAction = typeof action;
+export type RequestPasswordResetAction = typeof action;
