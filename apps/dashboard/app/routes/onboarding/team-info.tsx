@@ -38,8 +38,8 @@ export function TeamInfo() {
                 name="name"
                 placeholder=""
                 type="text"
-                // minLength={2}
-                // required
+                minLength={2}
+                required
                 disabled={state !== 'idle'}
               />
             </div>
