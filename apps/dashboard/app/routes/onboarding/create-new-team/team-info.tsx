@@ -1,5 +1,7 @@
+import {Link} from '@remix-run/react';
 import {
   Button,
+  buttonVariants,
   Card,
   CardContent,
   CardDescription,
@@ -9,7 +11,6 @@ import {
   Input,
   Label,
 } from '@white-label/ui-core';
-import React from 'react';
 import {useTypedFetcher} from 'remix-typedjson';
 
 import {ErrorMessage} from '@/components/error-feedback';
@@ -46,7 +47,10 @@ export function TeamInfo() {
             {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}
           </div>
         </CardContent>
-        <CardFooter className="flex justify-end">
+        <CardFooter className="flex justify-between">
+          <Link to="/onboarding" className={buttonVariants({variant: 'ghost'})}>
+            Back
+          </Link>
           <Button disabled={state !== 'idle'}>Save</Button>
         </CardFooter>
       </Card>

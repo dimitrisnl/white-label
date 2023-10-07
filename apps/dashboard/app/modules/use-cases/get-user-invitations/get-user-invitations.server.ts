@@ -1,25 +1,35 @@
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '@/database/db.server';
-import type {Org, User} from '@/modules/domain/index.server';
-import {MembershipInvitation} from '@/modules/domain/index.server';
-import {DatabaseError, InternalServerError} from '@/modules/errors.server';
-import {invitationAuthorizationService} from '@/modules/services/index.server';
+import {MembershipInvitation, User} from '@/modules/domain/index.server';
+import {
+  DatabaseError,
+  InternalServerError,
+  UserNotFoundError,
+} from '@/modules/errors.server';
 
-function getInvitationRecords(orgId: Org.Org['id']) {
+function selectUserRecord(id: User.User['id']) {
+  return Effect.tryPromise({
+    try: () => db.selectOne('users', {id}).run(pool),
+    catch: () => new DatabaseError(),
+  });
+}
+
+function getInvitationRecords(email: User.User['email']) {
   return Effect.tryPromise({
     try: () =>
       db
         .select(
           'membership_invitations',
           {
-            org_id: orgId,
+            email: email,
+            status: 'PENDING',
           },
           {
             lateral: {
               org: db.selectExactlyOne(
                 'orgs',
-                {id: orgId},
+                {id: db.parent('org_id')},
                 {columns: ['name', 'slug']}
               ),
             },
@@ -30,11 +40,18 @@ function getInvitationRecords(orgId: Org.Org['id']) {
   });
 }
 
-export function getOrgInvitations() {
-  function execute(orgId: Org.Org['id'], userId: User.User['id']) {
+export function getUserInvitations() {
+  function execute(userId: User.User['id']) {
     return Effect.gen(function* (_) {
-      yield* _(invitationAuthorizationService.canView(userId, orgId));
-      const invitationRecords = yield* _(getInvitationRecords(orgId));
+      const userRecord = yield* _(selectUserRecord(userId));
+
+      if (!userRecord) {
+        return yield* _(Effect.fail(new UserNotFoundError()));
+      }
+
+      const user = yield* _(User.dbRecordToDomain(userRecord));
+
+      const invitationRecords = yield* _(getInvitationRecords(user.email));
 
       const invitations = yield* _(
         Effect.all(
@@ -49,7 +66,7 @@ export function getOrgInvitations() {
         )
       );
 
-      return invitations;
+      return {invitations};
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),

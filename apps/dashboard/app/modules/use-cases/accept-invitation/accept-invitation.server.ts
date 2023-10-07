@@ -19,10 +19,22 @@ function fetchInvitation(invitationId: string) {
   return Effect.tryPromise({
     try: () =>
       db
-        .selectOne('membership_invitations', {
-          id: invitationId,
-          status: InviteStatus.PENDING,
-        })
+        .selectOne(
+          'membership_invitations',
+          {
+            id: invitationId,
+            status: InviteStatus.PENDING,
+          },
+          {
+            lateral: {
+              org: db.selectExactlyOne(
+                'orgs',
+                {id: db.parent('org_id')},
+                {columns: ['name', 'slug']}
+              ),
+            },
+          }
+        )
         .run(pool),
     catch: () => new DatabaseError(),
   });
@@ -49,11 +61,11 @@ function updateMembership(
   return Effect.tryPromise({
     try: () =>
       db
-        .update(
-          'memberships',
-          {user_id: userId},
-          {role: invitation.role, org_id: invitation.orgId}
-        )
+        .insert('memberships', {
+          org_id: invitation.org.id,
+          user_id: userId,
+          role: invitation.role,
+        })
         .run(pool),
     catch: () => new DatabaseError(),
   });
@@ -70,13 +82,17 @@ export function acceptInvitation() {
       }
 
       const membershipInvitation = yield* _(
-        MembershipInvitation.dbRecordToDomain(invitationRecord)
+        MembershipInvitation.dbRecordToDomain(invitationRecord, {
+          slug: invitationRecord.org.slug,
+          name: invitationRecord.org.name,
+          id: invitationRecord.org_id,
+        })
       );
 
       yield* _(updateInvitation(invitationId));
       yield* _(updateMembership(membershipInvitation, userId));
 
-      return null;
+      return membershipInvitation;
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),
