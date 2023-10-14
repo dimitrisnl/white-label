@@ -1,22 +1,21 @@
-import {Link, NavLink, useParams} from '@remix-run/react';
+import {Link} from '@remix-run/react';
 import {
   Button,
-  cn,
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@white-label/ui-core';
 import Avatar from 'boring-avatars';
-import {Building2Icon, LogOutIcon, SettingsIcon} from 'lucide-react';
+import {LogOutIcon, User2Icon} from 'lucide-react';
 
 import type {User} from '@/modules/domain/index.server';
 
+const avatarPalette = ['#92A1C6', '#146A7C', '#F0AB3D', '#C271B4', '#C20D90'];
+
 export function UserNav({user}: {user: User.User}) {
-  const {slug} = useParams();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,7 +24,7 @@ export function UserNav({user}: {user: User.User}) {
             size={32}
             name={user.name}
             variant="pixel"
-            colors={['#92A1C6', '#146A7C', '#F0AB3D', '#C271B4', '#C20D90']}
+            colors={avatarPalette}
           />
         </Button>
       </DropdownMenuTrigger>
@@ -39,6 +38,12 @@ export function UserNav({user}: {user: User.User}) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <Link to="/account" className="flex w-full items-center">
+            <User2Icon className="mr-2 h-4 w-4" />
+            <span>Account</span>
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem>
           <Link to="/logout" className="flex w-full items-center">
             <LogOutIcon className="mr-2 h-4 w-4" />

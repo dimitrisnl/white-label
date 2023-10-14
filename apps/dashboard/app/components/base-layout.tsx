@@ -24,9 +24,16 @@ function UpdatesPopover() {
 export function BaseLayout({
   children,
   currentUser,
+  navigationMenu,
 }: {
   children: React.ReactNode;
   currentUser: {user: User.User; memberships: Array<Membership.Membership>};
+  navigationMenu: Array<{
+    name: string;
+    href: string;
+    icon: React.ElementType;
+    end: boolean;
+  }>;
 }) {
   return (
     <>
@@ -36,7 +43,10 @@ export function BaseLayout({
             <div className="flex h-16 shrink-0 items-center text-2xl font-bold">
               <LayoutDashboardIcon className="mr-2 h-6 w-6" /> White Label
             </div>
-            <MainNav memberships={currentUser.memberships} />
+            <MainNav
+              memberships={currentUser.memberships}
+              navigationMenu={navigationMenu}
+            />
           </div>
         </div>
 
