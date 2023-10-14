@@ -18,6 +18,7 @@ function selectUserRecord(id: User.User['id']) {
 export function getUser() {
   function execute(userId: User.User['id']) {
     return Effect.gen(function* (_) {
+      yield* _(Effect.log(`Use-case(get-user): Getting user ${userId}`));
       const userRecord = yield* _(selectUserRecord(userId));
 
       if (!userRecord) {

@@ -38,6 +38,11 @@ function selectMembershipRecords(orgId: Org.Org['id']) {
 export function getOrgMemberships() {
   function execute(orgId: Org.Org['id'], userId: User.User['id']) {
     return Effect.gen(function* (_) {
+      yield* _(
+        Effect.log(
+          `Use-case(get-org-memberships): Getting memberships for org ${orgId} for user ${userId}`
+        )
+      );
       yield* _(orgAuthorizationService.canView(userId, orgId));
       const orgRecord = yield* _(selectOrgRecord(orgId));
 

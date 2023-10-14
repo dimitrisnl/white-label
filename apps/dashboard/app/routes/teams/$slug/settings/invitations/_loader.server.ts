@@ -12,6 +12,7 @@ import {LoaderArgs, withLoader} from '@/modules/with-loader.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
+    yield* _(Effect.log('Loader(teams/$slug/settings/invitations): Init'));
     const {request, params} = yield* _(LoaderArgs);
 
     const userId = yield* _(getCurrentUserId(request));

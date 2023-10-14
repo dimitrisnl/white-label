@@ -40,6 +40,11 @@ export function requestPasswordReset() {
   function execute(props: RequestPasswordResetProps) {
     const {email} = props;
     return Effect.gen(function* (_) {
+      yield* _(
+        Effect.log(
+          `Use-case(request-password-reset): Requesting password reset for ${email}`
+        )
+      );
       const userRecord = yield* _(selectUserRecord(email));
 
       if (!userRecord) {

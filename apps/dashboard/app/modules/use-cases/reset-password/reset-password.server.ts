@@ -60,6 +60,9 @@ export function resetPassword() {
   function execute(props: ResetPasswordProps) {
     const {token, password} = props;
     return Effect.gen(function* (_) {
+      yield* _(
+        Effect.log(`Use-case(reset-password): Resetting password for ${token}`)
+      );
       const passwordResetTokenRecord = yield* _(
         selectPasswordResetTokenRecord(token)
       );

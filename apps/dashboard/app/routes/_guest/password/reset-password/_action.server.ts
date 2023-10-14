@@ -7,6 +7,7 @@ import {ActionArgs, withAction} from '@/modules/with-action.server';
 
 export const action = withAction(
   Effect.gen(function* (_) {
+    yield* _(Effect.log('Action(_guest/password/reset-password): Init'));
     const {request} = yield* _(ActionArgs);
 
     const {validate, execute} = resetPassword();

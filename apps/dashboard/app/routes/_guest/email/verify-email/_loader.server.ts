@@ -12,6 +12,7 @@ import {LoaderArgs, withLoader} from '@/modules/with-loader.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
+    yield* _(Effect.log('Loader(_guest/email/verify-email): Init'));
     const {params} = yield* _(LoaderArgs);
     const {token} = params;
 

@@ -24,6 +24,11 @@ export function editUser() {
   function execute(props: EditUserProps, userId: User.User['id']) {
     const {name} = props;
     return Effect.gen(function* (_) {
+      yield* _(
+        Effect.log(
+          `Use-case(edit-user): Editing user ${userId} with name ${name}`
+        )
+      );
       const [userRecord] = yield* _(updateUserRecord({id: userId, name}));
       const user = yield* _(User.dbRecordToDomain(userRecord));
       return user;

@@ -43,6 +43,11 @@ function getInvitationRecords(email: User.User['email']) {
 export function getUserInvitations() {
   function execute(userId: User.User['id']) {
     return Effect.gen(function* (_) {
+      yield* _(
+        Effect.log(
+          `Use-case(get-user-invitations): Getting invitations for user ${userId}`
+        )
+      );
       const userRecord = yield* _(selectUserRecord(userId));
 
       if (!userRecord) {

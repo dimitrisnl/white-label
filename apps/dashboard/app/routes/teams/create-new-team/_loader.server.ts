@@ -6,6 +6,7 @@ import {LoaderArgs, withLoader} from '@/modules/with-loader.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
+    yield* _(Effect.log('Loader(teams/create-new-team): Init'));
     const {request} = yield* _(LoaderArgs);
     yield* _(getCurrentUserId(request));
 

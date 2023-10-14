@@ -50,6 +50,9 @@ export function verifyEmailToken() {
   function execute(props: VerifyEmailProps) {
     const {token} = props;
     return Effect.gen(function* (_) {
+      yield* _(
+        Effect.log(`Use-case(verify-email-token): Verifying token ${token}`)
+      );
       const verifyEmailTokenRecord = yield* _(
         selectVerifyEmailTokenRecord(token)
       );

@@ -41,6 +41,7 @@ function selectUserRecord(id: User.User['id']) {
 export function whoAmI() {
   function execute(userId: User.User['id']) {
     return Effect.gen(function* (_) {
+      yield* _(Effect.log(`Use-case(who-am-i): Getting user ${userId}`));
       const userRecord = yield* _(selectUserRecord(userId));
 
       if (!userRecord) {

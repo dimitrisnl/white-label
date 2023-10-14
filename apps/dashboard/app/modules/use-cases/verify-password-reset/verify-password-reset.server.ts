@@ -21,6 +21,9 @@ export function verifyPasswordReset() {
   function execute(props: VerifyPasswordResetProps) {
     const {token} = props;
     return Effect.gen(function* (_) {
+      yield* _(
+        Effect.log(`Use-case(verify-password-reset): Verifying token ${token}`)
+      );
       const passwordResetTokenRecord = yield* _(
         selectPasswordResetTokenRecord(token)
       );

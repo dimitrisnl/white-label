@@ -24,6 +24,11 @@ export function verifyUserCredentials() {
   function execute(props: VerifyUserCredentialsProps) {
     const {email, password} = props;
     return Effect.gen(function* (_) {
+      yield* _(
+        Effect.log(
+          `Use-case(verify-user-credentials): Verifying credentials for ${email}`
+        )
+      );
       const userRecord = yield* _(selectUserRecord(email));
 
       if (!userRecord) {

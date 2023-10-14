@@ -97,6 +97,11 @@ export function createInvitation() {
   ) {
     const {email, role} = props;
     return Effect.gen(function* (_) {
+      yield* _(
+        Effect.log(
+          `Use-case(create-invitation): Creating invitation for ${email}`
+        )
+      );
       yield* _(invitationAuthorizationService.canCreate(userId, orgId));
 
       const invitationId = yield* _(Uuid.generate());

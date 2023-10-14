@@ -75,6 +75,12 @@ export function acceptInvitation() {
   function execute(props: AcceptInvitationProps, userId: User.User['id']) {
     const {invitationId} = props;
     return Effect.gen(function* (_) {
+      yield* _(
+        Effect.log(
+          `Use-case(accept-invitation): Accepting invitation ${invitationId}`
+        )
+      );
+
       const invitationRecord = yield* _(fetchInvitation(invitationId));
 
       if (!invitationRecord) {

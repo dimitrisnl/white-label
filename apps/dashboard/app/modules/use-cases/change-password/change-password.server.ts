@@ -31,6 +31,12 @@ export function changePassword() {
   function execute(props: ChangePasswordProps, userId: User.User['id']) {
     const {newPassword, oldPassword} = props;
     return Effect.gen(function* (_) {
+      yield* _(
+        Effect.log(
+          `Use-case(change-password): Changing password for user ${userId}`
+        )
+      );
+
       const userRecord = yield* _(selectUserRecord(userId));
 
       if (!userRecord) {

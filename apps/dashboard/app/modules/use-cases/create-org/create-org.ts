@@ -53,6 +53,7 @@ export function createOrg() {
   function execute(props: CreateOrgProps, userId: User.User['id']) {
     const {name} = props;
     return Effect.gen(function* (_) {
+      yield* _(Effect.log(`Use-case(create-org): Creating org ${name}`));
       const orgId = yield* _(Uuid.generate());
 
       const [orgIdPrefix] = orgId.split('-');

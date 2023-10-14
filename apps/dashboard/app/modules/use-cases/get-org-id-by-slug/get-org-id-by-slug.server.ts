@@ -18,6 +18,7 @@ function selectOrgRecord(slug: Org.Org['slug']) {
 export function getOrgIdBySlug() {
   function execute(slug: Org.Org['slug']) {
     return Effect.gen(function* (_) {
+      yield* _(Effect.log(`Use-case(get-org-id-by-slug): Getting org ${slug}`));
       const orgRecord = yield* _(selectOrgRecord(slug));
 
       if (!orgRecord) {

@@ -68,6 +68,7 @@ function handleInvitationDeletion({
 
 export const action = withAction(
   Effect.gen(function* (_) {
+    yield* _(Effect.log('Action(teams/$slug/settings/invitations): Init'));
     const {request, params} = yield* _(ActionArgs);
 
     const userId = yield* _(getCurrentUserId(request));

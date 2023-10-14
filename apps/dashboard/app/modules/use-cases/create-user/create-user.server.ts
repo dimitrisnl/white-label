@@ -63,6 +63,7 @@ export function createUser() {
   function execute(props: CreateUserProps) {
     const {email, name, password} = props;
     return Effect.gen(function* (_) {
+      yield* _(Effect.log(`Use-case(create-user): Creating user ${email}`));
       const passwordHash = yield* _(Password.hash(password));
       const userId = yield* _(Uuid.generate());
       const userRecord = yield* _(

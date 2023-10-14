@@ -38,6 +38,11 @@ export function deleteInvitation() {
   ) {
     const {invitationId} = props;
     return Effect.gen(function* (_) {
+      yield* _(
+        Effect.log(
+          `Use-case(delete-invitation): Deleting invitation ${invitationId}`
+        )
+      );
       yield* _(invitationAuthorizationService.canDelete(userId, orgId));
 
       const invitationRecord = yield* _(deleteInvitationRecord(invitationId));

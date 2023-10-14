@@ -44,6 +44,11 @@ export function declineInvitation() {
   function execute(props: DeclineInvitationProps) {
     const {invitationId} = props;
     return Effect.gen(function* (_) {
+      yield* _(
+        Effect.log(
+          `Use-case(decline-invitation): Declining invitation ${invitationId}`
+        )
+      );
       const invitationRecord = yield* _(selectInvitationRecord(invitationId));
 
       if (!invitationRecord) {

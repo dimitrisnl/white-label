@@ -60,6 +60,7 @@ export function createUserSession({
   request: Request;
 }) {
   return Effect.gen(function* (_) {
+    yield* _(Effect.log(`Session: Creating user session ${userId}`));
     const session = yield* _(getSession(request));
 
     session.set(USER_SESSION_KEY, userId);

@@ -20,6 +20,9 @@ function selectOrgRecord(id: Org.Org['id']) {
 export function getOrg() {
   function execute(orgId: Org.Org['id'], userId: User.User['id']) {
     return Effect.gen(function* (_) {
+      yield* _(
+        Effect.log(`Use-case(get-org): Getting org ${orgId} for user ${userId}`)
+      );
       yield* _(orgAuthorizationService.canView(userId, orgId));
       const orgRecord = yield* _(selectOrgRecord(orgId));
 

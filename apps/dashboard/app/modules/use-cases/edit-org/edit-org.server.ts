@@ -30,6 +30,9 @@ export function editOrg() {
   ) {
     const {name} = props;
     return Effect.gen(function* (_) {
+      yield* _(
+        Effect.log(`Use-case(edit-org): Editing org ${orgId} with name ${name}`)
+      );
       yield* _(orgAuthorizationService.canUpdate(userId, orgId));
       const [orgRecord] = yield* _(updateOrgRecord({name, orgId}));
       const org = yield* _(Org.dbRecordToDomain(orgRecord));

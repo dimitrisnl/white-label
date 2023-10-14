@@ -12,6 +12,7 @@ import {ActionArgs, withAction} from '@/modules/with-action.server';
 
 export const action = withAction(
   Effect.gen(function* (_) {
+    yield* _(Effect.log('Action(account/index): Init'));
     const {request} = yield* _(ActionArgs);
     const userId = yield* _(getCurrentUserId(request));
 
