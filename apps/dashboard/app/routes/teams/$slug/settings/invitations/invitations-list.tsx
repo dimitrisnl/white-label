@@ -1,15 +1,43 @@
 import {
   Badge,
+  Button,
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  toast,
 } from '@white-label/ui-core';
+import {useEffect} from 'react';
+import {useTypedFetcher} from 'remix-typedjson';
 
 import type {MembershipInvitation} from '@/modules/domain/index.server';
-import {useHydrated} from '@/utils/use-is-hydrated';
+
+import {Action} from './_action.server';
+
+export function InvitationsList({
+  invitations,
+}: {
+  invitations: Array<MembershipInvitation.MembershipInvitation>;
+}) {
+  const pendingInvitations = invitations.filter(
+    (invitation) => invitation.status === 'PENDING'
+  );
+  const declinedInvitations = invitations.filter(
+    (invitation) => invitation.status === 'DECLINED'
+  );
+
+  return (
+    <div className="space-y-6">
+      {pendingInvitations.length > 0 ? (
+        <PendingInvitationsList invitations={pendingInvitations} />
+      ) : null}
+      {declinedInvitations.length > 0 ? (
+        <DeclinedInvitationsList invitations={declinedInvitations} />
+      ) : null}
+    </div>
+  );
+}
 
 function RoleBadge({role}: {role: string}) {
   return (
@@ -24,72 +52,97 @@ function RoleBadge({role}: {role: string}) {
 
 function InvitationTableEntry({
   invitation,
-  isHydrated,
 }: {
   invitation: MembershipInvitation.MembershipInvitation;
-  isHydrated: boolean;
 }) {
-  return (
-    <div className="flex items-center">
-      <div className="space-y-1">
-        <p className="text-sm font-medium leading-none">{invitation.email}</p>
+  const {Form, state, data} = useTypedFetcher<Action | undefined>();
 
-        {isHydrated && invitation.status === 'PENDING' ? (
-          <p className="text-muted-foreground text-xs font-medium">
-            {invitation.createdAt.toLocaleDateString()}
-          </p>
-        ) : null}
-      </div>
-      <div className="ml-auto font-medium">
+  useEffect(() => {
+    if (data?.ok === true) {
+      toast.success('Invitation deleted');
+    } else if (data?.ok === false) {
+      const message = data.errors[0] ?? 'Huh';
+      toast.error(message);
+    }
+  }, [data]);
+
+  return (
+    <Form className="flex items-center" method="DELETE">
+      <div className="space-y-2">
+        <input type="hidden" name="invitationId" value={invitation.id} />
+        <p className="text-sm font-medium leading-none">{invitation.email}</p>
         <RoleBadge role={invitation.role} />
       </div>
-    </div>
+      <div className="ml-auto flex items-center space-x-2">
+        {invitation.status === 'DECLINED' ? (
+          <Button
+            variant="destructive"
+            size="sm"
+            name="intent"
+            value="delete"
+            disabled={state !== 'idle'}
+          >
+            Delete
+          </Button>
+        ) : null}
+        {invitation.status === 'PENDING' ? (
+          <>
+            <Button
+              variant="destructive"
+              size="sm"
+              name="intent"
+              value="delete"
+              disabled={state !== 'idle'}
+            >
+              Revoke
+            </Button>
+          </>
+        ) : null}
+      </div>
+    </Form>
   );
 }
 
-export function InvitationsList({
+function PendingInvitationsList({
   invitations,
 }: {
   invitations: Array<MembershipInvitation.MembershipInvitation>;
 }) {
-  const isHydrated = useHydrated();
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Invitations</CardTitle>
+        <CardTitle>Pending Invitations</CardTitle>
         <CardDescription>
           All the pending invitations for this team
         </CardDescription>
       </CardHeader>
-      <CardContent className="bg-blue-50/25">
-        <div className="space-y-3">
-          <Badge variant="default">Pending</Badge>
-          {invitations
-            .filter((invitation) => invitation.status === 'PENDING')
-            .map((invitation) => (
-              <InvitationTableEntry
-                key={invitation.id}
-                invitation={invitation}
-                isHydrated={isHydrated}
-              />
-            ))}
-        </div>
+      <CardContent className="space-y-3 bg-blue-50/25">
+        {invitations.map((invitation) => (
+          <InvitationTableEntry key={invitation.id} invitation={invitation} />
+        ))}
       </CardContent>
-      <CardFooter className="bg-red-50/25">
-        <div className="space-y-3">
-          <Badge variant="destructive">Declined</Badge>
+    </Card>
+  );
+}
 
-          {invitations
-            .filter((invitation) => invitation.status === 'DECLINED')
-            .map((invitation) => (
-              <InvitationTableEntry
-                key={invitation.id}
-                invitation={invitation}
-                isHydrated={isHydrated}
-              />
-            ))}
-        </div>
-      </CardFooter>
+function DeclinedInvitationsList({
+  invitations,
+}: {
+  invitations: Array<MembershipInvitation.MembershipInvitation>;
+}) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Declined Invitations</CardTitle>
+        <CardDescription>
+          All the declined invitations for this team
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-3 bg-red-50/25">
+        {invitations.map((invitation) => (
+          <InvitationTableEntry key={invitation.id} invitation={invitation} />
+        ))}
+      </CardContent>
     </Card>
   );
 }

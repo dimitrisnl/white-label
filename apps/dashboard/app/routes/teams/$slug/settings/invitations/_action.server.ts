@@ -1,6 +1,8 @@
 import * as Effect from 'effect/Effect';
 
 import {sendEmail} from '@/mailer';
+import {Org, User} from '@/modules/domain/index.server';
+import {InvalidIntent} from '@/modules/errors.server';
 import {
   getCurrentUserId,
   identifyOrgByParams,
@@ -13,24 +15,27 @@ import {
   Redirect,
   ServerError,
 } from '@/modules/responses.server';
-import {createInvitation} from '@/modules/use-cases/index.server';
+import {
+  createInvitation,
+  deleteInvitation,
+} from '@/modules/use-cases/index.server';
 import {ActionArgs, withAction} from '@/modules/with-action.server';
 
-export const action = withAction(
-  Effect.gen(function* (_) {
-    const {request, params} = yield* _(ActionArgs);
-
-    const userId = yield* _(getCurrentUserId(request));
-    const orgId = yield* _(identifyOrgByParams(params));
-
+function handleInvitationCreation({
+  userId,
+  orgId,
+  data,
+}: {
+  userId: User.User['id'];
+  orgId: Org.Org['id'];
+  data: Record<string, unknown>;
+}) {
+  return Effect.gen(function* (_) {
     const {validate, execute} = createInvitation();
-    const data = yield* _(parseFormData(request));
     const props = yield* _(validate(data));
 
     const invitation = yield* _(execute(props, orgId, userId));
 
-    // We do this as I consider route to be my adapter. Side-effects happen here.
-    // todo: Get it from Context, Add message to queue, Write templates
     yield* _(
       sendEmail({
         to: invitation.email,
@@ -41,8 +46,53 @@ export const action = withAction(
         },
       })
     );
+  });
+}
 
-    return new Ok({data: null});
+function handleInvitationDeletion({
+  userId,
+  orgId,
+  data,
+}: {
+  userId: User.User['id'];
+  orgId: Org.Org['id'];
+  data: Record<string, unknown>;
+}) {
+  return Effect.gen(function* (_) {
+    const {validate, execute} = deleteInvitation();
+    const props = yield* _(validate(data));
+
+    yield* _(execute(props, orgId, userId));
+  });
+}
+
+export const action = withAction(
+  Effect.gen(function* (_) {
+    const {request, params} = yield* _(ActionArgs);
+
+    const userId = yield* _(getCurrentUserId(request));
+    const orgId = yield* _(identifyOrgByParams(params));
+    const data = yield* _(parseFormData(request));
+
+    const intent = data.intent;
+
+    if (intent === 'delete') {
+      yield* _(
+        handleInvitationDeletion({
+          userId,
+          orgId,
+          data,
+        })
+      );
+      return new Ok({data: null});
+    }
+
+    if (intent === 'create') {
+      yield* _(handleInvitationCreation({userId, orgId, data}));
+      return new Ok({data: null});
+    }
+
+    return yield* _(Effect.fail(new InvalidIntent()));
   }).pipe(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError({})),
@@ -51,6 +101,8 @@ export const action = withAction(
         Effect.fail(
           new BadRequest({errors: ['Invitee is already member of the team']})
         ),
+      InvitationNotFoundError: () =>
+        Effect.fail(new BadRequest({errors: ['Invitation not found']})),
       ForbiddenActionError: () =>
         Effect.fail(
           new Forbidden({
@@ -75,6 +127,8 @@ export const action = withAction(
             Effect.fail(new Redirect({to: '/login', init: request}))
           )
         ),
+      InvalidIntent: () =>
+        Effect.fail(new BadRequest({errors: ['Invalid Intent']})),
     })
   )
 );
