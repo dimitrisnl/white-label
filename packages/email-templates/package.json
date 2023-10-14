@@ -1,0 +1,28 @@
+{
+  "name": "@white-label/email-templates",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.tsx"
+  },
+  "main": "./index.tsx",
+  "types": "./index.tsx",
+  "scripts": {
+    "format": "prettier --write .",
+    "lint": "eslint --ext .ts,.tsx ."
+  },
+  "dependencies": {
+    "@jsx-email/all": "^2.0.1",
+    "clsx": "^1.2.1",
+    "superstruct": "^1.0.3",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.24",
+    "@types/react-dom": "^18.2.8",
+    "@white-label/eslint-config-react": "workspace:*",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
