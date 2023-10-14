@@ -15,14 +15,14 @@ export function InvitationDeclineSuccessMessage() {
     <GuestLayout>
       <Card className="w-[480px] border-t-4 border-t-blue-700">
         <CardHeader>
-          <CardTitle>Success!</CardTitle>
+          <CardTitle>Invitation declined</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-600">You have declined this invitation</p>
+          <p className="text-gray-600">You have declined this invitation.</p>
         </CardContent>
         <CardFooter className="flex justify-end">
           <Link to="/login" className={buttonVariants({variant: 'default'})}>
-            Back to login
+            Go to Login
           </Link>
         </CardFooter>
       </Card>

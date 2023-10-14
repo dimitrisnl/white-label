@@ -75,3 +75,7 @@ export class SlugAlreadyExistsError {
 export class ValidationError extends Data.TaggedClass('ValidationError')<{
   readonly errors: Array<string>;
 }> {}
+
+export class InvalidIntent {
+  readonly _tag = 'InvalidIntent';
+}

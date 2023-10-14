@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@white-label/ui-core';
 import Avatar from 'boring-avatars';
-import {LogOutIcon, PlusCircleIcon, PlusIcon, User2Icon} from 'lucide-react';
+import {LogOutIcon, PlusCircleIcon, User2Icon} from 'lucide-react';
 
 import type {User} from '@/modules/domain/index.server';
 

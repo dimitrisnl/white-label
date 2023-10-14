@@ -78,11 +78,7 @@ export function CreateInvitationForm() {
           </div>
         </CardContent>
         <CardFooter className="flex justify-end">
-          <Button
-            name="formName"
-            value="CREATE_MEMBERSHIP_INVITATION_FORM"
-            disabled={state !== 'idle'}
-          >
+          <Button name="intent" disabled={state !== 'idle'} value="create">
             Invite
           </Button>
         </CardFooter>
