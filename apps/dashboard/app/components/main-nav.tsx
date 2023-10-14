@@ -73,6 +73,17 @@ export function MainNav({
                 </NavLink>
               </li>
             ))}
+            <li>
+              <NavLink
+                to={`/teams/create-new-team`}
+                className="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+              >
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-sm font-medium uppercase text-gray-400 group-hover:border-blue-600 group-hover:text-blue-600 group-[.active]:border-blue-600 group-[.active]:text-blue-600">
+                  &#43;
+                </span>
+                <span className="truncate">Create new Team</span>
+              </NavLink>
+            </li>
           </ul>
         </li>
       </ul>

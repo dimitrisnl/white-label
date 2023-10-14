@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@white-label/ui-core';
 import Avatar from 'boring-avatars';
-import {LogOutIcon, User2Icon} from 'lucide-react';
+import {LogOutIcon, PlusCircleIcon, PlusIcon, User2Icon} from 'lucide-react';
 
 import type {User} from '@/modules/domain/index.server';
 
@@ -45,7 +45,20 @@ export function UserNav({user}: {user: User.User}) {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link to="/logout" className="flex w-full items-center">
+          <Link
+            to="/teams/create-new-team"
+            className="flex w-full items-center"
+          >
+            <PlusCircleIcon className="mr-2 h-4 w-4" />
+            <span>New Team</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <Link
+            to="/logout"
+            className="flex w-full items-center text-red-600 hover:text-red-500 "
+          >
             <LogOutIcon className="mr-2 h-4 w-4" />
             <span>Logout</span>
           </Link>
