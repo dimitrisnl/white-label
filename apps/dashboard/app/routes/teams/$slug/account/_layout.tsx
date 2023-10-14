@@ -15,6 +15,9 @@ function AccountNav() {
       <li>
         <SubMenuLink to={`security`}>Security</SubMenuLink>
       </li>
+      <li>
+        <SubMenuLink to={`invitations`}>Invitations</SubMenuLink>
+      </li>
     </ul>
   );
 }
