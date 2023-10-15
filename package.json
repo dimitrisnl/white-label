@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "format": "prettier --write .",
     "preinstall": "npx only-allow pnpm",
     "prepare": "husky install"
   },
@@ -16,5 +17,5 @@
     "prettier-plugin-tailwindcss": "^0.5.4",
     "typescript": "^5.2.2"
   },
-  "packageManager": "pnpm@8.6.8"
+  "packageManager": "pnpm@8.8.0"
 }

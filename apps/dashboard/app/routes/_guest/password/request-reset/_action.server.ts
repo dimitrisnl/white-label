@@ -1,6 +1,6 @@
 import * as Effect from 'effect/Effect';
 
-import {sendEmail} from '@/mailer';
+import {sendPasswordResetEmail} from '@/mailer/emails/send-password-reset-email';
 import {parseFormData} from '@/modules/helpers.server';
 import {BadRequest, Ok, ServerError} from '@/modules/responses.server';
 import {requestPasswordReset} from '@/modules/use-cases/index.server';
@@ -14,19 +14,9 @@ export const action = withAction(
     const {validate, execute} = requestPasswordReset();
     const data = yield* _(parseFormData(request));
     const props = yield* _(validate(data));
-    const {resetPasswordTokenId, email} = yield* _(execute(props));
+    const {passwordResetTokenId, email} = yield* _(execute(props));
 
-    // todo: Get it from Context, Add message to queue, Write templates
-    yield* _(
-      sendEmail({
-        to: email,
-        subject: 'Password Reset',
-        content: {
-          type: 'PLAIN',
-          message: `Here's your token: ${resetPasswordTokenId}`,
-        },
-      })
-    );
+    yield* _(sendPasswordResetEmail({email, passwordResetTokenId}));
 
     return new Ok({data: null});
   }).pipe(

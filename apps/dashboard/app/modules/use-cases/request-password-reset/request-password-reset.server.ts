@@ -53,10 +53,10 @@ export function requestPasswordReset() {
 
       const user = yield* _(User.dbRecordToDomain(userRecord));
 
-      const resetPasswordTokenId = yield* _(Uuid.generate());
-      yield* _(createPasswordResetToken(resetPasswordTokenId, user.id));
+      const passwordResetTokenId = yield* _(Uuid.generate());
+      yield* _(createPasswordResetToken(passwordResetTokenId, user.id));
 
-      return {email: user.email, resetPasswordTokenId};
+      return {email: user.email, passwordResetTokenId};
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),

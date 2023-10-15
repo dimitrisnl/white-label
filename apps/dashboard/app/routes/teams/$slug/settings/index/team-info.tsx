@@ -31,9 +31,7 @@ export function TeamInfo({initialName}: {initialName: string}) {
       <Card>
         <CardHeader>
           <CardTitle>Team Name</CardTitle>
-          <CardDescription>
-            The team's name and owner information
-          </CardDescription>
+          <CardDescription>The team's name</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid w-full items-center gap-4">
