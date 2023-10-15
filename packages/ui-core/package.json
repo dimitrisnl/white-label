@@ -2,7 +2,6 @@
   "name": "@white-label/ui-core",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "exports": {
     ".": "./index.tsx",
     "./tailwind-config": "./tailwind.config.js",

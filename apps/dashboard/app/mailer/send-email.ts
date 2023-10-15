@@ -33,7 +33,7 @@ export function sendEmail(props: SendEmailProps) {
       catch: (error) => {
         Effect.log('Error sending email');
         Effect.log(error);
-        return null;
+        return Effect.fail(error);
       },
     })
   );

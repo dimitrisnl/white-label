@@ -1,6 +1,6 @@
 import * as Effect from 'effect/Effect';
 
-import {sendEmail} from '@/mailer';
+import {sendEmail} from '@/mailer/send-email';
 import {parseFormData} from '@/modules/helpers.server';
 import {BadRequest, Ok, ServerError} from '@/modules/responses.server';
 import {requestPasswordReset} from '@/modules/use-cases/index.server';
@@ -21,11 +21,13 @@ export const action = withAction(
       sendEmail({
         to: email,
         subject: 'Password Reset',
-        content: {
-          type: 'PLAIN',
-          message: `Here's your token: ${resetPasswordTokenId}`,
-        },
-      })
+        content: `Here's your token: ${resetPasswordTokenId}`,
+      }).pipe(
+        // temporary fix before template is written
+        Effect.catchAll(() => {
+          return Effect.unit;
+        })
+      )
     );
 
     return new Ok({data: null});
