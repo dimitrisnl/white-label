@@ -1,6 +1,6 @@
 import {createTransport} from 'nodemailer';
 
-import {config} from './config';
+import {config} from './config.server';
 
 function makeTransporter() {
   return createTransport({

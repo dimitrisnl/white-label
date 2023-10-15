@@ -2,9 +2,9 @@ import {InvitationEmailTemplate} from '@white-label/email-templates';
 import * as Effect from 'effect/Effect';
 import {pipe} from 'effect/Function';
 
-import {buildTemplate} from '../build-template';
-import {config} from '../config';
-import {sendEmail} from '../send-email';
+import {buildTemplate} from '../build-template.server';
+import {config} from '../config.server';
+import {sendEmail} from '../send-email.server';
 
 export function sendInvitationEmail({
   email,
