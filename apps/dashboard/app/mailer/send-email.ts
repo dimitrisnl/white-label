@@ -1,6 +1,7 @@
 import * as Effect from 'effect/Effect';
 
-import {config, transporter} from './transporter';
+import {config} from './config';
+import {transporter} from './transporter';
 
 interface SendEmailProps {
   to: string;
