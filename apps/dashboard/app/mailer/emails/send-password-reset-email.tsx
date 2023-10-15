@@ -1,4 +1,4 @@
-import {VerificationEmailTemplate} from '@white-label/email-templates';
+import {PasswordResetEmailTemplate} from '@white-label/email-templates';
 import * as Effect from 'effect/Effect';
 import {pipe} from 'effect/Function';
 
@@ -6,25 +6,25 @@ import {buildTemplate} from '../build-template';
 import {config} from '../config';
 import {sendEmail} from '../send-email';
 
-export function sendVerificationEmail({
+export function sendPasswordResetEmail({
   email,
-  verifyEmailTokenId,
+  passwordResetTokenId,
 }: {
   email: string;
-  verifyEmailTokenId: string;
+  passwordResetTokenId: string;
 }) {
   return Effect.gen(function* (_) {
     yield* _(
       Effect.log(
-        `Mailer(verification-email): Sending verification email to ${email}`
+        `Mailer(password-reset-email): Sending password reset email to ${email}`
       )
     );
     // eslint-disable-next-line
     const html = yield* _(
       buildTemplate(
-        <VerificationEmailTemplate
+        <PasswordResetEmailTemplate
           dashboardUrl={config.DASHBOARD_URL}
-          verificationUrl={`${config.DASHBOARD_URL}/email/verify-email?token=${verifyEmailTokenId}`}
+          passwordResetUrl={`${config.DASHBOARD_URL}/password/reset-password?token=${passwordResetTokenId}`}
         />
       )
     );
@@ -32,20 +32,20 @@ export function sendVerificationEmail({
     yield* _(
       sendEmail({
         to: email,
-        subject: 'Welcome to White Label',
+        subject: `Reset your password`,
         content: html,
       })
     );
     yield* _(
       Effect.log(
-        `Mailer(verification-email): Sent verification email to ${email}`
+        `Mailer(password-reset-email): Sent password reset email to ${email}`
       )
     );
   }).pipe(
     Effect.catchAll((error) =>
       pipe(
         Effect.log(
-          `Mailer(verification-email): Failed to send verification email to ${email}`
+          `Mailer(password-reset-email): Failed to send password reset email to ${email}`
         ),
         Effect.flatMap(() => Effect.log(error)),
         // suppress error

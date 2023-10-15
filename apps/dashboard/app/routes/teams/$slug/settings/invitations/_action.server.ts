@@ -1,6 +1,6 @@
 import * as Effect from 'effect/Effect';
 
-import {sendEmail} from '@/mailer/send-email';
+import {sendInvitationEmail} from '@/mailer/emails/send-invitation-email';
 import {Org, User} from '@/modules/domain/index.server';
 import {InvalidIntent} from '@/modules/errors.server';
 import {
@@ -37,16 +37,11 @@ function handleInvitationCreation({
     const invitation = yield* _(execute(props, orgId, userId));
 
     yield* _(
-      sendEmail({
-        to: invitation.email,
-        subject: `You have been invited to join ${invitation.org.name}`,
-        content: `Here's your token: ${invitation.id}`,
-      }).pipe(
-        // temporary fix before template is written
-        Effect.catchAll(() => {
-          return Effect.unit;
-        })
-      )
+      sendInvitationEmail({
+        email: invitation.email,
+        orgName: invitation.org.name,
+        invitationTokenId: invitation.id,
+      })
     );
   });
 }

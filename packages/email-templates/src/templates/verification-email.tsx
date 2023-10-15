@@ -5,6 +5,7 @@ export const VerificationEmailName = 'VerificationEmail';
 
 export const validation = zod.object({
   verificationUrl: zod.string().url(),
+  dashboardUrl: zod.string().url(),
 });
 
 export type Props = zod.infer<typeof validation>;

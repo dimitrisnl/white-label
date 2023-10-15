@@ -1,4 +1,4 @@
-import {VerificationEmailTemplate} from '@white-label/email-templates';
+import {InvitationEmailTemplate} from '@white-label/email-templates';
 import * as Effect from 'effect/Effect';
 import {pipe} from 'effect/Function';
 
@@ -6,25 +6,28 @@ import {buildTemplate} from '../build-template';
 import {config} from '../config';
 import {sendEmail} from '../send-email';
 
-export function sendVerificationEmail({
+export function sendInvitationEmail({
   email,
-  verifyEmailTokenId,
+  orgName,
+  invitationTokenId,
 }: {
   email: string;
-  verifyEmailTokenId: string;
+  orgName: string;
+  invitationTokenId: string;
 }) {
   return Effect.gen(function* (_) {
     yield* _(
       Effect.log(
-        `Mailer(verification-email): Sending verification email to ${email}`
+        `Mailer(invitation-email): Sending invitation email to ${email}`
       )
     );
     // eslint-disable-next-line
     const html = yield* _(
       buildTemplate(
-        <VerificationEmailTemplate
+        <InvitationEmailTemplate
+          orgName={orgName}
           dashboardUrl={config.DASHBOARD_URL}
-          verificationUrl={`${config.DASHBOARD_URL}/email/verify-email?token=${verifyEmailTokenId}`}
+          invitationDeclineUrl={`${config.DASHBOARD_URL}/invitation/decline?invitationId=${invitationTokenId}`}
         />
       )
     );
@@ -32,20 +35,18 @@ export function sendVerificationEmail({
     yield* _(
       sendEmail({
         to: email,
-        subject: 'Welcome to White Label',
+        subject: `You've been invited to join ${orgName}`,
         content: html,
       })
     );
     yield* _(
-      Effect.log(
-        `Mailer(verification-email): Sent verification email to ${email}`
-      )
+      Effect.log(`Mailer(invitation-email): Sent invitation email to ${email}`)
     );
   }).pipe(
     Effect.catchAll((error) =>
       pipe(
         Effect.log(
-          `Mailer(verification-email): Failed to send verification email to ${email}`
+          `Mailer(invitation-email): Failed to send invitation email to ${email}`
         ),
         Effect.flatMap(() => Effect.log(error)),
         // suppress error
