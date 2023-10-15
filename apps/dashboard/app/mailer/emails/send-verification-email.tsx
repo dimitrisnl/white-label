@@ -1,5 +1,6 @@
 import {VerificationEmailTemplate} from '@white-label/email-templates';
 import * as Effect from 'effect/Effect';
+import {pipe} from 'effect/Function';
 
 import {buildTemplate} from '../build-template';
 import {sendEmail} from '../send-email';
@@ -12,6 +13,11 @@ export function sendVerificationEmail({
   verifyEmailTokenId: string;
 }) {
   return Effect.gen(function* (_) {
+    yield* _(
+      Effect.log(
+        `Mailer(verification-email): Sending verification email to ${email}`
+      )
+    );
     // eslint-disable-next-line
     const html = yield* _(
       buildTemplate(
@@ -28,10 +34,19 @@ export function sendVerificationEmail({
         content: html,
       })
     );
+    yield* _(
+      Effect.log(
+        `Mailer(verification-email): Sent verification email to ${email}`
+      )
+    );
   }).pipe(
-    Effect.catchAll(() => {
-      Effect.log(`Failed to send welcome email`);
-      return Effect.unit;
-    })
+    Effect.catchAll((error) =>
+      pipe(
+        Effect.log(`Mailer: Failed to send verification email to ${email}`),
+        Effect.flatMap(() => Effect.log(error)),
+        // suppress error
+        Effect.flatMap(() => Effect.unit)
+      )
+    )
   );
 }
