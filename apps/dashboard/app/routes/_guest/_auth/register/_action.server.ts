@@ -18,13 +18,7 @@ export const action = withAction(
     const props = yield* _(validate(data));
     const {user, verifyEmailTokenId} = yield* _(execute(props));
 
-    // todo: Get it from Context, Add message to queue, Write templates
-    yield* _(
-      sendVerificationEmail({
-        email: user.email,
-        verifyEmailTokenId,
-      })
-    );
+    yield* _(sendVerificationEmail({email: user.email, verifyEmailTokenId}));
 
     return yield* _(
       createUserSession({

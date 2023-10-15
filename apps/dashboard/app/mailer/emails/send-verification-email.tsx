@@ -2,9 +2,10 @@ import {VerificationEmailTemplate} from '@white-label/email-templates';
 import * as Effect from 'effect/Effect';
 import {pipe} from 'effect/Function';
 
+import {addEmailJob} from '@/queues/email-queue';
+
 import {buildTemplate} from '../build-template.server';
 import {config} from '../config.server';
-import {sendEmail} from '../send-email.server';
 
 export function sendVerificationEmail({
   email,
@@ -15,9 +16,7 @@ export function sendVerificationEmail({
 }) {
   return Effect.gen(function* (_) {
     yield* _(
-      Effect.log(
-        `Mailer(verification-email): Sending verification email to ${email}`
-      )
+      Effect.log(`Mailer(verification-email): Sending email to ${email}`)
     );
     // eslint-disable-next-line
     const html = yield* _(
@@ -29,23 +28,19 @@ export function sendVerificationEmail({
       )
     );
 
-    yield* _(
-      sendEmail({
-        to: email,
-        subject: 'Welcome to White Label',
-        content: html,
-      })
-    );
-    yield* _(
-      Effect.log(
-        `Mailer(verification-email): Sent verification email to ${email}`
-      )
-    );
+    const payload = {
+      to: email,
+      subject: `Verify your email`,
+      content: html,
+    };
+
+    yield* _(addEmailJob('password-reset-email', payload));
+    yield* _(Effect.log(`Mailer(verification-email): Sent email to ${email}`));
   }).pipe(
     Effect.catchAll((error) =>
       pipe(
         Effect.log(
-          `Mailer(verification-email): Failed to send verification email to ${email}`
+          `Mailer(verification-email): Failed to send email to ${email}`
         ),
         Effect.flatMap(() => Effect.log(error)),
         // suppress error

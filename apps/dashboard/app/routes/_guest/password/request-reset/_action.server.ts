@@ -16,13 +16,7 @@ export const action = withAction(
     const props = yield* _(validate(data));
     const {passwordResetTokenId, email} = yield* _(execute(props));
 
-    // todo: Get it from Context, Add message to queue
-    yield* _(
-      sendPasswordResetEmail({
-        email,
-        passwordResetTokenId,
-      })
-    );
+    yield* _(sendPasswordResetEmail({email, passwordResetTokenId}));
 
     return new Ok({data: null});
   }).pipe(

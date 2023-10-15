@@ -2,9 +2,10 @@ import {PasswordResetEmailTemplate} from '@white-label/email-templates';
 import * as Effect from 'effect/Effect';
 import {pipe} from 'effect/Function';
 
+import {addEmailJob} from '@/queues/email-queue';
+
 import {buildTemplate} from '../build-template.server';
 import {config} from '../config.server';
-import {sendEmail} from '../send-email.server';
 
 export function sendPasswordResetEmail({
   email,
@@ -14,11 +15,7 @@ export function sendPasswordResetEmail({
   passwordResetTokenId: string;
 }) {
   return Effect.gen(function* (_) {
-    yield* _(
-      Effect.log(
-        `Mailer(password-reset-email): Sending password reset email to ${email}`
-      )
-    );
+    yield* _(Effect.log('Mailer(password-reset-email): Preparing email'));
     // eslint-disable-next-line
     const html = yield* _(
       buildTemplate(
@@ -29,23 +26,19 @@ export function sendPasswordResetEmail({
       )
     );
 
-    yield* _(
-      sendEmail({
-        to: email,
-        subject: `Reset your password`,
-        content: html,
-      })
-    );
-    yield* _(
-      Effect.log(
-        `Mailer(password-reset-email): Sent password reset email to ${email}`
-      )
-    );
+    const payload = {
+      to: email,
+      subject: `Reset your password`,
+      content: html,
+    };
+
+    yield* _(addEmailJob('password-reset-email', payload));
+    yield* _(Effect.log('Mailer(password-reset-email): Sending email'));
   }).pipe(
     Effect.catchAll((error) =>
       pipe(
         Effect.log(
-          `Mailer(password-reset-email): Failed to send password reset email to ${email}`
+          `Mailer(password-reset-email): Failed to send email to ${email}`
         ),
         Effect.flatMap(() => Effect.log(error)),
         // suppress error
