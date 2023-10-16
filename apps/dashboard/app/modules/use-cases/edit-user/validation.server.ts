@@ -1,7 +1,7 @@
 import * as Schema from '@effect/schema/Schema';
 
 import {User} from '@/modules/domain/index.server';
-import {schemaResolver} from '@/modules/validation-helper';
+import {schemaResolver} from '@/modules/validation-helper.server';
 
 const validationSchema = Schema.struct({
   name: User.userNameSchema,

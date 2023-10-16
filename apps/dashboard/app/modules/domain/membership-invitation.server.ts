@@ -2,12 +2,12 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {DbRecordParseError} from '../errors.server';
-import * as DateString from './date';
-import * as Email from './email';
-import * as InviteStatus from './invite-status';
-import * as MembershipRole from './membership-role';
-import * as Org from './org';
-import * as Uuid from './uuid';
+import * as DateString from './date.server';
+import * as Email from './email.server';
+import * as InviteStatus from './invite-status.server';
+import * as MembershipRole from './membership-role.server';
+import * as Org from './org.server';
+import * as Uuid from './uuid.server';
 
 const MembershipInvitationBrand = Symbol.for('MembershipInvitationBrand');
 

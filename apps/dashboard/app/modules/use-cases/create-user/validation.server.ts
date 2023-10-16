@@ -1,7 +1,7 @@
 import * as Schema from '@effect/schema/Schema';
 
 import {Email, Password, User} from '@/modules/domain/index.server';
-import {schemaResolver} from '@/modules/validation-helper';
+import {schemaResolver} from '@/modules/validation-helper.server';
 
 const validationSchema = Schema.struct({
   password: Password.passwordSchema,

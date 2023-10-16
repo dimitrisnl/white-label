@@ -2,9 +2,9 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {DbRecordParseError} from '../errors.server';
-import * as DateString from './date';
-import * as Email from './email';
-import * as Uuid from './uuid';
+import * as DateString from './date.server';
+import * as Email from './email.server';
+import * as Uuid from './uuid.server';
 
 const UserBrand = Symbol.for('UserBrand');
 const UserIdBrand = Symbol.for('UserIdBrand');

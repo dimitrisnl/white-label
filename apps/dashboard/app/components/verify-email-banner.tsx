@@ -1,5 +1,5 @@
+import {ExclamationTriangleIcon} from '@heroicons/react/24/outline';
 import {Button} from '@white-label/ui-core';
-import {AlertCircleIcon} from 'lucide-react';
 
 export function VerifyEmailBanner() {
   return (
@@ -9,10 +9,7 @@ export function VerifyEmailBanner() {
           <div className="flex w-full items-center justify-between">
             <div className="flex">
               <div className="flex-shrink-0">
-                <AlertCircleIcon
-                  className="h-6 w-6 text-yellow-600"
-                  aria-hidden="true"
-                />
+                <ExclamationTriangleIcon className="h-6 w-6 text-yellow-600" />
               </div>
               <div className="ml-3 space-y-px">
                 <p className="text-sm font-medium text-yellow-500">

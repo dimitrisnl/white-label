@@ -3,8 +3,8 @@ import baseSlugify from '@sindresorhus/slugify';
 import * as Effect from 'effect/Effect';
 
 import {DbRecordParseError} from '../errors.server';
-import * as DateString from './date';
-import * as Uuid from './uuid';
+import * as DateString from './date.server';
+import * as Uuid from './uuid.server';
 
 const OrgBrand = Symbol.for('OrgBrand');
 const OrgIdBrand = Symbol.for('OrgIdBrand');

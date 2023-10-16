@@ -1,8 +1,8 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import * as DateString from './date';
-import * as Uuid from './uuid';
+import * as DateString from './date.server';
+import * as Uuid from './uuid.server';
 
 const PasswordResetTokenBrand = Symbol.for('PasswordResetTokenBrand');
 

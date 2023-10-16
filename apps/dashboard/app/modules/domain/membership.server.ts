@@ -2,11 +2,11 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {DbRecordParseError} from '../errors.server';
-import * as DateString from './date';
-import * as Email from './email';
-import * as MembershipRole from './membership-role';
-import * as Org from './org';
-import * as User from './user';
+import * as DateString from './date.server';
+import * as Email from './email.server';
+import * as MembershipRole from './membership-role.server';
+import * as Org from './org.server';
+import * as User from './user.server';
 
 const MembershipBrand = Symbol.for('MembershipBrand');
 
