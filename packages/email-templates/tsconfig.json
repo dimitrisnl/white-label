@@ -1,13 +1,15 @@
 {
   "root": true,
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["./src/**/*.ts", "./src/**/*.tsx"],
   "compilerOptions": {
     "baseUrl": ".",
     "strict": true,
     "lib": ["DOM", "DOM.Iterable", "ES2020"],
     "jsx": "react-jsx",
     "target": "ES2020",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "node",
+    "declaration": false,
+    "removeComments": true,
+    "esModuleInterop": true
   }
 }
