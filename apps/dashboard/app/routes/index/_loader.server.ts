@@ -1,7 +1,5 @@
-import type {MetaFunction} from '@remix-run/node';
 import * as Effect from 'effect/Effect';
 
-import {ErrorPage} from '@/components/error-page';
 import {getCurrentUserDetails} from '@/modules/helpers.server';
 import {decideNextTeamRedirect} from '@/modules/navigation.server';
 import {Redirect, ServerError} from '@/modules/responses.server';
@@ -26,14 +24,3 @@ export const loader = withLoader(
     })
   )
 );
-
-export function ErrorBoundary() {
-  return <ErrorPage />;
-}
-
-export const meta: MetaFunction = () => {
-  return [
-    {title: 'Dashboard'},
-    {name: 'description', content: 'Main dashboard'},
-  ];
-};

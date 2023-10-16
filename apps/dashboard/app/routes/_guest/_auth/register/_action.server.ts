@@ -1,6 +1,6 @@
 import * as Effect from 'effect/Effect';
 
-import {sendVerificationEmail} from '@/mailer/emails/send-verification-email';
+import {sendVerificationEmail} from '@/mailer/emails/send-verification-email.server';
 import {parseFormData} from '@/modules/helpers.server';
 import {BadRequest, ServerError} from '@/modules/responses.server';
 import {createUserSession} from '@/modules/session.server';
