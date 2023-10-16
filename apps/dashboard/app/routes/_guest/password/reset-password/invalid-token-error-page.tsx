@@ -1,3 +1,4 @@
+import {ExclamationTriangleIcon} from '@heroicons/react/24/outline';
 import {Link} from '@remix-run/react';
 import {
   buttonVariants,
@@ -7,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@white-label/ui-core';
-import {MailWarningIcon} from 'lucide-react';
 
 import {GuestLayout} from '@/components/guest-layout';
 
@@ -17,7 +17,7 @@ export function InvalidTokenErrorPage() {
       <Card className="w-[480px] border-t-4 border-t-blue-700">
         <CardHeader>
           <div className="mb-4 h-10 w-10 rounded-full bg-red-100 p-2">
-            <MailWarningIcon className="h-full w-full text-red-600" />
+            <ExclamationTriangleIcon className="h-full w-full text-red-600" />
           </div>
           <CardTitle>Cannot reset password</CardTitle>
         </CardHeader>

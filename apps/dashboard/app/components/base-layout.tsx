@@ -1,5 +1,5 @@
+import {BellIcon} from '@heroicons/react/24/outline';
 import {Popover, PopoverContent, PopoverTrigger} from '@white-label/ui-core';
-import {BellIcon, LayoutDashboardIcon} from 'lucide-react';
 import React from 'react';
 
 import {UserNav} from '@/components/user-nav';
@@ -41,7 +41,7 @@ export function BaseLayout({
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center text-2xl font-bold">
-              <LayoutDashboardIcon className="mr-2 h-6 w-6" /> White Label
+              White Label
             </div>
             <MainNav
               memberships={currentUser.memberships}

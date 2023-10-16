@@ -1,5 +1,5 @@
+import {EyeIcon, EyeSlashIcon} from '@heroicons/react/24/outline';
 import {Input} from '@white-label/ui-core';
-import {EyeIcon, EyeOffIcon} from 'lucide-react';
 import * as React from 'react';
 
 export interface InputProps
@@ -19,7 +19,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(
         <Input {...props} ref={ref} type={inputType} />
         <button type="button" onClick={togglePasswordVisibility}>
           {showPassword ? (
-            <EyeOffIcon className="h-4 w-4 text-gray-500" />
+            <EyeSlashIcon className="h-4 w-4 text-gray-500" />
           ) : (
             <EyeIcon className="h-4 w-4 text-gray-500" />
           )}

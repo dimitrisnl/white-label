@@ -1,6 +1,6 @@
 import * as Effect from 'effect/Effect';
 
-import {sendInvitationEmail} from '@/mailer/emails/send-invitation-email';
+import {sendInvitationEmail} from '@/mailer/emails/send-invitation-email.server';
 import {Org, User} from '@/modules/domain/index.server';
 import {InvalidIntent} from '@/modules/errors.server';
 import {

@@ -23,11 +23,6 @@ function SettingsNav() {
             Members
           </SubMenuLink>
         </li>
-        <li>
-          <SubMenuLink to={`/teams/${slug}/settings/billing`}>
-            Billing
-          </SubMenuLink>
-        </li>
       </ul>
     </div>
   );

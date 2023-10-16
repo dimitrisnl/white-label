@@ -7,7 +7,12 @@ import {useOrgData} from './use-org-data';
 
 export {loader} from './_loader.server';
 
-import {BarChartBigIcon, CogIcon, GlobeIcon, HomeIcon} from 'lucide-react';
+import {
+  CogIcon,
+  GlobeAltIcon,
+  HomeIcon,
+  PresentationChartBarIcon,
+} from '@heroicons/react/24/outline';
 
 export default function OrgLayout() {
   const {currentUser} = useOrgData();
@@ -18,13 +23,13 @@ export default function OrgLayout() {
     {
       name: 'Feature A',
       href: `/teams/${slug}/feature-a`,
-      icon: GlobeIcon,
+      icon: GlobeAltIcon,
       end: false,
     },
     {
       name: 'Feature B',
       href: `/teams/${slug}/feature-b`,
-      icon: BarChartBigIcon,
+      icon: PresentationChartBarIcon,
       end: false,
     },
     {

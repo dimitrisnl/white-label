@@ -4,11 +4,9 @@ const {flatRoutes} = require('remix-flat-routes');
 module.exports = {
   serverModuleFormat: 'cjs',
   serverDependenciesToBundle: [
-    '@white-label/ui-core',
-    '@white-label/email-templates',
-    '@sindresorhus/slugify',
     'escape-string-regexp',
     '@sindresorhus/transliterate',
+    '@sindresorhus/slugify',
   ],
   ignoredRouteFiles: ['**/*'],
   routes: async (defineRoutes) => {

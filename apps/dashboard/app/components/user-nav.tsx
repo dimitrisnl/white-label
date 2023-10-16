@@ -1,3 +1,8 @@
+import {
+  ArrowRightOnRectangleIcon,
+  PlusCircleIcon,
+  UserCircleIcon,
+} from '@heroicons/react/24/outline';
 import {Link} from '@remix-run/react';
 import {
   Button,
@@ -9,7 +14,6 @@ import {
   DropdownMenuTrigger,
 } from '@white-label/ui-core';
 import Avatar from 'boring-avatars';
-import {LogOutIcon, PlusCircleIcon, User2Icon} from 'lucide-react';
 
 import type {User} from '@/modules/domain/index.server';
 
@@ -40,7 +44,7 @@ export function UserNav({user}: {user: User.User}) {
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Link to="/account" className="flex w-full items-center">
-            <User2Icon className="mr-2 h-4 w-4" />
+            <UserCircleIcon className="mr-2 h-4 w-4" />
             <span>Account</span>
           </Link>
         </DropdownMenuItem>
@@ -59,7 +63,7 @@ export function UserNav({user}: {user: User.User}) {
             to="/logout"
             className="flex w-full items-center text-red-600 hover:text-red-500 "
           >
-            <LogOutIcon className="mr-2 h-4 w-4" />
+            <ArrowRightOnRectangleIcon className="mr-2 h-4 w-4" />
             <span>Logout</span>
           </Link>
         </DropdownMenuItem>

@@ -1,6 +1,6 @@
 import * as Effect from 'effect/Effect';
 
-import {sendPasswordResetEmail} from '@/mailer/emails/send-password-reset-email';
+import {sendPasswordResetEmail} from '@/mailer/emails/send-password-reset-email.server';
 import {parseFormData} from '@/modules/helpers.server';
 import {BadRequest, Ok, ServerError} from '@/modules/responses.server';
 import {requestPasswordReset} from '@/modules/use-cases/index.server';
