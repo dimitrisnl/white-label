@@ -1,15 +1,12 @@
-import {Template} from '../common.js';
-import zod from 'zod';
+import {Template} from '../common';
 
 export const InvitationEmailName = 'InvitationEmail';
 
-export const validation = zod.object({
-  invitationDeclineUrl: zod.string().url(),
-  dashboardUrl: zod.string().url(),
-  orgName: zod.string(),
-});
-
-export type Props = zod.infer<typeof validation>;
+export type Props = {
+  invitationDeclineUrl: string;
+  dashboardUrl: string;
+  orgName: string;
+};
 
 export const InvitationEmailTemplate = ({
   orgName,

@@ -1,14 +1,11 @@
-import zod from 'zod';
-import {Template} from '../common.js';
+import {Template} from '../common';
 
 export const VerificationEmailName = 'VerificationEmail';
 
-export const validation = zod.object({
-  verificationUrl: zod.string().url(),
-  dashboardUrl: zod.string().url(),
-});
-
-export type Props = zod.infer<typeof validation>;
+export type Props = {
+  verificationUrl: string;
+  dashboardUrl: string;
+};
 
 export const VerificationEmailTemplate = ({verificationUrl}: Props) => (
   <Template.Html>
