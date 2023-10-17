@@ -1,35 +1,27 @@
 import {
   ArrowRightOnRectangleIcon,
-  PlusCircleIcon,
   UserCircleIcon,
-} from '@heroicons/react/24/outline';
+} from '@heroicons/react/24/solid';
+import {PlusCircleIcon, UserIcon} from '@heroicons/react/24/outline';
 import {Link} from '@remix-run/react';
 import {
-  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@white-label/ui-core';
-import Avatar from 'boring-avatars';
+} from '@white-label/ui-core/dropdown-menu';
 
-import type {User} from '@/modules/domain/index.server';
-
-const avatarPalette = ['#92A1C6', '#146A7C', '#F0AB3D', '#C271B4', '#C20D90'];
+import type {User} from '@/modules/domain/index.server.ts';
+import {Button} from '@white-label/ui-core/button';
 
 export function UserNav({user}: {user: User.User}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full p-0">
-          <Avatar
-            size={32}
-            name={user.name}
-            variant="pixel"
-            colors={avatarPalette}
-          />
+          <UserCircleIcon className="h-6 w-6 fill-blue-400" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -44,7 +36,7 @@ export function UserNav({user}: {user: User.User}) {
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Link to="/account" className="flex w-full items-center">
-            <UserCircleIcon className="mr-2 h-4 w-4" />
+            <UserIcon className="mr-2 h-4 w-4" />
             <span>Account</span>
           </Link>
         </DropdownMenuItem>

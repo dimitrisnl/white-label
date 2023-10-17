@@ -4,8 +4,8 @@ import * as Effect from 'effect/Effect';
 import {pipe} from 'effect/Function';
 import {redirect, typedjson} from 'remix-typedjson';
 
-import type {HttpResponse, HttpResponseError} from './responses.server';
-import {matchHttpResponse, matchHttpResponseError} from './responses.server';
+import type {HttpResponse, HttpResponseError} from './responses.server.ts';
+import {matchHttpResponse, matchHttpResponseError} from './responses.server.ts';
 
 export const ActionArgs = Context.Tag<ActionFunctionArgs>('ActionArgs');
 

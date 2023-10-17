@@ -1,6 +1,6 @@
 import {useTypedRouteLoaderData} from 'remix-typedjson';
 
-import {BaseOrgLoader} from './_loader.server';
+import {BaseOrgLoader} from './_loader.server.ts';
 
 export function useOrgData() {
   const {

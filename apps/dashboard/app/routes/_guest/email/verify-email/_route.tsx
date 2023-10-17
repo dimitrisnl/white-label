@@ -1,11 +1,11 @@
 import {isRouteErrorResponse, useRouteError} from '@remix-run/react';
 
-import {ErrorPage} from '@/components/error-page';
+import {ErrorPage} from '@/components/error-page.tsx';
 
-import {InvalidTokenErrorMessage} from './invalid-token-error-message';
-import {VerificationSuccessMessage} from './verification-success-message';
+import {InvalidTokenErrorMessage} from './invalid-token-error-message.tsx';
+import {VerificationSuccessMessage} from './verification-success-message.tsx';
 
-export {loader} from './_loader.server';
+export {loader} from './_loader.server.ts';
 
 export function ErrorBoundary() {
   const error = useRouteError();

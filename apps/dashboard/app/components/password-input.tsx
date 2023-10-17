@@ -1,5 +1,5 @@
 import {EyeIcon, EyeSlashIcon} from '@heroicons/react/24/outline';
-import {Input} from '@white-label/ui-core';
+import {Input} from '@white-label/ui-core/input';
 import * as React from 'react';
 
 export interface InputProps

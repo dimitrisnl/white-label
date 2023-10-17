@@ -1,18 +1,18 @@
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@white-label/ui-core';
+} from '@white-label/ui-core/card';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import {ErrorMessage} from '@/components/error-feedback';
-import {MembershipInvitation} from '@/modules/domain/index.server';
+import {ErrorMessage} from '@/components/error-feedback.tsx';
+import {MembershipInvitation} from '@/modules/domain/index.server.ts';
 
-import {Action} from './_action.server';
+import {Action} from './_action.server.ts';
+import {Button} from '@white-label/ui-core/button';
 
 export function JoinTeamForm({
   invitation,

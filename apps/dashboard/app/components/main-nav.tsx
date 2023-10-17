@@ -1,7 +1,7 @@
 import {NavLink} from '@remix-run/react';
-import {cn} from '@white-label/ui-core';
+import {cn} from '@white-label/ui-core/utils';
 
-import type {Membership} from '@/modules/domain/index.server';
+import type {Membership} from '@/modules/domain/index.server.ts';
 
 export function MainNav({
   memberships,

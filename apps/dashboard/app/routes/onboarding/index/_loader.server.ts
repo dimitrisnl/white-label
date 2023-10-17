@@ -1,8 +1,8 @@
 import * as Effect from 'effect/Effect';
 
-import {getCurrentUserDetails} from '@/modules/helpers.server';
-import {Ok, Redirect, ServerError} from '@/modules/responses.server';
-import {LoaderArgs, withLoader} from '@/modules/with-loader.server';
+import {getCurrentUserDetails} from '@/modules/helpers.server.ts';
+import {Ok, Redirect, ServerError} from '@/modules/responses.server.ts';
+import {LoaderArgs, withLoader} from '@/modules/with-loader.server.ts';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {

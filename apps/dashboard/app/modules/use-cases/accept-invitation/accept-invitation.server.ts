@@ -1,19 +1,19 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server';
-import type {User} from '@/modules/domain/index.server';
+import {db, pool} from '@/database/db.server.ts';
+import type {User} from '@/modules/domain/index.server.ts';
 import {
   InviteStatus,
   MembershipInvitation,
-} from '@/modules/domain/index.server';
+} from '@/modules/domain/index.server.ts';
 
 import {
   DatabaseError,
   InternalServerError,
   InvitationNotFoundError,
-} from '../../errors.server';
-import type {AcceptInvitationProps} from './validation.server';
-import {validate} from './validation.server';
+} from '../../errors.server.ts';
+import type {AcceptInvitationProps} from './validation.server.ts';
+import {validate} from './validation.server.ts';
 
 function fetchInvitation(invitationId: string) {
   return Effect.tryPromise({

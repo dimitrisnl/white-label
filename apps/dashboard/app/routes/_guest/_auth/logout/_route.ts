@@ -1,2 +1,2 @@
-export {loader} from './_loader.server';
-export {action} from './_action.server';
+export {loader} from './_loader.server.ts';
+export {action} from './_action.server.ts';

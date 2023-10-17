@@ -1,5 +1,5 @@
 import {useSearchParams} from '@remix-run/react';
-import {Alert, AlertDescription, AlertTitle} from '@white-label/ui-core';
+import {Alert, AlertDescription, AlertTitle} from '@white-label/ui-core/alert';
 
 export function PasswordResetBanner() {
   const [params] = useSearchParams();

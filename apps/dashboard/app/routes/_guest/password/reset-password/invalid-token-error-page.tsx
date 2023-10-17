@@ -1,15 +1,15 @@
 import {ExclamationTriangleIcon} from '@heroicons/react/24/outline';
 import {Link} from '@remix-run/react';
 import {
-  buttonVariants,
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@white-label/ui-core';
+} from '@white-label/ui-core/card';
 
-import {GuestLayout} from '@/components/guest-layout';
+import {GuestLayout} from '@/components/guest-layout.tsx';
+import {buttonVariants} from '@white-label/ui-core/button';
 
 export function InvalidTokenErrorPage() {
   return (

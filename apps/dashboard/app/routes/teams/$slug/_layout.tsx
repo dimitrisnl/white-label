@@ -1,11 +1,11 @@
 import {Outlet, useParams} from '@remix-run/react';
 
-import {BaseLayout} from '@/components/base-layout';
-import {BaseErrorBoundary} from '@/components/error-boundary';
+import {BaseLayout} from '@/components/base-layout.tsx';
+import {BaseErrorBoundary} from '@/components/error-boundary.tsx';
 
-import {useOrgData} from './use-org-data';
+import {useOrgData} from './use-org-data.ts';
 
-export {loader} from './_loader.server';
+export {loader} from './_loader.server.ts';
 
 import {
   CogIcon,

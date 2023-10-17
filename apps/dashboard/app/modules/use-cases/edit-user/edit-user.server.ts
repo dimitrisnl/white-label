@@ -1,11 +1,11 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server';
-import {User} from '@/modules/domain/index.server';
-import {DatabaseError, InternalServerError} from '@/modules/errors.server';
+import {db, pool} from '@/database/db.server.ts';
+import {User} from '@/modules/domain/index.server.ts';
+import {DatabaseError, InternalServerError} from '@/modules/errors.server.ts';
 
-import type {EditUserProps} from './validation.server';
-import {validate} from './validation.server';
+import type {EditUserProps} from './validation.server.ts';
+import {validate} from './validation.server.ts';
 
 function updateUserRecord({
   id,

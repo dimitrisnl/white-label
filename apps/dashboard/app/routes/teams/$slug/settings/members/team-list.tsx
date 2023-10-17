@@ -1,13 +1,13 @@
 import {
-  Badge,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@white-label/ui-core';
+} from '@white-label/ui-core/card';
+import {Badge} from '@white-label/ui-core/badge';
 
-import type {Membership} from '@/modules/domain/index.server';
+import type {Membership} from '@/modules/domain/index.server.ts';
 
 function RoleBadge({role}: {role: string}) {
   return (

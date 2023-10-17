@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "sideEffects": false,
+  "type": "module",
   "scripts": {
     "build": "remix build",
     "dev": "remix dev",
@@ -27,8 +28,9 @@
     "@white-label/email-templates": "workspace:*",
     "@white-label/ui-core": "workspace:*",
     "bcrypt": "^5.1.1",
-    "boring-avatars": "^1.10.1",
     "bullmq": "^4.12.4",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
     "dotenv": "^16.3.1",
     "effect": "2.0.0-next.48",
     "ioredis": "^5.3.2",
@@ -40,7 +42,7 @@
     "react-dom": "^18.2.0",
     "remix-flat-routes": "^0.6.1",
     "remix-typedjson": "^0.3.0",
-    "tailwindcss-animate": "^1.0.7",
+    "tailwind-merge": "^1.14.0",
     "uuid": "^9.0.1",
     "zapatos": "^6.1.4"
   },
@@ -60,6 +62,7 @@
     "autoprefixer": "^10.4.16",
     "dbmate": "^2.6.0",
     "tailwindcss": "^3.3.3",
+    "tailwindcss-animate": "^1.0.7",
     "ts-node": "^10.9.1",
     "vitest": "^0.34.6"
   },

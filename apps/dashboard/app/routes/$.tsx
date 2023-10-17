@@ -1,16 +1,16 @@
 import {json} from '@remix-run/node';
 import {Link} from '@remix-run/react';
 import {
-  buttonVariants,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@white-label/ui-core';
+} from '@white-label/ui-core/card';
 
-import {GuestLayout} from '@/components/guest-layout';
+import {GuestLayout} from '@/components/guest-layout.tsx';
+import {buttonVariants} from '@white-label/ui-core/button';
 
 export default function FourOhFour() {
   return (

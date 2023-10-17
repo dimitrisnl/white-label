@@ -1,18 +1,22 @@
 import {BellIcon} from '@heroicons/react/24/outline';
-import {Popover, PopoverContent, PopoverTrigger} from '@white-label/ui-core';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@white-label/ui-core/popover';
 import React from 'react';
 
-import {UserNav} from '@/components/user-nav';
-import type {Membership, User} from '@/modules/domain/index.server';
+import {UserNav} from '@/components/user-nav.tsx';
+import type {Membership, User} from '@/modules/domain/index.server.ts';
 
-import {MainNav} from './main-nav';
+import {MainNav} from './main-nav.tsx';
 
 function UpdatesPopover() {
   return (
     <Popover>
-      <PopoverTrigger className='hover:text-gray-500" -m-2.5 p-2.5 text-gray-400'>
+      <PopoverTrigger className="-m-2.5 p-2.5">
         <span className="sr-only">View notifications</span>
-        <BellIcon className="h-5 w-5" aria-hidden="true" />
+        <BellIcon className="h-5 w-5 stroke-gray-600" />
       </PopoverTrigger>
       <PopoverContent className="w-56" align="end" forceMount>
         <div className="text-center text-xs text-gray-700">Nothing to show</div>

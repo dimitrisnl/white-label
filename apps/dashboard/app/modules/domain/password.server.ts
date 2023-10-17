@@ -2,7 +2,7 @@ import * as Schema from '@effect/schema/Schema';
 import bcrypt from 'bcrypt';
 import * as Effect from 'effect/Effect';
 
-import {PasswordHashError} from '../errors.server';
+import {PasswordHashError} from '../errors.server.ts';
 
 const SALT_ROUNDS = 10;
 

@@ -1,13 +1,13 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server';
-import type {User} from '@/modules/domain/index.server';
-import {Org} from '@/modules/domain/index.server';
-import {DatabaseError, InternalServerError} from '@/modules/errors.server';
-import {orgAuthorizationService} from '@/modules/services/index.server';
+import {db, pool} from '@/database/db.server.ts';
+import type {User} from '@/modules/domain/index.server.ts';
+import {Org} from '@/modules/domain/index.server.ts';
+import {DatabaseError, InternalServerError} from '@/modules/errors.server.ts';
+import {orgAuthorizationService} from '@/modules/services/index.server.ts';
 
-import type {EditOrgProps} from './validation.server';
-import {validate} from './validation.server';
+import type {EditOrgProps} from './validation.server.ts';
+import {validate} from './validation.server.ts';
 
 function updateOrgRecord({
   name,

@@ -1,13 +1,13 @@
 import {Link} from '@remix-run/react';
+import {buttonVariants} from '@white-label/ui-core/button';
 import {
-  buttonVariants,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@white-label/ui-core';
+} from '@white-label/ui-core/card';
 
 export function OnboardingSwitch() {
   return (

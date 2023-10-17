@@ -1,8 +1,8 @@
 import * as Effect from 'effect/Effect';
 
-import {sendEmail} from '@/mailer/send-email.server';
+import {sendEmail} from '@/mailer/send-email.server.ts';
 
-import {registerQueue} from './register-queue.server';
+import {registerQueue} from './register-queue.server.ts';
 
 interface JobPayload {
   to: string;

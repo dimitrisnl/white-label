@@ -1,5 +1,5 @@
 import {NavLink} from '@remix-run/react';
-import {cn} from '@white-label/ui-core';
+import {cn} from '@white-label/ui-core/utils';
 
 export function SubMenuLink({
   to,

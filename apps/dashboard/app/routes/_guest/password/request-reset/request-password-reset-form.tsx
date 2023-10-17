@@ -1,21 +1,20 @@
 import {Form, Link} from '@remix-run/react';
 import {
-  Button,
-  buttonVariants,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-  Input,
-  Label,
-} from '@white-label/ui-core';
+} from '@white-label/ui-core/card';
 import {useTypedActionData} from 'remix-typedjson';
 
-import {ErrorMessage} from '@/components/error-feedback';
+import {ErrorMessage} from '@/components/error-feedback.tsx';
 
-import type {RequestPasswordResetAction} from './_action.server';
+import type {RequestPasswordResetAction} from './_action.server.ts';
+import {Button, buttonVariants} from '@white-label/ui-core/button';
+import {Label} from '@white-label/ui-core/label';
+import {Input} from '@white-label/ui-core/input';
 
 export function RequestPasswordResetForm() {
   const data = useTypedActionData<RequestPasswordResetAction>();

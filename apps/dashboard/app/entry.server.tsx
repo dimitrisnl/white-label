@@ -4,13 +4,12 @@
  * For more information, see https://remix.run/docs/en/main/file-conventions/entry.server
  */
 
-import {PassThrough} from 'node:stream';
-
 import type {EntryContext} from '@remix-run/node';
 import {createReadableStreamFromReadable} from '@remix-run/node';
 import {RemixServer} from '@remix-run/react';
 import isbot from 'isbot';
 import {renderToPipeableStream} from 'react-dom/server';
+import {PassThrough} from 'stream';
 
 const ABORT_DELAY = 5_000;
 

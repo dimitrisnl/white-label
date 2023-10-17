@@ -1,19 +1,19 @@
 import {
-  Badge,
-  Button,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-  toast,
-} from '@white-label/ui-core';
+} from '@white-label/ui-core/card';
+import {Button} from '@white-label/ui-core/button';
+import {Badge} from '@white-label/ui-core/badge';
+import {toast} from '@white-label/ui-core/toast';
 import {useEffect} from 'react';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import type {MembershipInvitation} from '@/modules/domain/index.server';
+import type {MembershipInvitation} from '@/modules/domain/index.server.ts';
 
-import {Action} from './_action.server';
+import {Action} from './_action.server.ts';
 
 export function InvitationsList({
   invitations,

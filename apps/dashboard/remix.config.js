@@ -1,15 +1,12 @@
-const {flatRoutes} = require('remix-flat-routes');
+import {flatRoutes} from 'remix-flat-routes';
 
 /** @type {import('@remix-run/dev').AppConfig} */
-module.exports = {
-  serverModuleFormat: 'cjs',
-  serverDependenciesToBundle: [
-    'escape-string-regexp',
-    '@sindresorhus/transliterate',
-    '@sindresorhus/slugify',
-  ],
+export default {
+  serverModuleFormat: 'esm',
   ignoredRouteFiles: ['**/*'],
   routes: async (defineRoutes) => {
     return flatRoutes('routes', defineRoutes);
   },
+  serverModuleFormat: 'esm',
+  serverPlatform: 'node',
 };

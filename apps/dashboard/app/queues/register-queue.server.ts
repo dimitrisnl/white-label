@@ -2,8 +2,8 @@ import type {Processor} from 'bullmq';
 import {QueueEvents} from 'bullmq';
 import {Queue, Worker} from 'bullmq';
 
-import {redis as connection} from '../redis/redis.server';
-import {registeredQueues} from './registered-queues.server';
+import {redis as connection} from '../redis/redis.server.ts';
+import {registeredQueues} from './registered-queues.server.ts';
 
 type AugmentedQueue<T> = Queue<T> & {
   events: QueueEvents;

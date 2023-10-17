@@ -1,8 +1,8 @@
 import {useTypedLoaderData} from 'remix-typedjson';
 
-import {UserInvitationsLoaderData} from './_loader.server';
-import {JoinTeamForm} from './join-team-form';
-import {NoInvitations} from './no-invitations';
+import {UserInvitationsLoaderData} from './_loader.server.ts';
+import {JoinTeamForm} from './join-team-form.tsx';
+import {NoInvitations} from './no-invitations.tsx';
 
 export function InvitationsList() {
   const {

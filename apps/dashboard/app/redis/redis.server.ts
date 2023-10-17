@@ -1,6 +1,6 @@
 import {Redis} from 'ioredis';
 
-import {config} from './config.server';
+import {config} from './config.server.ts';
 
 function makeRedis() {
   return new Redis({

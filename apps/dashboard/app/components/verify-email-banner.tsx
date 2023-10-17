@@ -1,5 +1,5 @@
 import {ExclamationTriangleIcon} from '@heroicons/react/24/outline';
-import {Button} from '@white-label/ui-core';
+import {Button} from '@white-label/ui-core/button';
 
 export function VerifyEmailBanner() {
   return (
