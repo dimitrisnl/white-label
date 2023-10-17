@@ -1,6 +1,6 @@
 import * as Effect from 'effect/Effect';
 
-import {sendInvitationEmail} from '@/mailer/emails/send-invitation-email.server.ts';
+import {sendInvitationEmail} from '@/mailer/emails/send-invitation-email.server.tsx';
 import {Org, User} from '@/modules/domain/index.server.ts';
 import {InvalidIntent} from '@/modules/errors.server.ts';
 import {
