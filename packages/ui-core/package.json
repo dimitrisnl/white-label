@@ -35,7 +35,10 @@
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
-    "sonner": "^1.0.3"
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "sonner": "^1.0.3",
+    "tailwind-merge": "^1.14.0"
   },
   "devDependencies": {
     "@heroicons/react": "^2.0.18",
@@ -55,11 +58,8 @@
   },
   "peerDependencies": {
     "@heroicons/react": "^2.0.18",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tailwind-merge": "^1.14.0",
     "tailwindcss": "^3.3.2"
   }
 }

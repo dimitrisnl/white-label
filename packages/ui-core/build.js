@@ -6,14 +6,8 @@ esbuild.build({
   minify: true,
   sourcemap: true,
   platform: 'browser',
+  splitting: true,
   format: 'esm',
   outdir: './dist',
-  external: [
-    'react',
-    'react-dom',
-    '@heroicons/react',
-    'tailwind-merge',
-    'clsx',
-    'class-variance-authority',
-  ],
+  external: ['react', 'react-dom', '@heroicons/react', 'tailwindcss'],
 });
