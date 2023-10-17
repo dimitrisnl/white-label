@@ -6,6 +6,7 @@ esbuild.build({
   minify: true,
   sourcemap: true,
   platform: 'node',
+  splitting: true,
   format: 'esm',
   outdir: './dist',
   external: ['react', 'react-dom'],
