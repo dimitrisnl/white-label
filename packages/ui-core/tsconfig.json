@@ -10,6 +10,6 @@
     "moduleResolution": "node",
     "declaration": false,
     "removeComments": true,
-    "esModuleInterop": true,
+    "esModuleInterop": true
   }
 }

@@ -1,6 +1,6 @@
 import * as SelectPrimitive from '@radix-ui/react-select';
 import * as React from 'react';
-import {cn} from '../lib/utils';
+import {cn} from './utils';
 
 import CheckIcon from '@heroicons/react/24/solid/CheckIcon';
 import ChevronUpDownIcon from '@heroicons/react/24/solid/ChevronUpDownIcon';

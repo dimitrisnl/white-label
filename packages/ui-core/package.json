@@ -2,19 +2,26 @@
   "name": "@white-label/ui-core",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "exports": {
-    ".": "./dist/cjs/index.js",
     "./tailwind-config": "./tailwind.config.js",
     "./postcss-config": "./postcss.config.js",
-    "./tailwind.css": "./tailwind.css"
+    "./tailwind.css": "./tailwind.css",
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js",
+      "import": "./dist/*.js"
+    }
   },
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
+  "files": [
+    "./dist",
+    "tailwind.config.js",
+    "postcss.config.js",
+    "tailwind.css"
+  ],
   "scripts": {
     "build": "rimraf dist && pnpm run /^build:/",
-    "build:cjs": "tsc -p ./tsconfig.build-cjs.json",
-    "build:esm": "tsc -p ./tsconfig.build-esm.json",
+    "build:bundle": "node ./build.js",
     "build:types": "tsc -p ./tsconfig.build-types.json",
     "format": "prettier --write .",
     "lint": "eslint --ext .ts,.tsx .",
@@ -28,11 +35,7 @@
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.0.0",
-    "sonner": "^1.0.3",
-    "tailwind-merge": "^1.14.0",
-    "tailwindcss-animate": "^1.0.6"
+    "sonner": "^1.0.3"
   },
   "devDependencies": {
     "@heroicons/react": "^2.0.18",
@@ -40,15 +43,23 @@
     "@types/react-dom": "^18.2.13",
     "@white-label/eslint-config-react": "workspace:*",
     "autoprefixer": "^10.4.16",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "esbuild": "^0.19.4",
     "prettier-plugin-tailwindcss": "^0.5.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tailwindcss": "^3.3.2"
+    "tailwind-merge": "^1.14.0",
+    "tailwindcss": "^3.3.2",
+    "tailwindcss-animate": "^1.0.6"
   },
   "peerDependencies": {
     "@heroicons/react": "^2.0.18",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "tailwind-merge": "^1.14.0",
     "tailwindcss": "^3.3.2"
   }
 }
