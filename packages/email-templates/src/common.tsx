@@ -1,23 +1,26 @@
 import {
   Body as JsxBody,
-  BodyProps,
   Button as JsxButton,
-  ButtonProps,
   Container as JsxContainer,
-  ContainerProps,
   Head as JsxHead,
-  HeadProps,
   Hr as JsxHr,
-  HrProps,
   Html as JsxHtml,
-  HtmlProps,
   Preview as JsxPreview,
-  PreviewProps,
   Section as JsxSection,
-  SectionProps,
   Text as JsxText,
-  TextProps,
   Link as JsxLink,
+} from '@jsx-email/all';
+
+import type {
+  BodyProps,
+  ButtonProps,
+  ContainerProps,
+  HeadProps,
+  HrProps,
+  HtmlProps,
+  PreviewProps,
+  SectionProps,
+  TextProps,
   LinkProps,
 } from '@jsx-email/all';
 

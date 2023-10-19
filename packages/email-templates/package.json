@@ -13,7 +13,7 @@
   "scripts": {
     "build": "rimraf dist && pnpm run /^build:/",
     "build:bundle": "node ./build.js",
-    "build:types": "tsc -p ./tsconfig.build-types.json",
+    "build:types": "tsc -p ./tsconfig.json",
     "format": "prettier --write .",
     "lint": "eslint --ext .ts,.tsx .",
     "preview": "email preview ./src/templates"

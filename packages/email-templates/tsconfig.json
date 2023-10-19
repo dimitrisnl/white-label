@@ -3,13 +3,36 @@
   "include": ["./src/**/*.ts", "./src/**/*.tsx"],
   "compilerOptions": {
     "baseUrl": ".",
+    "outDir": "./dist",
+
+    // Base
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "ES2022",
+    "verbatimModuleSyntax": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+
+    // Strictness
     "strict": true,
-    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "noUncheckedIndexedAccess": true,
+
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "jsx": "react-jsx",
-    "target": "ES2020",
-    "moduleResolution": "node",
-    "declaration": false,
-    "removeComments": true,
-    "esModuleInterop": true
+
+    // Not transpiling
+    "emitDeclarationOnly": true,
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+
+    // Building for library
+    "declaration": true,
+
+    // Monorepo
+    "declarationMap": true,
+
+    // Other
+    "removeComments": true
   }
 }
