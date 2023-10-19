@@ -10,7 +10,7 @@ export const loader = withLoader(
     const {request} = yield* _(LoaderArgs);
     const {memberships} = yield* _(getCurrentUserDetails(request));
 
-    if (memberships.length > 0) {
+    if (memberships.length > 0 && memberships[0]?.org) {
       return new Redirect({
         to: `/teams/${memberships[0].org.slug}`,
         init: request,

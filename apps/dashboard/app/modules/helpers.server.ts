@@ -1,4 +1,4 @@
-import {LoaderFunctionArgs} from '@remix-run/node';
+import type {LoaderFunctionArgs} from '@remix-run/node';
 import * as Effect from 'effect/Effect';
 
 import {User} from '@/modules/domain/index.server.ts';

@@ -13,7 +13,7 @@ import {useTypedFetcher} from 'remix-typedjson';
 
 import type {MembershipInvitation} from '@/modules/domain/index.server.ts';
 
-import {Action} from './_action.server.ts';
+import type {Action} from './_action.server.ts';
 
 export function InvitationsList({
   invitations,

@@ -1,6 +1,6 @@
 import {useTypedLoaderData} from 'remix-typedjson';
 
-import {UserInvitationsLoaderData} from './_loader.server.ts';
+import type {UserInvitationsLoaderData} from './_loader.server.ts';
 import {JoinTeamForm} from './join-team-form.tsx';
 import {NoInvitations} from './no-invitations.tsx';
 

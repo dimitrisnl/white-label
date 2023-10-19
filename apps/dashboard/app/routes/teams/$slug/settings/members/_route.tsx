@@ -1,6 +1,6 @@
 import {useTypedLoaderData} from 'remix-typedjson';
 
-import {MembershipsLoaderData} from './_loader.server.ts';
+import type {MembershipsLoaderData} from './_loader.server.ts';
 import {TeamList} from './team-list.tsx';
 
 export {loader} from './_loader.server.ts';

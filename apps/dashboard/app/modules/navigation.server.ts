@@ -13,6 +13,14 @@ export function decideNextTeamRedirect(
     });
   }
 
+  // this is wrong, but ts.config noUncheckedIndexedAccess is annoying me right now
+  if (!memberships[0]?.org) {
+    return new Redirect({
+      to: `/onboarding`,
+      init: request,
+    });
+  }
+
   return new Redirect({
     to: `/teams/${memberships[0].org.slug}`,
     init: request,
