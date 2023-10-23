@@ -1,11 +1,11 @@
-import {VerificationEmailTemplate} from '@white-label/email-templates';
+import {VerificationEmailTemplate} from '@white-label/email-templates/templates/verification-email';
 import * as Effect from 'effect/Effect';
 import {pipe} from 'effect/Function';
 
-import {addEmailJob} from '@/queues/email-queue';
+import {addEmailJob} from '@/queues/email-queue.server.ts';
 
-import {buildTemplate} from '../build-template.server';
-import {config} from '../config.server';
+import {buildTemplate} from '../build-template.server.tsx';
+import {config} from '../config.server.ts';
 
 export function sendVerificationEmail({
   email,

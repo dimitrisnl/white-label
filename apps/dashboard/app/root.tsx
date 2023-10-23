@@ -8,12 +8,12 @@ import {
   ScrollRestoration,
   useNavigation,
 } from '@remix-run/react';
-import {Toaster} from '@white-label/ui-core';
+import {Toaster} from '@white-label/ui-core/toast';
 import tailwindStyles from '@white-label/ui-core/tailwind.css';
 import NProgress from 'nprogress';
 import {useEffect} from 'react';
 
-import {ErrorPage} from './components/error-page';
+import {ErrorPage} from './components/error-page.tsx';
 import fontStyles from './styles/fonts.css';
 import nProgressStyles from './styles/nprogress.css';
 

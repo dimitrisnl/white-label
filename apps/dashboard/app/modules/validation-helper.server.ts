@@ -8,7 +8,7 @@ import * as Match from 'effect/Match';
 import * as Option from 'effect/Option';
 import * as ReadonlyArray from 'effect/ReadonlyArray';
 
-import {ValidationError} from '@/modules/errors.server';
+import {ValidationError} from '@/modules/errors.server.ts';
 
 type Entry = [string, {readonly message: string}];
 

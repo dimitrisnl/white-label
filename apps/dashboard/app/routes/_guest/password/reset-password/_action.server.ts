@@ -1,9 +1,9 @@
 import * as Effect from 'effect/Effect';
 
-import {parseFormData} from '@/modules/helpers.server';
-import {BadRequest, Redirect, ServerError} from '@/modules/responses.server';
-import {resetPassword} from '@/modules/use-cases/index.server';
-import {ActionArgs, withAction} from '@/modules/with-action.server';
+import {parseFormData} from '@/modules/helpers.server.ts';
+import {BadRequest, Redirect, ServerError} from '@/modules/responses.server.ts';
+import {resetPassword} from '@/modules/use-cases/index.server.ts';
+import {ActionArgs, withAction} from '@/modules/with-action.server.ts';
 
 export const action = withAction(
   Effect.gen(function* (_) {

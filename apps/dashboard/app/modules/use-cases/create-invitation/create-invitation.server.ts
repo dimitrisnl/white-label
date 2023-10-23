@@ -1,18 +1,18 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server';
-import type {MembershipRole, Org, User} from '@/modules/domain/index.server';
-import {MembershipInvitation, Uuid} from '@/modules/domain/index.server';
-import {invitationAuthorizationService} from '@/modules/services/index.server';
+import {db, pool} from '@/database/db.server.ts';
+import type {MembershipRole, Org, User} from '@/modules/domain/index.server.ts';
+import {MembershipInvitation, Uuid} from '@/modules/domain/index.server.ts';
+import {invitationAuthorizationService} from '@/modules/services/index.server.ts';
 
 import {
   DatabaseError,
   InternalServerError,
   InviteeAlreadyMemberError,
   OrgNotFoundError,
-} from '../../errors.server';
-import type {CreateInvitationProps} from './validation.server';
-import {validate} from './validation.server';
+} from '../../errors.server.ts';
+import type {CreateInvitationProps} from './validation.server.ts';
+import {validate} from './validation.server.ts';
 
 function insertInvitation({
   role,

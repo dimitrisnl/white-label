@@ -1,4 +1,4 @@
-import {render} from '@white-label/email-templates';
+import {render} from '@white-label/email-templates/render';
 import * as Effect from 'effect/Effect';
 
 export function buildTemplate(template: React.ReactElement) {

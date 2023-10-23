@@ -1,14 +1,14 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server';
-import type {User} from '@/modules/domain/index.server';
-import {Membership, Org} from '@/modules/domain/index.server';
+import {db, pool} from '@/database/db.server.ts';
+import type {User} from '@/modules/domain/index.server.ts';
+import {Membership, Org} from '@/modules/domain/index.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   OrgNotFoundError,
-} from '@/modules/errors.server';
-import {orgAuthorizationService} from '@/modules/services/index.server';
+} from '@/modules/errors.server.ts';
+import {orgAuthorizationService} from '@/modules/services/index.server.ts';
 
 function selectOrgRecord(id: Org.Org['id']) {
   return Effect.tryPromise({
@@ -26,7 +26,7 @@ function selectMembershipRecords(orgId: Org.Org['id']) {
           {org_id: orgId},
           {
             lateral: {
-              user: db.select('users', {id: db.parent('user_id')}),
+              user: db.selectExactlyOne('users', {id: db.parent('user_id')}),
             },
           }
         )
@@ -61,9 +61,9 @@ export function getOrgMemberships() {
               membershipRecord,
               {name: org.name, id: org.id, slug: org.slug},
               {
-                name: membershipRecord.user[0].name,
-                id: membershipRecord.user[0].id,
-                email: membershipRecord.user[0].email,
+                name: membershipRecord.user.name,
+                id: membershipRecord.user.id,
+                email: membershipRecord.user.email,
               }
             )
           )

@@ -1,18 +1,13 @@
-import {Template} from '../common.js';
-import zod from 'zod';
+import {Template} from '../common';
 
 export const PasswordResetEmailName = 'PasswordResetEmail';
 
-export const validation = zod.object({
-  passwordResetUrl: zod.string().url(),
-  dashboardUrl: zod.string().url(),
-});
+export type Props = {
+  passwordResetUrl: string;
+  dashboardUrl: string;
+};
 
-export type Props = zod.infer<typeof validation>;
-
-export const PasswordResetEmailTemplate = ({
-  passwordResetUrl,
-}: Props) => (
+export const PasswordResetEmailTemplate = ({passwordResetUrl}: Props) => (
   <Template.Html>
     <Template.Head />
     <Template.Preview>Password reset</Template.Preview>

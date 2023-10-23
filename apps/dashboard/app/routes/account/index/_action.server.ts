@@ -1,14 +1,14 @@
 import * as Effect from 'effect/Effect';
 
-import {getCurrentUserId, parseFormData} from '@/modules/helpers.server';
+import {getCurrentUserId, parseFormData} from '@/modules/helpers.server.ts';
 import {
   BadRequest,
   Ok,
   Redirect,
   ServerError,
-} from '@/modules/responses.server';
-import {editUser} from '@/modules/use-cases/index.server';
-import {ActionArgs, withAction} from '@/modules/with-action.server';
+} from '@/modules/responses.server.ts';
+import {editUser} from '@/modules/use-cases/index.server.ts';
+import {ActionArgs, withAction} from '@/modules/with-action.server.ts';
 
 export const action = withAction(
   Effect.gen(function* (_) {
@@ -27,6 +27,8 @@ export const action = withAction(
     Effect.catchTags({
       ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
       InternalServerError: () => Effect.fail(new ServerError({})),
+      UserNotFoundError: () =>
+        Effect.fail(new BadRequest({errors: ['Something went wrong']})),
       SessionNotFoundError: () =>
         ActionArgs.pipe(
           Effect.flatMap(({request}) =>

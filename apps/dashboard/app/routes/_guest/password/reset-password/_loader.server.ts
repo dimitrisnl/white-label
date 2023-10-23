@@ -1,9 +1,9 @@
 import * as Effect from 'effect/Effect';
 
-import {PasswordResetTokenNotFoundError} from '@/modules/errors.server';
-import {BadRequest, Ok, ServerError} from '@/modules/responses.server';
-import {verifyPasswordReset} from '@/modules/use-cases/index.server';
-import {LoaderArgs, withLoader} from '@/modules/with-loader.server';
+import {PasswordResetTokenNotFoundError} from '@/modules/errors.server.ts';
+import {BadRequest, Ok, ServerError} from '@/modules/responses.server.ts';
+import {verifyPasswordReset} from '@/modules/use-cases/index.server.ts';
+import {LoaderArgs, withLoader} from '@/modules/with-loader.server.ts';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {

@@ -1,21 +1,21 @@
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-  Label,
-  toast,
-} from '@white-label/ui-core';
+} from '@white-label/ui-core/card';
 import React from 'react';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import {ErrorMessage} from '@/components/error-feedback';
-import {PasswordInput} from '@/components/password-input';
+import {ErrorMessage} from '@/components/error-feedback.tsx';
+import {PasswordInput} from '@/components/password-input.tsx';
 
-import type {Action} from './_action.server';
+import type {Action} from './_action.server.ts';
+import {toast} from '@white-label/ui-core/toast';
+import {Label} from '@white-label/ui-core/label';
+import {Button} from '@white-label/ui-core/button';
 
 export function ChangePasswordForm() {
   const {Form, data, state} = useTypedFetcher<Action | undefined>();

@@ -1,15 +1,15 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server';
+import {db, pool} from '@/database/db.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   UserNotFoundError,
   VerifyEmailTokenNotFoundError,
-} from '@/modules/errors.server';
+} from '@/modules/errors.server.ts';
 
-import type {VerifyEmailProps} from './validation.server';
-import {validate} from './validation.server';
+import type {VerifyEmailProps} from './validation.server.ts';
+import {validate} from './validation.server.ts';
 
 function selectVerifyEmailTokenRecord(token: string) {
   return Effect.tryPromise({

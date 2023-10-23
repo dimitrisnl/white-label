@@ -1,64 +1,34 @@
-// import {Outlet} from '@remix-run/react';
-
-// import {SubMenuLink} from '@/components/sub-menu-link';
-
-// export {loader} from './_loader.server';
-
-// function AccountNav() {
-//   return (
-//     <ul className="mb-10 flex space-x-2">
-//       <li>
-//         <SubMenuLink to={``} end>
-//           Profile
-//         </SubMenuLink>
-//       </li>
-//       <li>
-//         <SubMenuLink to={`security`}>Security</SubMenuLink>
-//       </li>
-//       <li>
-//         <SubMenuLink to={`invitations`}>Invitations</SubMenuLink>
-//       </li>
-//     </ul>
-//   );
-// }
-
-// export default function AccountLayout() {
-//   return (
-//     <div>
-//       <AccountNav />
-//       <Outlet />
-//     </div>
-//   );
-// }
-
+import {
+  EnvelopeIcon,
+  ShieldCheckIcon,
+  UserCircleIcon,
+} from '@heroicons/react/24/outline';
 import {Outlet} from '@remix-run/react';
 
-import {BaseLayout} from '@/components/base-layout';
-import {BaseErrorBoundary} from '@/components/error-boundary';
+import {BaseLayout} from '@/components/base-layout.tsx';
+import {BaseErrorBoundary} from '@/components/error-boundary.tsx';
 
-import {useAccountData} from './use-account-data';
+import {useAccountData} from './use-account-data.ts';
 
-export {loader} from './_loader.server';
-
-import {LockIcon, MailIcon, User2Icon} from 'lucide-react';
+export {loader} from './_loader.server.ts';
 
 const navigationMenu = [
   {
     name: 'Profile',
     href: '/account',
-    icon: User2Icon,
+    icon: UserCircleIcon,
     end: true,
   },
   {
     name: 'Security',
     href: '/account/security',
-    icon: LockIcon,
+    icon: ShieldCheckIcon,
     end: false,
   },
   {
     name: 'Invitations',
     href: '/account/invitations',
-    icon: MailIcon,
+    icon: EnvelopeIcon,
     end: false,
   },
 ];

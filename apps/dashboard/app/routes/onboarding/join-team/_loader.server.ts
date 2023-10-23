@@ -1,9 +1,9 @@
 import * as Effect from 'effect/Effect';
 
-import {getCurrentUserId} from '@/modules/helpers.server';
-import {Ok, Redirect, ServerError} from '@/modules/responses.server';
-import {getUserInvitations} from '@/modules/use-cases/index.server';
-import {LoaderArgs, withLoader} from '@/modules/with-loader.server';
+import {getCurrentUserId} from '@/modules/helpers.server.ts';
+import {Ok, Redirect, ServerError} from '@/modules/responses.server.ts';
+import {getUserInvitations} from '@/modules/use-cases/index.server.ts';
+import {LoaderArgs, withLoader} from '@/modules/with-loader.server.ts';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {

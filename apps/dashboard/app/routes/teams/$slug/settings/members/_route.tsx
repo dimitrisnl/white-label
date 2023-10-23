@@ -1,9 +1,9 @@
 import {useTypedLoaderData} from 'remix-typedjson';
 
-import {MembershipsLoaderData} from './_loader.server';
-import {TeamList} from './team-list';
+import type {MembershipsLoaderData} from './_loader.server.ts';
+import {TeamList} from './team-list.tsx';
 
-export {loader} from './_loader.server';
+export {loader} from './_loader.server.ts';
 
 export default function MembersPage() {
   const {

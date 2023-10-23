@@ -1,13 +1,13 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import {DbRecordParseError} from '../errors.server';
-import * as DateString from './date';
-import * as Email from './email';
-import * as InviteStatus from './invite-status';
-import * as MembershipRole from './membership-role';
-import * as Org from './org';
-import * as Uuid from './uuid';
+import {DbRecordParseError} from '../errors.server.ts';
+import * as DateString from './date.server.ts';
+import * as Email from './email.server.ts';
+import * as InviteStatus from './invite-status.server.ts';
+import * as MembershipRole from './membership-role.server.ts';
+import * as Org from './org.server.ts';
+import * as Uuid from './uuid.server.ts';
 
 const MembershipInvitationBrand = Symbol.for('MembershipInvitationBrand');
 

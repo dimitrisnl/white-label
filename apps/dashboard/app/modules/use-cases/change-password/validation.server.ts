@@ -1,7 +1,7 @@
 import * as Schema from '@effect/schema/Schema';
 
-import {Password} from '@/modules/domain/index.server';
-import {schemaResolver} from '@/modules/validation-helper';
+import {Password} from '@/modules/domain/index.server.ts';
+import {schemaResolver} from '@/modules/validation-helper.server.ts';
 
 const validationSchema = Schema.struct({
   oldPassword: Password.passwordSchema,

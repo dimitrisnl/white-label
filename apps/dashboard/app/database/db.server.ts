@@ -1,7 +1,7 @@
 import 'dotenv/config';
 
 import * as Schema from '@effect/schema/Schema';
-import {Pool} from 'pg';
+import Pg from 'pg';
 import * as db from 'zapatos/db';
 
 const envValidationSchema = Schema.struct({
@@ -16,7 +16,7 @@ const envValidationSchema = Schema.struct({
 const config = Schema.parseSync(envValidationSchema)(process.env);
 
 function makePool() {
-  return new Pool({
+  return new Pg.Pool({
     user: config.DB_USER,
     host: config.DB_HOST,
     database: config.DB_NAME,

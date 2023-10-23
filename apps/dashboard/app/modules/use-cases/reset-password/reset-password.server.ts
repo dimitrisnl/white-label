@@ -1,16 +1,16 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server';
-import {Password} from '@/modules/domain/index.server';
+import {db, pool} from '@/database/db.server.ts';
+import {Password} from '@/modules/domain/index.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   PasswordResetTokenNotFoundError,
   UserNotFoundError,
-} from '@/modules/errors.server';
+} from '@/modules/errors.server.ts';
 
-import type {ResetPasswordProps} from './validation.server';
-import {validate} from './validation.server';
+import type {ResetPasswordProps} from './validation.server.ts';
+import {validate} from './validation.server.ts';
 
 function selectPasswordResetTokenRecord(token: string) {
   return Effect.tryPromise({

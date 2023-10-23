@@ -1,24 +1,26 @@
 import {
-  Button,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@white-label/ui-core/select';
+import {useEffect, useRef} from 'react';
+import {useTypedFetcher} from 'remix-typedjson';
+import {toast} from '@white-label/ui-core/toast';
+import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-  Input,
-  Label,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  toast,
-} from '@white-label/ui-core';
-import {useEffect, useRef} from 'react';
-import {useTypedFetcher} from 'remix-typedjson';
+} from '@white-label/ui-core/card';
 
-import type {Action} from './_action.server';
+import type {Action} from './_action.server.ts';
+import {Label} from '@white-label/ui-core/label';
+import {Input} from '@white-label/ui-core/input';
+import {Button} from '@white-label/ui-core/button';
 
 export function CreateInvitationForm() {
   const {Form, state, data} = useTypedFetcher<Action | undefined>();

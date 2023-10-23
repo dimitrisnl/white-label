@@ -1,15 +1,15 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server';
-import {Password, User} from '@/modules/domain/index.server';
+import {db, pool} from '@/database/db.server.ts';
+import {Password, User} from '@/modules/domain/index.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   InvalidCredentialsError,
-} from '@/modules/errors.server';
+} from '@/modules/errors.server.ts';
 
-import type {VerifyUserCredentialsProps} from './validation.server';
-import {validate} from './validation.server';
+import type {VerifyUserCredentialsProps} from './validation.server.ts';
+import {validate} from './validation.server.ts';
 
 function selectUserRecord(email: User.User['email']) {
   return Effect.tryPromise({

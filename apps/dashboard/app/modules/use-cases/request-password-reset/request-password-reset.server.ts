@@ -1,15 +1,15 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server';
-import {User, Uuid} from '@/modules/domain/index.server';
+import {db, pool} from '@/database/db.server.ts';
+import {User, Uuid} from '@/modules/domain/index.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   UserNotFoundError,
-} from '@/modules/errors.server';
+} from '@/modules/errors.server.ts';
 
-import type {RequestPasswordResetProps} from './validation.server';
-import {validate} from './validation.server';
+import type {RequestPasswordResetProps} from './validation.server.ts';
+import {validate} from './validation.server.ts';
 
 function selectUserRecord(email: User.User['email']) {
   return Effect.tryPromise({

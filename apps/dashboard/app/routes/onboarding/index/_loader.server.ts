@@ -1,8 +1,8 @@
 import * as Effect from 'effect/Effect';
 
-import {getCurrentUserDetails} from '@/modules/helpers.server';
-import {Ok, Redirect, ServerError} from '@/modules/responses.server';
-import {LoaderArgs, withLoader} from '@/modules/with-loader.server';
+import {getCurrentUserDetails} from '@/modules/helpers.server.ts';
+import {Ok, Redirect, ServerError} from '@/modules/responses.server.ts';
+import {LoaderArgs, withLoader} from '@/modules/with-loader.server.ts';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
@@ -10,7 +10,7 @@ export const loader = withLoader(
     const {request} = yield* _(LoaderArgs);
     const {memberships} = yield* _(getCurrentUserDetails(request));
 
-    if (memberships.length > 0) {
+    if (memberships.length > 0 && memberships[0]?.org) {
       return new Redirect({
         to: `/teams/${memberships[0].org.slug}`,
         init: request,

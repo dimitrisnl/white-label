@@ -1,6 +1,6 @@
 import {Outlet, useParams} from '@remix-run/react';
 
-import {SubMenuLink} from '@/components/sub-menu-link';
+import {SubMenuLink} from '@/components/sub-menu-link.tsx';
 
 function SettingsNav() {
   const {slug} = useParams();
@@ -21,11 +21,6 @@ function SettingsNav() {
         <li>
           <SubMenuLink to={`/teams/${slug}/settings/members`}>
             Members
-          </SubMenuLink>
-        </li>
-        <li>
-          <SubMenuLink to={`/teams/${slug}/settings/billing`}>
-            Billing
           </SubMenuLink>
         </li>
       </ul>

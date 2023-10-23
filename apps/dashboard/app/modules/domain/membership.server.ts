@@ -1,12 +1,12 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import {DbRecordParseError} from '../errors.server';
-import * as DateString from './date';
-import * as Email from './email';
-import * as MembershipRole from './membership-role';
-import * as Org from './org';
-import * as User from './user';
+import {DbRecordParseError} from '../errors.server.ts';
+import * as DateString from './date.server.ts';
+import * as Email from './email.server.ts';
+import * as MembershipRole from './membership-role.server.ts';
+import * as Org from './org.server.ts';
+import * as User from './user.server.ts';
 
 const MembershipBrand = Symbol.for('MembershipBrand');
 

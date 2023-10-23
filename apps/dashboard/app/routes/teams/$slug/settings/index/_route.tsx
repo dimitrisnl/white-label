@@ -1,12 +1,12 @@
 import type {MetaFunction} from '@remix-run/node';
 import {isRouteErrorResponse, useRouteError} from '@remix-run/react';
 
-import {ErrorPage} from '@/components/error-page';
+import {ErrorPage} from '@/components/error-page.tsx';
 
-import {useOrgData} from '../../use-org-data';
-import {TeamInfo} from './team-info';
+import {useOrgData} from '../../use-org-data.ts';
+import {TeamInfo} from './team-info.tsx';
 
-export {action} from './_action.server';
+export {action} from './_action.server.ts';
 
 export const meta: MetaFunction = () => {
   return [

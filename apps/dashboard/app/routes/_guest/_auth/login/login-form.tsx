@@ -1,23 +1,22 @@
 import {Link} from '@remix-run/react';
 import {
-  Button,
-  buttonVariants,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-  cn,
-  Input,
-  Label,
-} from '@white-label/ui-core';
+} from '@white-label/ui-core/card';
 import {useTypedFetcher} from 'remix-typedjson';
+import {Button, buttonVariants} from '@white-label/ui-core/button';
+import {Input} from '@white-label/ui-core/input';
+import {Label} from '@white-label/ui-core/label';
 
-import {ErrorMessage} from '@/components/error-feedback';
-import {PasswordInput} from '@/components/password-input';
+import {ErrorMessage} from '@/components/error-feedback.tsx';
+import {PasswordInput} from '@/components/password-input.tsx';
 
-import type {LoginRequestAction} from './_action.server';
+import type {LoginRequestAction} from './_action.server.ts';
+import {cn} from '@white-label/ui-core/utils';
 
 export function LoginForm() {
   const {Form, data, state} = useTypedFetcher<LoginRequestAction | undefined>();

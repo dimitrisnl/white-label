@@ -1,18 +1,22 @@
-import {Popover, PopoverContent, PopoverTrigger} from '@white-label/ui-core';
-import {BellIcon, LayoutDashboardIcon} from 'lucide-react';
+import {BellIcon} from '@heroicons/react/24/outline';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@white-label/ui-core/popover';
 import React from 'react';
 
-import {UserNav} from '@/components/user-nav';
-import type {Membership, User} from '@/modules/domain/index.server';
+import {UserNav} from '@/components/user-nav.tsx';
+import type {Membership, User} from '@/modules/domain/index.server.ts';
 
-import {MainNav} from './main-nav';
+import {MainNav} from './main-nav.tsx';
 
 function UpdatesPopover() {
   return (
     <Popover>
-      <PopoverTrigger className='hover:text-gray-500" -m-2.5 p-2.5 text-gray-400'>
+      <PopoverTrigger className="-m-2.5 p-2.5">
         <span className="sr-only">View notifications</span>
-        <BellIcon className="h-5 w-5" aria-hidden="true" />
+        <BellIcon className="h-5 w-5 stroke-gray-600" />
       </PopoverTrigger>
       <PopoverContent className="w-56" align="end" forceMount>
         <div className="text-center text-xs text-gray-700">Nothing to show</div>
@@ -41,7 +45,7 @@ export function BaseLayout({
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center text-2xl font-bold">
-              <LayoutDashboardIcon className="mr-2 h-6 w-6" /> White Label
+              White Label
             </div>
             <MainNav
               memberships={currentUser.memberships}

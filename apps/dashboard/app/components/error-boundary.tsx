@@ -1,6 +1,6 @@
 import {isRouteErrorResponse, useRouteError} from '@remix-run/react';
 
-import {ErrorPage} from './error-page';
+import {ErrorPage} from './error-page.tsx';
 
 export function BaseErrorBoundary() {
   const error = useRouteError();

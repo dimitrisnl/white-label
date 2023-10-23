@@ -1,12 +1,12 @@
 import type {MetaFunction} from '@remix-run/node';
 import {useTypedLoaderData} from 'remix-typedjson';
 
-import {InvitationsLoaderData} from './_loader.server';
-import {CreateInvitationForm} from './create-invitation-form';
-import {InvitationsList} from './invitations-list';
+import type {InvitationsLoaderData} from './_loader.server.ts';
+import {CreateInvitationForm} from './create-invitation-form.tsx';
+import {InvitationsList} from './invitations-list.tsx';
 
-export {action} from './_action.server';
-export {loader} from './_loader.server';
+export {action} from './_action.server.ts';
+export {loader} from './_loader.server.ts';
 
 export const meta: MetaFunction = () => {
   return [

@@ -1,7 +1,5 @@
-// import * as Effect from 'effect/Effect';
-
-import {config} from './config.server';
-import {transporter} from './transporter.server';
+import {config} from './config.server.ts';
+import {transporter} from './transporter.server.ts';
 
 interface SendEmailProps {
   to: string;

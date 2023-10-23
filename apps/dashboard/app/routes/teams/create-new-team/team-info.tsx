@@ -1,21 +1,20 @@
 import {Link} from '@remix-run/react';
+import {Button, buttonVariants} from '@white-label/ui-core/button';
 import {
-  Button,
-  buttonVariants,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-  Input,
-  Label,
-} from '@white-label/ui-core';
+} from '@white-label/ui-core/card';
+import {Input} from '@white-label/ui-core/input';
+import {Label} from '@white-label/ui-core/label';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import {ErrorMessage} from '@/components/error-feedback';
+import {ErrorMessage} from '@/components/error-feedback.tsx';
 
-import type {Action} from './_action.server';
+import type {Action} from './_action.server.ts';
 
 export function TeamInfo() {
   const {Form, state, data} = useTypedFetcher<Action | undefined>();

@@ -1,4 +1,4 @@
-import {Alert, AlertDescription, AlertTitle} from '@white-label/ui-core';
+import {Alert, AlertDescription, AlertTitle} from '@white-label/ui-core/alert';
 
 export function ErrorMessage({errors}: {errors: Array<string>}) {
   return (

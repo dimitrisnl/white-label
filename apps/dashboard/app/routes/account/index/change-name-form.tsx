@@ -1,21 +1,21 @@
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-  Input,
-  Label,
-  toast,
-} from '@white-label/ui-core';
+} from '@white-label/ui-core/card';
 import React from 'react';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import {ErrorMessage} from '@/components/error-feedback';
+import {ErrorMessage} from '@/components/error-feedback.tsx';
 
-import type {Action} from './_action.server';
+import type {Action} from './_action.server.ts';
+import {Label} from '@white-label/ui-core/label';
+import {Input} from '@white-label/ui-core/input';
+import {Button} from '@white-label/ui-core/button';
+import {toast} from '@white-label/ui-core/toast';
 
 export function ChangeNameForm({initialName}: {initialName: string}) {
   const {Form, state, data} = useTypedFetcher<Action | undefined>();

@@ -2,9 +2,9 @@ import * as Schema from '@effect/schema/Schema';
 import baseSlugify from '@sindresorhus/slugify';
 import * as Effect from 'effect/Effect';
 
-import {DbRecordParseError} from '../errors.server';
-import * as DateString from './date';
-import * as Uuid from './uuid';
+import {DbRecordParseError} from '../errors.server.ts';
+import * as DateString from './date.server.ts';
+import * as Uuid from './uuid.server.ts';
 
 const OrgBrand = Symbol.for('OrgBrand');
 const OrgIdBrand = Symbol.for('OrgIdBrand');

@@ -1,16 +1,16 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server';
-import type {MembershipInvitation} from '@/modules/domain/index.server';
-import {InviteStatus} from '@/modules/domain/index.server';
+import {db, pool} from '@/database/db.server.ts';
+import type {MembershipInvitation} from '@/modules/domain/index.server.ts';
+import {InviteStatus} from '@/modules/domain/index.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   InvitationNotFoundError,
-} from '@/modules/errors.server';
+} from '@/modules/errors.server.ts';
 
-import type {DeclineInvitationProps} from './validation.server';
-import {validate} from './validation.server';
+import type {DeclineInvitationProps} from './validation.server.ts';
+import {validate} from './validation.server.ts';
 
 function selectInvitationRecord(
   invitationId: MembershipInvitation.MembershipInvitation['id']

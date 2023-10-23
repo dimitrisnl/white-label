@@ -1,15 +1,15 @@
+import {ExclamationTriangleIcon} from '@heroicons/react/24/outline';
 import {Link} from '@remix-run/react';
 import {
-  buttonVariants,
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@white-label/ui-core';
-import {MailWarningIcon} from 'lucide-react';
+} from '@white-label/ui-core/card';
 
-import {GuestLayout} from '@/components/guest-layout';
+import {GuestLayout} from '@/components/guest-layout.tsx';
+import {buttonVariants} from '@white-label/ui-core/button';
 
 export function InvalidInvitationErrorMessage() {
   return (
@@ -17,7 +17,7 @@ export function InvalidInvitationErrorMessage() {
       <Card className="w-[480px] border-t-4 border-t-blue-700">
         <CardHeader>
           <div className="mb-4 h-10 w-10 rounded-full bg-red-100 p-2">
-            <MailWarningIcon className="h-full w-full text-red-600" />
+            <ExclamationTriangleIcon className="h-full w-full text-red-600" />
           </div>
           <CardTitle>Invitation not found</CardTitle>
         </CardHeader>

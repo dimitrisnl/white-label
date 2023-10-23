@@ -1,12 +1,12 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server';
-import {MembershipInvitation, User} from '@/modules/domain/index.server';
+import {db, pool} from '@/database/db.server.ts';
+import {MembershipInvitation, User} from '@/modules/domain/index.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   UserNotFoundError,
-} from '@/modules/errors.server';
+} from '@/modules/errors.server.ts';
 
 function selectUserRecord(id: User.User['id']) {
   return Effect.tryPromise({
