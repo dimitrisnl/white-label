@@ -1,6 +1,6 @@
 # White Label
 
-This is a ["white-label"](https://en.wikipedia.org/wiki/White-label_product) project I wanted to create to test various ideas. It's a full-stack Typescript, powered by Remix.
+This is a ["white-label"](https://en.wikipedia.org/wiki/White-label_product) project I wanted to create to test various ideas. It's a full-stack Typescript app, powered by Remix.
 
 ---
 
