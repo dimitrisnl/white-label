@@ -6,7 +6,7 @@ import {LoaderArgs, withLoader} from '@/modules/with-loader.server.ts';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
-    yield* _(Effect.log('Loader(_dashboard/account/_layout): Init'));
+    yield* _(Effect.log('Loader(_dashboard/_layout): Init'));
     const {request} = yield* _(LoaderArgs);
 
     const currentUser = yield* _(getCurrentUserDetails(request));
@@ -25,4 +25,4 @@ export const loader = withLoader(
   )
 );
 
-export type AccountLoaderData = typeof loader;
+export type CurrentUserLoaderData = typeof loader;

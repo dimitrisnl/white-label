@@ -3,8 +3,6 @@ import {Outlet, useParams} from '@remix-run/react';
 import {BaseLayout} from '@/components/base-layout.tsx';
 import {BaseErrorBoundary} from '@/components/error-boundary.tsx';
 
-import {useOrgData} from './use-org-data.ts';
-
 export {loader} from './_loader.server.ts';
 
 import {
@@ -13,9 +11,10 @@ import {
   HomeIcon,
   PresentationChartBarIcon,
 } from '@heroicons/react/24/outline';
+import {useCurrentUserData} from '../../use-current-user.ts';
 
 export default function OrgLayout() {
-  const {currentUser} = useOrgData();
+  const {currentUser} = useCurrentUserData();
   const {slug} = useParams();
 
   const navigationMenu = [

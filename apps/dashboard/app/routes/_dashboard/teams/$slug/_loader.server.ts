@@ -2,6 +2,7 @@ import * as Effect from 'effect/Effect';
 
 import {
   getCurrentUserDetails,
+  getCurrentUserId,
   identifyOrgByParams,
 } from '@/modules/helpers.server.ts';
 import {
@@ -18,11 +19,11 @@ export const loader = withLoader(
     yield* _(Effect.log('Loader(_dashboard/teams/$slug/_layout): Init'));
     const {request, params} = yield* _(LoaderArgs);
 
-    const currentUser = yield* _(getCurrentUserDetails(request));
+    const currentUserId = yield* _(getCurrentUserId(request));
     const orgId = yield* _(identifyOrgByParams(params));
-    const org = yield* _(getOrg().execute(orgId, currentUser.user.id));
+    const org = yield* _(getOrg().execute(orgId, currentUserId));
 
-    return new Ok({data: {org, currentUser}});
+    return new Ok({data: {org}});
   }).pipe(
     Effect.catchTags({
       ParseOrgSlugError: () =>
