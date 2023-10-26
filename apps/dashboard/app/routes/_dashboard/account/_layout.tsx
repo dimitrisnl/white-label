@@ -7,6 +7,7 @@ import {Outlet} from '@remix-run/react';
 
 import {BaseLayout} from '@/components/base-layout.tsx';
 import {BaseErrorBoundary} from '@/components/error-boundary.tsx';
+
 import {useCurrentUserData} from '../use-current-user';
 
 const navigationMenu = [

@@ -2,7 +2,7 @@
   "name": "@white-label/eslint-config-remix",
   "version": "0.0.0",
   "private": true,
-  "main": "index.js",
+  "main": "index.cjs",
   "devDependencies": {
     "@remix-run/eslint-config": "^2.0.1",
     "@white-label/eslint-config-node": "workspace:*",

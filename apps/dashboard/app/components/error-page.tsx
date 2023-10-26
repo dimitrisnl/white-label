@@ -1,4 +1,5 @@
 import {Link} from '@remix-run/react';
+import {buttonVariants} from '@white-label/ui-core/button';
 import {
   Card,
   CardContent,
@@ -9,7 +10,6 @@ import {
 } from '@white-label/ui-core/card';
 
 import {GuestLayout} from './guest-layout.tsx';
-import {buttonVariants} from '@white-label/ui-core/button';
 
 export function ErrorPage({
   statusCode = 500,

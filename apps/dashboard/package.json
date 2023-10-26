@@ -10,6 +10,7 @@
     "format": "prettier --write .",
     "generate-schema": "ts-node --files -r dotenv/config ./app/database/generate-schema.ts ",
     "lint": "eslint --ext .ts,.tsx .",
+    "lint-fix": "eslint --ext .ts,.tsx . --fix",
     "mgr-create": "dbmate -d './app/database/migrations' new",
     "mgr-rollback": "dbmate -d './app/database/migrations' rollback",
     "mgr-run": "dbmate -d './app/database/migrations' migrate",

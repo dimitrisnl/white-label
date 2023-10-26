@@ -1,9 +1,10 @@
+import {PlusCircleIcon, UserIcon} from '@heroicons/react/24/outline';
 import {
   ArrowRightOnRectangleIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/solid';
-import {PlusCircleIcon, UserIcon} from '@heroicons/react/24/outline';
 import {Link} from '@remix-run/react';
+import {Button} from '@white-label/ui-core/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +15,6 @@ import {
 } from '@white-label/ui-core/dropdown-menu';
 
 import type {User} from '@/modules/domain/index.server.ts';
-import {Button} from '@white-label/ui-core/button';
 
 export function UserNav({user}: {user: User.User}) {
   return (

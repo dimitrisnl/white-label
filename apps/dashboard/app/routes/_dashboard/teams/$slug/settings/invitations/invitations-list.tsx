@@ -1,3 +1,5 @@
+import {Badge} from '@white-label/ui-core/badge';
+import {Button} from '@white-label/ui-core/button';
 import {
   Card,
   CardContent,
@@ -5,8 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@white-label/ui-core/card';
-import {Button} from '@white-label/ui-core/button';
-import {Badge} from '@white-label/ui-core/badge';
 import {toast} from '@white-label/ui-core/toast';
 import {useEffect} from 'react';
 import {useTypedFetcher} from 'remix-typedjson';

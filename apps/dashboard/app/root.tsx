@@ -8,8 +8,8 @@ import {
   ScrollRestoration,
   useNavigation,
 } from '@remix-run/react';
-import {Toaster} from '@white-label/ui-core/toast';
 import tailwindStyles from '@white-label/ui-core/tailwind.css';
+import {Toaster} from '@white-label/ui-core/toast';
 import NProgress from 'nprogress';
 import {useEffect} from 'react';
 

@@ -1,7 +1,7 @@
 import config from '@white-label/ui-core/tailwind-config';
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   presets: [config],
   content: [
     './app/**/*.{ts,tsx}',

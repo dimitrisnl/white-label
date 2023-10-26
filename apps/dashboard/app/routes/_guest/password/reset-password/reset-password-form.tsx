@@ -1,3 +1,4 @@
+import {Button} from '@white-label/ui-core/button';
 import {
   Card,
   CardContent,
@@ -6,15 +7,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@white-label/ui-core/card';
+import {Input} from '@white-label/ui-core/input';
+import {Label} from '@white-label/ui-core/label';
 import {useTypedFetcher} from 'remix-typedjson';
 
 import {ErrorMessage} from '@/components/error-feedback.tsx';
 import {PasswordInput} from '@/components/password-input.tsx';
 
 import type {ResetPasswordAction} from './_action.server.ts';
-import {Label} from '@white-label/ui-core/label';
-import {Input} from '@white-label/ui-core/input';
-import {Button} from '@white-label/ui-core/button';
 
 export function ResetPasswordForm({token}: {token: string}) {
   const {Form, state, data} = useTypedFetcher<

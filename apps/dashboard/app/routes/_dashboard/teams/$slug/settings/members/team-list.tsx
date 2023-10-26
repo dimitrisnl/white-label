@@ -1,3 +1,4 @@
+import {Badge} from '@white-label/ui-core/badge';
 import {
   Card,
   CardContent,
@@ -5,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@white-label/ui-core/card';
-import {Badge} from '@white-label/ui-core/badge';
 
 import type {Membership} from '@/modules/domain/index.server.ts';
 

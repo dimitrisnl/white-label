@@ -1,7 +1,6 @@
 import * as Effect from 'effect/Effect';
 
 import {
-  getCurrentUserDetails,
   getCurrentUserId,
   identifyOrgByParams,
 } from '@/modules/helpers.server.ts';

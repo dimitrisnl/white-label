@@ -32,9 +32,9 @@ export function registerQueue<T>(name: string, processor: Processor<T>) {
   }
 
   // noUncheckedIndexedAccess strikes back. It's initialized above, but TS doesn't know that
-  // @ts-ignore
+  // @ts-expect-error
   const queue = registeredQueues[name].queue as AugmentedQueue<T>;
-  // @ts-ignore
+  // @ts-expect-error
   queue.events = registeredQueues[name].queueEvents;
   return queue;
 }
