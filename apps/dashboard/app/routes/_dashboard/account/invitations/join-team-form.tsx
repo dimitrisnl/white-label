@@ -10,7 +10,7 @@ import {
 import {useTypedFetcher} from 'remix-typedjson';
 
 import {ErrorMessage} from '@/components/error-feedback.tsx';
-import {MembershipInvitation} from '@/modules/domain/index.server.ts';
+import type {MembershipInvitation} from '@/modules/domain/index.server.ts';
 
 import type {Action} from './_action.server.ts';
 
