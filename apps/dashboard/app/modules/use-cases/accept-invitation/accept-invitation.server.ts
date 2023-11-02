@@ -1,16 +1,16 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server.ts';
-import type {User} from '@/modules/domain/index.server.ts';
+import {db, pool} from '~/database/db.server.ts';
+import type {User} from '~/modules/domain/index.server.ts';
 import {
   InviteStatus,
   MembershipInvitation,
-} from '@/modules/domain/index.server.ts';
+} from '~/modules/domain/index.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   InvitationNotFoundError,
-} from '@/modules/errors.server.ts';
+} from '~/modules/errors.server.ts';
 
 import type {AcceptInvitationProps} from './validation.server.ts';
 import {validate} from './validation.server.ts';

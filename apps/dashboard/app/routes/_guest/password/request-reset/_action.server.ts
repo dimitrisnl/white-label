@@ -1,10 +1,10 @@
 import * as Effect from 'effect/Effect';
 
-import {sendPasswordResetEmail} from '@/mailer/emails/send-password-reset-email.server.tsx';
-import {parseFormData} from '@/modules/helpers.server.ts';
-import {BadRequest, Ok, ServerError} from '@/modules/responses.server.ts';
-import {requestPasswordReset} from '@/modules/use-cases/index.server.ts';
-import {ActionArgs, withAction} from '@/modules/with-action.server.ts';
+import {sendPasswordResetEmail} from '~/mailer/emails/send-password-reset-email.server.tsx';
+import {parseFormData} from '~/modules/helpers.server.ts';
+import {BadRequest, Ok, ServerError} from '~/modules/responses.server.ts';
+import {requestPasswordReset} from '~/modules/use-cases/index.server.ts';
+import {ActionArgs, withAction} from '~/modules/with-action.server.ts';
 
 export const action = withAction(
   Effect.gen(function* (_) {

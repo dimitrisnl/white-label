@@ -13,8 +13,8 @@ import {Label} from '@white-label/ui-core/label';
 import {cn} from '@white-label/ui-core/utils';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import {ErrorMessage} from '@/components/error-feedback.tsx';
-import {PasswordInput} from '@/components/password-input.tsx';
+import {ErrorMessage} from '~/components/error-feedback.tsx';
+import {PasswordInput} from '~/components/password-input.tsx';
 
 import type {LoginRequestAction} from './_action.server.ts';
 

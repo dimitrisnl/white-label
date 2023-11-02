@@ -1,11 +1,11 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server.ts';
+import {db, pool} from '~/database/db.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   PasswordResetTokenNotFoundError,
-} from '@/modules/errors.server.ts';
+} from '~/modules/errors.server.ts';
 
 import type {VerifyPasswordResetProps} from './validation.server.ts';
 import {validate} from './validation.server.ts';

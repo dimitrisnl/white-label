@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from '@white-label/ui-core/card';
 
-import {GuestLayout} from '@/components/guest-layout.tsx';
+import {GuestLayout} from '~/components/guest-layout.tsx';
 
 export default function FourOhFour() {
   return (

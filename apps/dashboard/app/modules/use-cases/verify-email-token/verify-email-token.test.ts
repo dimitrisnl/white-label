@@ -3,8 +3,8 @@
 // import {pipe} from 'fp-ts/lib/function';
 // import {DateTime} from 'luxon';
 
-// import {UserFactory} from '@/database/factories/UserFactory';
-// import {E} from '@/utils/fp';
+// import {UserFactory} from '~/database/factories/UserFactory';
+// import {E} from '~/utils/fp';
 
 // import {getVerifyEmailService} from '../../services/verifyEmailService';
 // import {verifyEmail} from './verifyEmailToken';

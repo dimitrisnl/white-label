@@ -9,8 +9,8 @@ import {
 } from '@white-label/ui-core/card';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import {ErrorMessage} from '@/components/error-feedback.tsx';
-import type {MembershipInvitation} from '@/modules/domain/index.server.ts';
+import {ErrorMessage} from '~/components/error-feedback.tsx';
+import type {MembershipInvitation} from '~/modules/domain/index.server.ts';
 
 import type {JoinTeamAction} from './_action.server.ts';
 

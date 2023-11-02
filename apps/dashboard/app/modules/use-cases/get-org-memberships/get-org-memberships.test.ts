@@ -1,7 +1,7 @@
 // import {test} from '@japa/runner';
 
-// import {OrgFactory} from '@/database/factories/OrgFactory';
-// import {UserFactory} from '@/database/factories/UserFactory';
+// import {OrgFactory} from '~/database/factories/OrgFactory';
+// import {UserFactory} from '~/database/factories/UserFactory';
 
 // import {getOrg} from './getOrg';
 

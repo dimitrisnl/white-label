@@ -9,11 +9,11 @@ import {redirect, typedjson} from 'remix-typedjson';
 import type {
   HttpResponse,
   HttpResponseError,
-} from '@/modules/responses.server.ts';
+} from '~/modules/responses.server.ts';
 import {
   matchHttpResponse,
   matchHttpResponseError,
-} from '@/modules/responses.server.ts';
+} from '~/modules/responses.server.ts';
 
 export const ActionArgs = Context.Tag<ActionFunctionArgs>('ActionArgs');
 

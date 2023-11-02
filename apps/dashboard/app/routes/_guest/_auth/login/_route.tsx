@@ -1,6 +1,6 @@
 import type {MetaFunction} from '@remix-run/node';
 
-import {GuestLayout} from '@/components/guest-layout.tsx';
+import {GuestLayout} from '~/components/guest-layout.tsx';
 
 import {LoginForm} from './login-form.tsx';
 import {PasswordResetBanner} from './password-reset-banner.tsx';

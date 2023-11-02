@@ -13,7 +13,7 @@ import {toast} from '@white-label/ui-core/toast';
 import React from 'react';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import {ErrorMessage} from '@/components/error-feedback.tsx';
+import {ErrorMessage} from '~/components/error-feedback.tsx';
 
 import type {EditUserAction} from './_action.server.ts';
 

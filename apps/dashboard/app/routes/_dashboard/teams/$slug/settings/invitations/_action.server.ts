@@ -1,25 +1,25 @@
 import * as Effect from 'effect/Effect';
 
-import {sendInvitationEmail} from '@/mailer/emails/send-invitation-email.server.tsx';
-import type {Org, User} from '@/modules/domain/index.server.ts';
-import {InvalidIntent} from '@/modules/errors.server.ts';
+import {sendInvitationEmail} from '~/mailer/emails/send-invitation-email.server.tsx';
+import type {Org, User} from '~/modules/domain/index.server.ts';
+import {InvalidIntent} from '~/modules/errors.server.ts';
 import {
   getCurrentUserId,
   identifyOrgByParams,
   parseFormData,
-} from '@/modules/helpers.server.ts';
+} from '~/modules/helpers.server.ts';
 import {
   BadRequest,
   Forbidden,
   Ok,
   Redirect,
   ServerError,
-} from '@/modules/responses.server.ts';
+} from '~/modules/responses.server.ts';
 import {
   createInvitation,
   deleteInvitation,
-} from '@/modules/use-cases/index.server.ts';
-import {ActionArgs, withAction} from '@/modules/with-action.server.ts';
+} from '~/modules/use-cases/index.server.ts';
+import {ActionArgs, withAction} from '~/modules/with-action.server.ts';
 
 function handleInvitationCreation({
   userId,

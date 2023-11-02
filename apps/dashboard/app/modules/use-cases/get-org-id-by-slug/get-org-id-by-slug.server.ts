@@ -1,12 +1,12 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server.ts';
-import {Org} from '@/modules/domain/index.server.ts';
+import {db, pool} from '~/database/db.server.ts';
+import {Org} from '~/modules/domain/index.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   OrgNotFoundError,
-} from '@/modules/errors.server.ts';
+} from '~/modules/errors.server.ts';
 
 function selectOrgRecord(slug: Org.Org['slug']) {
   return Effect.tryPromise({

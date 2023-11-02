@@ -1,12 +1,12 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server.ts';
-import {User} from '@/modules/domain/index.server.ts';
+import {db, pool} from '~/database/db.server.ts';
+import {User} from '~/modules/domain/index.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   UserNotFoundError,
-} from '@/modules/errors.server.ts';
+} from '~/modules/errors.server.ts';
 
 import type {EditUserProps} from './validation.server.ts';
 import {validate} from './validation.server.ts';

@@ -1,12 +1,12 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server.ts';
+import {db, pool} from '~/database/db.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   UserNotFoundError,
   VerifyEmailTokenNotFoundError,
-} from '@/modules/errors.server.ts';
+} from '~/modules/errors.server.ts';
 
 import type {VerifyEmailProps} from './validation.server.ts';
 import {validate} from './validation.server.ts';

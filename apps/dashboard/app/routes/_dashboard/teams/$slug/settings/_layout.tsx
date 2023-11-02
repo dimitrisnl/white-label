@@ -1,6 +1,6 @@
 import {Outlet, useParams} from '@remix-run/react';
 
-import {SubMenuLink} from '@/components/sub-menu-link.tsx';
+import {SubMenuLink} from '~/components/sub-menu-link.tsx';
 
 function SettingsNav() {
   const {slug} = useParams();

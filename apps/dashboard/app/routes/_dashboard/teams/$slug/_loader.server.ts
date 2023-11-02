@@ -3,15 +3,15 @@ import * as Effect from 'effect/Effect';
 import {
   getCurrentUserId,
   identifyOrgByParams,
-} from '@/modules/helpers.server.ts';
+} from '~/modules/helpers.server.ts';
 import {
   BadRequest,
   Ok,
   Redirect,
   ServerError,
-} from '@/modules/responses.server.ts';
-import {getOrg} from '@/modules/use-cases/index.server.ts';
-import {LoaderArgs, withLoader} from '@/modules/with-loader.server.ts';
+} from '~/modules/responses.server.ts';
+import {getOrg} from '~/modules/use-cases/index.server.ts';
+import {LoaderArgs, withLoader} from '~/modules/with-loader.server.ts';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {

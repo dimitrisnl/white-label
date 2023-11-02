@@ -6,8 +6,8 @@ import {
 } from '@white-label/ui-core/popover';
 import React from 'react';
 
-import {UserNav} from '@/components/user-nav.tsx';
-import type {Membership, User} from '@/modules/domain/index.server.ts';
+import {UserNav} from '~/components/user-nav.tsx';
+import type {Membership, User} from '~/modules/domain/index.server.ts';
 
 import {MainNav} from './main-nav.tsx';
 

@@ -1,12 +1,12 @@
 // import {faker} from '@faker-js/faker';
 // import {test} from '@japa/runner';
-// import {E} from '@/utils/fp';
+// import {E} from '~/utils/fp';
 // import {pipe} from 'fp-ts/lib/function';
 
-// import {InviteStatus} from '@/app/constants/InviteStatus';
-// import {Role} from '@/app/constants/Role';
-// import {OrgFactory} from '@/database/factories/OrgFactory';
-// import {UserFactory} from '@/database/factories/UserFactory';
+// import {InviteStatus} from '~/app/constants/InviteStatus';
+// import {Role} from '~/app/constants/Role';
+// import {OrgFactory} from '~/database/factories/OrgFactory';
+// import {UserFactory} from '~/database/factories/UserFactory';
 
 // import {acceptInvitation} from './acceptInvitation';
 

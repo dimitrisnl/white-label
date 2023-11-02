@@ -2,8 +2,8 @@ import type {MetaFunction} from '@remix-run/node';
 import {isRouteErrorResponse, useRouteError} from '@remix-run/react';
 import {useTypedLoaderData} from 'remix-typedjson';
 
-import {ErrorPage} from '@/components/error-page.tsx';
-import {GuestLayout} from '@/components/guest-layout.tsx';
+import {ErrorPage} from '~/components/error-page.tsx';
+import {GuestLayout} from '~/components/guest-layout.tsx';
 
 import type {ResetPasswordLoader} from './_loader.server.ts';
 import {InvalidTokenErrorPage} from './invalid-token-error-page.tsx';

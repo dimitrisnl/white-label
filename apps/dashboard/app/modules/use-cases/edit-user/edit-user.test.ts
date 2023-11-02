@@ -1,7 +1,7 @@
 // import {faker} from '@faker-js/faker';
 // import {test} from '@japa/runner';
 
-// import {UserFactory} from '@/database/factories/UserFactory';
+// import {UserFactory} from '~/database/factories/UserFactory';
 
 // import {editUser} from './editUser';
 

@@ -1,7 +1,7 @@
 import * as Effect from 'effect/Effect';
 
-import {logout} from '@/modules/session.server.ts';
-import {LoaderArgs, withLoader} from '@/modules/with-loader.server.ts';
+import {logout} from '~/modules/session.server.ts';
+import {LoaderArgs, withLoader} from '~/modules/with-loader.server.ts';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {

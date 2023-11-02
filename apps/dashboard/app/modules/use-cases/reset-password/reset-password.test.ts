@@ -1,11 +1,11 @@
 // import {faker} from '@faker-js/faker';
 // import Hash from '@ioc:Adonis/Core/Hash';
 // import {test} from '@japa/runner';
-// import {E} from '@/utils/fp';
+// import {E} from '~/utils/fp';
 // import {pipe} from 'fp-ts/lib/function';
 // import {DateTime} from 'luxon';
 
-// import {UserFactory} from '@/database/factories/UserFactory';
+// import {UserFactory} from '~/database/factories/UserFactory';
 
 // import {getPasswordResetService} from '../../services/passwordResetService';
 // import {resetPassword} from './resetPassword';

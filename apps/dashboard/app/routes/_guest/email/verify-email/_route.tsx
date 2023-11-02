@@ -1,6 +1,6 @@
 import {isRouteErrorResponse, useRouteError} from '@remix-run/react';
 
-import {ErrorPage} from '@/components/error-page.tsx';
+import {ErrorPage} from '~/components/error-page.tsx';
 
 import {InvalidTokenErrorMessage} from './invalid-token-error-message.tsx';
 import {VerificationSuccessMessage} from './verification-success-message.tsx';

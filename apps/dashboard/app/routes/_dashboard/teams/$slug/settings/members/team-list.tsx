@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from '@white-label/ui-core/card';
 
-import type {Membership} from '@/modules/domain/index.server.ts';
+import type {Membership} from '~/modules/domain/index.server.ts';
 
 function RoleBadge({role}: {role: string}) {
   return (

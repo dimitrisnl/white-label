@@ -1,9 +1,9 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server.ts';
-import type {Org, User} from '@/modules/domain/index.server.ts';
-import {MembershipRole} from '@/modules/domain/index.server.ts';
-import {DatabaseError, ForbiddenActionError} from '@/modules/errors.server.ts';
+import {db, pool} from '~/database/db.server.ts';
+import type {Org, User} from '~/modules/domain/index.server.ts';
+import {MembershipRole} from '~/modules/domain/index.server.ts';
+import {DatabaseError, ForbiddenActionError} from '~/modules/errors.server.ts';
 
 function getMembershipRecord(userId: User.User['id'], orgId: Org.Org['id']) {
   return Effect.tryPromise({

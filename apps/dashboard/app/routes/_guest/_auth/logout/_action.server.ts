@@ -1,7 +1,7 @@
 import * as Effect from 'effect/Effect';
 
-import {logout} from '@/modules/session.server.ts';
-import {ActionArgs, withAction} from '@/modules/with-action.server.ts';
+import {logout} from '~/modules/session.server.ts';
+import {ActionArgs, withAction} from '~/modules/with-action.server.ts';
 
 export const action = withAction(
   Effect.gen(function* (_) {

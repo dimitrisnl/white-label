@@ -12,7 +12,7 @@ import {Input} from '@white-label/ui-core/input';
 import {Label} from '@white-label/ui-core/label';
 import {useTypedActionData} from 'remix-typedjson';
 
-import {ErrorMessage} from '@/components/error-feedback.tsx';
+import {ErrorMessage} from '~/components/error-feedback.tsx';
 
 import type {RequestPasswordResetAction} from './_action.server.ts';
 

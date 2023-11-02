@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@white-label/ui-core/dropdown-menu';
 
-import type {User} from '@/modules/domain/index.server.ts';
+import type {User} from '~/modules/domain/index.server.ts';
 
 export function UserNav({user}: {user: User.User}) {
   return (

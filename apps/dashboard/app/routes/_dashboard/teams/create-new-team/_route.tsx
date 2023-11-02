@@ -1,4 +1,4 @@
-import {GuestLayout} from '@/components/guest-layout.tsx';
+import {GuestLayout} from '~/components/guest-layout.tsx';
 
 import {TeamInfo} from './team-info.tsx';
 
