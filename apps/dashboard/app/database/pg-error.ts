@@ -1,1 +1,1 @@
-export const UNIQUE_CONTRAINT = 23505;
+export const UNIQUE_CONSTRAINT = 23505;

@@ -47,4 +47,4 @@ export const action = withAction(
   )
 );
 
-export type Action = typeof action;
+export type ChangePasswordAction = typeof action;

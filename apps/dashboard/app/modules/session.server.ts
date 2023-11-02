@@ -2,7 +2,7 @@ import * as Schema from '@effect/schema/Schema';
 import {createCookieSessionStorage} from '@remix-run/node';
 import * as Effect from 'effect/Effect';
 
-import {Redirect} from './responses.server.ts';
+import {Redirect} from '@/modules/responses.server.ts';
 
 const envValidationSchema = Schema.struct({
   SESSION_SECRET: Schema.string.pipe(Schema.nonEmpty()),

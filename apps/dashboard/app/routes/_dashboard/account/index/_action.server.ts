@@ -39,4 +39,4 @@ export const action = withAction(
   )
 );
 
-export type Action = typeof action;
+export type EditUserAction = typeof action;

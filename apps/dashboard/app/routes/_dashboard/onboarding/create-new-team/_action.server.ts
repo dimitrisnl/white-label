@@ -35,4 +35,4 @@ export const action = withAction(
   )
 );
 
-export type Action = typeof action;
+export type CreateNewTeamAction = typeof action;

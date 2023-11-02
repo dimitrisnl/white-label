@@ -15,10 +15,12 @@ import {useTypedFetcher} from 'remix-typedjson';
 import {ErrorMessage} from '@/components/error-feedback.tsx';
 import {PasswordInput} from '@/components/password-input.tsx';
 
-import type {Action} from './_action.server.ts';
+import type {ChangePasswordAction} from './_action.server.ts';
 
 export function ChangePasswordForm() {
-  const {Form, data, state} = useTypedFetcher<Action | undefined>();
+  const {Form, data, state} = useTypedFetcher<
+    ChangePasswordAction | undefined
+  >();
   const formRef = React.useRef<HTMLFormElement>(null);
 
   React.useEffect(() => {

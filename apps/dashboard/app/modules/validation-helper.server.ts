@@ -1,5 +1,5 @@
 import * as AST from '@effect/schema/AST';
-import * as ParseResult from '@effect/schema/ParseResult';
+import type * as ParseResult from '@effect/schema/ParseResult';
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 import * as E from 'effect/Either';

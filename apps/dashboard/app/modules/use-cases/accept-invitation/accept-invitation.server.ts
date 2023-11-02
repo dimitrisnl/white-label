@@ -6,12 +6,12 @@ import {
   InviteStatus,
   MembershipInvitation,
 } from '@/modules/domain/index.server.ts';
-
 import {
   DatabaseError,
   InternalServerError,
   InvitationNotFoundError,
-} from '../../errors.server.ts';
+} from '@/modules/errors.server.ts';
+
 import type {AcceptInvitationProps} from './validation.server.ts';
 import {validate} from './validation.server.ts';
 

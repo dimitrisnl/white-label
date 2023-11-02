@@ -12,14 +12,16 @@ import {useTypedFetcher} from 'remix-typedjson';
 import {ErrorMessage} from '@/components/error-feedback.tsx';
 import type {MembershipInvitation} from '@/modules/domain/index.server.ts';
 
-import type {Action} from './_action.server.ts';
+import type {AcceptInvitationAction} from './_action.server.ts';
 
 export function JoinTeamForm({
   invitation,
 }: {
   invitation: MembershipInvitation.MembershipInvitation;
 }) {
-  const {Form, state, data} = useTypedFetcher<Action | undefined>();
+  const {Form, state, data} = useTypedFetcher<
+    AcceptInvitationAction | undefined
+  >();
 
   return (
     <Form method="post">

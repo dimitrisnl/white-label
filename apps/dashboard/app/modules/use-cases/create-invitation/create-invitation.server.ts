@@ -3,14 +3,14 @@ import * as Effect from 'effect/Effect';
 import {db, pool} from '@/database/db.server.ts';
 import type {MembershipRole, Org, User} from '@/modules/domain/index.server.ts';
 import {MembershipInvitation, Uuid} from '@/modules/domain/index.server.ts';
-import {invitationAuthorizationService} from '@/modules/services/index.server.ts';
-
 import {
   DatabaseError,
   InternalServerError,
   InviteeAlreadyMemberError,
   OrgNotFoundError,
-} from '../../errors.server.ts';
+} from '@/modules/errors.server.ts';
+import {invitationAuthorizationService} from '@/modules/services/index.server.ts';
+
 import type {CreateInvitationProps} from './validation.server.ts';
 import {validate} from './validation.server.ts';
 
@@ -111,7 +111,7 @@ export function createInvitation() {
 
       const existingMember = yield* _(findExistingMember({orgId, email}));
 
-      if (existingMember && existingMember.membership) {
+      if (existingMember?.membership) {
         return yield* _(Effect.fail(new InviteeAlreadyMemberError()));
       }
 
