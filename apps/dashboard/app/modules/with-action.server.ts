@@ -2,10 +2,18 @@ import type {ActionFunctionArgs} from '@remix-run/node';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import {pipe} from 'effect/Function';
+import * as Logger from 'effect/Logger';
+import * as LogLevel from 'effect/LogLevel';
 import {redirect, typedjson} from 'remix-typedjson';
 
-import type {HttpResponse, HttpResponseError} from './responses.server.ts';
-import {matchHttpResponse, matchHttpResponseError} from './responses.server.ts';
+import type {
+  HttpResponse,
+  HttpResponseError,
+} from '~/modules/responses.server.ts';
+import {
+  matchHttpResponse,
+  matchHttpResponseError,
+} from '~/modules/responses.server.ts';
 
 export const ActionArgs = Context.Tag<ActionFunctionArgs>('ActionArgs');
 
@@ -17,6 +25,7 @@ export const withAction =
   (args: ActionFunctionArgs) => {
     const runnable = pipe(
       self,
+      Logger.withMinimumLogLevel(LogLevel.None),
       Effect.provideService(ActionArgs, args),
       Effect.match({
         onFailure: matchHttpResponseError()({

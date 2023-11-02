@@ -1,9 +1,9 @@
 import * as Effect from 'effect/Effect';
 
-import {InvitationNotFoundError} from '@/modules/errors.server.ts';
-import {BadRequest, Ok, ServerError} from '@/modules/responses.server.ts';
-import {declineInvitation} from '@/modules/use-cases/index.server.ts';
-import {LoaderArgs, withLoader} from '@/modules/with-loader.server.ts';
+import {InvitationNotFoundError} from '~/modules/errors.server.ts';
+import {BadRequest, Ok, ServerError} from '~/modules/responses.server.ts';
+import {declineInvitation} from '~/modules/use-cases/index.server.ts';
+import {LoaderArgs, withLoader} from '~/modules/with-loader.server.ts';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {

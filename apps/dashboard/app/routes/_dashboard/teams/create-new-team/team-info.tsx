@@ -12,12 +12,14 @@ import {Input} from '@white-label/ui-core/input';
 import {Label} from '@white-label/ui-core/label';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import {ErrorMessage} from '@/components/error-feedback.tsx';
+import {ErrorMessage} from '~/components/error-feedback.tsx';
 
-import type {Action} from './_action.server.ts';
+import type {CreateNewTeamAction} from './_action.server.ts';
 
 export function TeamInfo() {
-  const {Form, state, data} = useTypedFetcher<Action | undefined>();
+  const {Form, state, data} = useTypedFetcher<
+    CreateNewTeamAction | undefined
+  >();
 
   return (
     <Form method="post">

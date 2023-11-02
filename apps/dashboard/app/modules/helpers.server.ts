@@ -1,13 +1,12 @@
 import type {LoaderFunctionArgs} from '@remix-run/node';
 import * as Effect from 'effect/Effect';
 
-import {User} from '@/modules/domain/index.server.ts';
-import {getUser, whoAmI} from '@/modules/use-cases/index.server.ts';
-
-import {Org} from './domain/index.server.ts';
-import {SessionNotFoundError} from './errors.server.ts';
-import {getSession, USER_SESSION_KEY} from './session.server.ts';
-import {getOrgIdBySlug} from './use-cases/index.server.ts';
+import {User} from '~/modules/domain/index.server.ts';
+import {Org} from '~/modules/domain/index.server.ts';
+import {SessionNotFoundError} from '~/modules/errors.server.ts';
+import {getSession, USER_SESSION_KEY} from '~/modules/session.server.ts';
+import {getOrgIdBySlug} from '~/modules/use-cases/index.server.ts';
+import {getUser, whoAmI} from '~/modules/use-cases/index.server.ts';
 
 type Params = LoaderFunctionArgs['params'];
 

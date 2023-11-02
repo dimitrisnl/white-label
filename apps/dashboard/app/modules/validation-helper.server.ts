@@ -1,5 +1,5 @@
 import * as AST from '@effect/schema/AST';
-import * as ParseResult from '@effect/schema/ParseResult';
+import type * as ParseResult from '@effect/schema/ParseResult';
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 import * as E from 'effect/Either';
@@ -8,7 +8,7 @@ import * as Match from 'effect/Match';
 import * as Option from 'effect/Option';
 import * as ReadonlyArray from 'effect/ReadonlyArray';
 
-import {ValidationError} from '@/modules/errors.server.ts';
+import {ValidationError} from '~/modules/errors.server.ts';
 
 type Entry = [string, {readonly message: string}];
 

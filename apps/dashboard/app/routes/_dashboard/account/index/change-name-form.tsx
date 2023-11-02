@@ -13,12 +13,12 @@ import {toast} from '@white-label/ui-core/toast';
 import React from 'react';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import {ErrorMessage} from '@/components/error-feedback.tsx';
+import {ErrorMessage} from '~/components/error-feedback.tsx';
 
-import type {Action} from './_action.server.ts';
+import type {EditUserAction} from './_action.server.ts';
 
 export function ChangeNameForm({initialName}: {initialName: string}) {
-  const {Form, state, data} = useTypedFetcher<Action | undefined>();
+  const {Form, state, data} = useTypedFetcher<EditUserAction | undefined>();
 
   React.useEffect(() => {
     if (data?.ok) {

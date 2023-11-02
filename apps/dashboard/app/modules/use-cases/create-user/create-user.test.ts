@@ -1,11 +1,11 @@
 // import Mail from '@ioc:Adonis/Addons/Mail';
 // import {test} from '@japa/runner';
-// import {E} from '@/utils/fp';
+// import {E} from '~/utils/fp';
 // import {pipe} from 'fp-ts/lib/function';
 
-// import {getUserObj, UserFactory} from '@/database/factories/UserFactory';
+// import {getUserObj, UserFactory} from '~/database/factories/UserFactory';
 
-// import {AccessToken} from '@/modules/domain/AccessToken';
+// import {AccessToken} from '~/modules/domain/AccessToken';
 // import {AccessTokenService} from '../../services/accessTokenService';
 // import {getVerifyEmailService} from '../../services/verifyEmailService';
 // import {register} from './createUser';

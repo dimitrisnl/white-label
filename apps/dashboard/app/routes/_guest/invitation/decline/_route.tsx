@@ -1,6 +1,6 @@
 import {isRouteErrorResponse, useRouteError} from '@remix-run/react';
 
-import {ErrorPage} from '@/components/error-page.tsx';
+import {ErrorPage} from '~/components/error-page.tsx';
 
 import {InvalidInvitationErrorMessage} from './invalid-invitation-error-message.tsx';
 import {InvitationDeclineSuccessMessage} from './invitation-decline-success-message.tsx';

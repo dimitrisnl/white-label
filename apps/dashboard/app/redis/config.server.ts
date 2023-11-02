@@ -1,5 +1,3 @@
-import 'dotenv/config';
-
 import * as Schema from '@effect/schema/Schema';
 
 const envValidationSchema = Schema.struct({

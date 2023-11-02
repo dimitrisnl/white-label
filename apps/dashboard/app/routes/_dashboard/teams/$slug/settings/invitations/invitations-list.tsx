@@ -11,7 +11,7 @@ import {toast} from '@white-label/ui-core/toast';
 import {useEffect} from 'react';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import type {MembershipInvitation} from '@/modules/domain/index.server.ts';
+import type {MembershipInvitation} from '~/modules/domain/index.server.ts';
 
 import type {Action} from './_action.server.ts';
 

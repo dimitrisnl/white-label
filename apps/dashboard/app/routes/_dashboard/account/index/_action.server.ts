@@ -1,14 +1,14 @@
 import * as Effect from 'effect/Effect';
 
-import {getCurrentUserId, parseFormData} from '@/modules/helpers.server.ts';
+import {getCurrentUserId, parseFormData} from '~/modules/helpers.server.ts';
 import {
   BadRequest,
   Ok,
   Redirect,
   ServerError,
-} from '@/modules/responses.server.ts';
-import {editUser} from '@/modules/use-cases/index.server.ts';
-import {ActionArgs, withAction} from '@/modules/with-action.server.ts';
+} from '~/modules/responses.server.ts';
+import {editUser} from '~/modules/use-cases/index.server.ts';
+import {ActionArgs, withAction} from '~/modules/with-action.server.ts';
 
 export const action = withAction(
   Effect.gen(function* (_) {
@@ -39,4 +39,4 @@ export const action = withAction(
   )
 );
 
-export type Action = typeof action;
+export type EditUserAction = typeof action;

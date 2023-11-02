@@ -1,5 +1,5 @@
 import * as Schema from '@effect/schema/Schema';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import * as Effect from 'effect/Effect';
 
 import {PasswordHashError} from '../errors.server.ts';

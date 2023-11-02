@@ -12,21 +12,25 @@ import {Input} from '@white-label/ui-core/input';
 import {Label} from '@white-label/ui-core/label';
 import {useTypedFetcher} from 'remix-typedjson';
 
-import {ErrorMessage} from '@/components/error-feedback.tsx';
+import {ErrorMessage} from '~/components/error-feedback.tsx';
 
-import type {Action} from './_action.server.ts';
+import type {CreateNewTeamAction} from './_action.server.ts';
 
 export function TeamInfo() {
-  const {Form, state, data} = useTypedFetcher<Action | undefined>();
+  const {Form, state, data} = useTypedFetcher<
+    CreateNewTeamAction | undefined
+  >();
 
   return (
     <Form method="post">
       <Card className="min-w-[400px] border-t-4 border-t-blue-700">
         <CardHeader>
           <CardTitle>Create your team</CardTitle>
-          <CardDescription>
-            You will be the Owner of this team. You can invite others for
-            collaboration on a later step
+          <CardDescription className="mt-2">
+            <div>
+              You will be the <strong>Owner</strong> of this team.
+            </div>
+            <div>You can invite others for collaboration on a later step</div>
           </CardDescription>
         </CardHeader>
         <CardContent>

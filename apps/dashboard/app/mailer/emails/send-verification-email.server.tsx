@@ -2,7 +2,7 @@ import {VerificationEmailTemplate} from '@white-label/email-templates/templates/
 import * as Effect from 'effect/Effect';
 import {pipe} from 'effect/Function';
 
-import {addEmailJob} from '@/queues/email-queue.server.ts';
+import {addEmailJob} from '~/queues/email-queue.server.ts';
 
 import {buildTemplate} from '../build-template.server.tsx';
 import {config} from '../config.server.ts';

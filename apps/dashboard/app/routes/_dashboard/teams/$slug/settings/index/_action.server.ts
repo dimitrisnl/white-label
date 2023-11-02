@@ -4,16 +4,16 @@ import {
   getCurrentUserId,
   identifyOrgByParams,
   parseFormData,
-} from '@/modules/helpers.server.ts';
+} from '~/modules/helpers.server.ts';
 import {
   BadRequest,
   Forbidden,
   Ok,
   Redirect,
   ServerError,
-} from '@/modules/responses.server.ts';
-import {editOrg} from '@/modules/use-cases/index.server.ts';
-import {ActionArgs, withAction} from '@/modules/with-action.server.ts';
+} from '~/modules/responses.server.ts';
+import {editOrg} from '~/modules/use-cases/index.server.ts';
+import {ActionArgs, withAction} from '~/modules/with-action.server.ts';
 
 export const action = withAction(
   Effect.gen(function* (_) {
@@ -56,4 +56,4 @@ export const action = withAction(
   )
 );
 
-export type Action = typeof action;
+export type EditOrgAction = typeof action;

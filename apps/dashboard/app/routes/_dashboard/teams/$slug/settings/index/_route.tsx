@@ -1,7 +1,7 @@
 import type {MetaFunction} from '@remix-run/node';
 import {isRouteErrorResponse, useRouteError} from '@remix-run/react';
 
-import {ErrorPage} from '@/components/error-page.tsx';
+import {ErrorPage} from '~/components/error-page.tsx';
 
 import {useOrgData} from '../../use-org-data.ts';
 import {TeamInfo} from './team-info.tsx';

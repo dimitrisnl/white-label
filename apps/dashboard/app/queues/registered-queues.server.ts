@@ -1,4 +1,4 @@
-import {Queue, QueueEvents, Worker} from 'bullmq';
+import type {Queue, QueueEvents, Worker} from 'bullmq';
 
 export interface RegisteredQueue {
   queue: Queue;

@@ -1,11 +1,11 @@
 import * as Effect from 'effect/Effect';
 
-import {sendVerificationEmail} from '@/mailer/emails/send-verification-email.server.tsx';
-import {parseFormData} from '@/modules/helpers.server.ts';
-import {BadRequest, ServerError} from '@/modules/responses.server.ts';
-import {createUserSession} from '@/modules/session.server.ts';
-import {createUser} from '@/modules/use-cases/index.server.ts';
-import {ActionArgs, withAction} from '@/modules/with-action.server.ts';
+import {sendVerificationEmail} from '~/mailer/emails/send-verification-email.server.tsx';
+import {parseFormData} from '~/modules/helpers.server.ts';
+import {BadRequest, ServerError} from '~/modules/responses.server.ts';
+import {createUserSession} from '~/modules/session.server.ts';
+import {createUser} from '~/modules/use-cases/index.server.ts';
+import {ActionArgs, withAction} from '~/modules/with-action.server.ts';
 
 export const action = withAction(
   Effect.gen(function* (_) {

@@ -1,7 +1,7 @@
 import {Outlet, useParams} from '@remix-run/react';
 
-import {BaseLayout} from '@/components/base-layout.tsx';
-import {BaseErrorBoundary} from '@/components/error-boundary.tsx';
+import {BaseLayout} from '~/components/base-layout.tsx';
+import {BaseErrorBoundary} from '~/components/error-boundary.tsx';
 
 export {loader} from './_loader.server.ts';
 

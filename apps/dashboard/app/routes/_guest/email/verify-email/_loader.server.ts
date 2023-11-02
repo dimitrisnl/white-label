@@ -1,14 +1,14 @@
 import * as Effect from 'effect/Effect';
 
-import {VerifyEmailTokenNotFoundError} from '@/modules/errors.server.ts';
+import {VerifyEmailTokenNotFoundError} from '~/modules/errors.server.ts';
 import {
   BadRequest,
   Ok,
   Redirect,
   ServerError,
-} from '@/modules/responses.server.ts';
-import {verifyEmailToken} from '@/modules/use-cases/index.server.ts';
-import {LoaderArgs, withLoader} from '@/modules/with-loader.server.ts';
+} from '~/modules/responses.server.ts';
+import {verifyEmailToken} from '~/modules/use-cases/index.server.ts';
+import {LoaderArgs, withLoader} from '~/modules/with-loader.server.ts';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {

@@ -1,13 +1,13 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '@/database/db.server.ts';
-import {UNIQUE_CONTRAINT} from '@/database/pg-error.ts';
-import {Password, User, Uuid} from '@/modules/domain/index.server.ts';
+import {db, pool} from '~/database/db.server.ts';
+import {UNIQUE_CONSTRAINT} from '~/database/pg-error.ts';
+import {Password, User, Uuid} from '~/modules/domain/index.server.ts';
 import {
   AccountAlreadyExistsError,
   DatabaseError,
   InternalServerError,
-} from '@/modules/errors.server.ts';
+} from '~/modules/errors.server.ts';
 
 import type {CreateUserProps} from './validation.server.ts';
 import {validate} from './validation.server.ts';
@@ -37,7 +37,7 @@ function createUserRecord({
     catch: (error) => {
       // todo: fix
       // @ts-expect-error
-      if (error && error.code == UNIQUE_CONTRAINT) {
+      if (error && error.code == UNIQUE_CONSTRAINT) {
         return new AccountAlreadyExistsError();
       }
 

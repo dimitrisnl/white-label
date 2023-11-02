@@ -1,5 +1,3 @@
-import 'dotenv/config';
-
 import * as Schema from '@effect/schema/Schema';
 import Pg from 'pg';
 import * as db from 'zapatos/db';
