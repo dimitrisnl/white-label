@@ -4,7 +4,7 @@ esbuild.build({
   entryPoints: ['./src/**/*.ts', './src/**/*.tsx'],
   bundle: true,
   minify: true,
-  sourcemap: true,
+  sourcemap: false,
   platform: 'node',
   splitting: true,
   format: 'esm',
