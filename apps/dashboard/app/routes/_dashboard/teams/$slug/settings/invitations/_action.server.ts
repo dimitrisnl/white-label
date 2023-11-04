@@ -4,7 +4,7 @@ import {sendInvitationEmail} from '~/mailer/emails/send-invitation-email.server.
 import type {Org, User} from '~/modules/domain/index.server.ts';
 import {InvalidIntent} from '~/modules/errors.server.ts';
 import {
-  getCurrentUserId,
+  authenticateUser,
   identifyOrgByParams,
   parseFormData,
 } from '~/modules/helpers.server.ts';
@@ -70,7 +70,7 @@ export const action = withAction(
     );
     const {request, params} = yield* _(ActionArgs);
 
-    const userId = yield* _(getCurrentUserId(request));
+    const {id: userId} = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
     const data = yield* _(parseFormData(request));
 

@@ -1,7 +1,7 @@
 import * as Effect from 'effect/Effect';
 
 import {
-  getCurrentUserId,
+  authenticateUser,
   identifyOrgByParams,
   parseFormData,
 } from '~/modules/helpers.server.ts';
@@ -20,7 +20,7 @@ export const action = withAction(
     yield* _(Effect.log('Action(_dashboard/teams/$slug/settings/index): Init'));
     const {request, params} = yield* _(ActionArgs);
 
-    const userId = yield* _(getCurrentUserId(request));
+    const {id: userId} = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
 
     const {validate, execute} = editOrg();

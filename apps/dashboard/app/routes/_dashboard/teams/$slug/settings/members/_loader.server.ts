@@ -1,7 +1,7 @@
 import * as Effect from 'effect/Effect';
 
 import {
-  getCurrentUserId,
+  authenticateUser,
   identifyOrgByParams,
 } from '~/modules/helpers.server.ts';
 import {
@@ -20,7 +20,7 @@ export const loader = withLoader(
     );
     const {request, params} = yield* _(LoaderArgs);
 
-    const userId = yield* _(getCurrentUserId(request));
+    const {id: userId} = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
 
     const memberships = yield* _(getOrgMemberships().execute(orgId, userId));

@@ -1,8 +1,7 @@
 import * as Effect from 'effect/Effect';
 
-import {getCurrentUserId} from '~/modules/helpers.server.ts';
-import {decideNextTeamRedirect} from '~/modules/navigation.server.ts';
-import {Redirect, ServerError} from '~/modules/responses.server.ts';
+import {authenticateUser} from '~/modules/helpers.server.ts';
+import {Ok, Redirect, ServerError} from '~/modules/responses.server.ts';
 import {getUserMemberships} from '~/modules/use-cases/index.server.ts';
 import {LoaderArgs, withLoader} from '~/modules/with-loader.server.ts';
 
@@ -10,12 +9,11 @@ export const loader = withLoader(
   Effect.gen(function* (_) {
     yield* _(Effect.log('Loader(_dashboard/teams/index): Init'));
     const {request} = yield* _(LoaderArgs);
-    const userId = yield* _(getCurrentUserId(request));
+    const {id: userId} = yield* _(authenticateUser(request));
 
-    // todo: replace with query that gets the last accessed team
     const {memberships} = yield* _(getUserMemberships().execute(userId));
 
-    return decideNextTeamRedirect(memberships, request);
+    return new Ok({data: {memberships}});
   }).pipe(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError({})),
@@ -29,4 +27,4 @@ export const loader = withLoader(
   )
 );
 
-export type IndexLoaderData = typeof loader;
+export type TeamsIndexLoaderData = typeof loader;

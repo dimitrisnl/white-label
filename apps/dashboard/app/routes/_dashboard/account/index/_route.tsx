@@ -1,9 +1,14 @@
-import {useCurrentUserData} from '../../use-current-user.ts';
+import {useTypedLoaderData} from 'remix-typedjson';
+
+import type {UserDetailsLoaderData} from './_loader.server.ts';
 import {ChangeNameForm} from './change-name-form.tsx';
 
 export {action} from './_action.server.ts';
+export {loader} from './_loader.server.ts';
 
 export default function IndexPage() {
-  const {currentUser} = useCurrentUserData();
-  return <ChangeNameForm initialName={currentUser.user.name} />;
+  const {
+    data: {user},
+  } = useTypedLoaderData<UserDetailsLoaderData>();
+  return <ChangeNameForm initialName={user.name} />;
 }

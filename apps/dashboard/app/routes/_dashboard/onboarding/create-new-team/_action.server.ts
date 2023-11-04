@@ -1,6 +1,6 @@
 import * as Effect from 'effect/Effect';
 
-import {getCurrentUserId, parseFormData} from '~/modules/helpers.server.ts';
+import {authenticateUser, parseFormData} from '~/modules/helpers.server.ts';
 import {BadRequest, Redirect, ServerError} from '~/modules/responses.server.ts';
 import {createOrg} from '~/modules/use-cases/index.server.ts';
 import {ActionArgs, withAction} from '~/modules/with-action.server.ts';
@@ -9,7 +9,7 @@ export const action = withAction(
   Effect.gen(function* (_) {
     yield* _(Effect.log('Action(_dashboard/onboarding/create-new-team): Init'));
     const {request} = yield* _(ActionArgs);
-    const userId = yield* _(getCurrentUserId(request));
+    const {id: userId} = yield* _(authenticateUser(request));
 
     const {validate, execute} = createOrg();
     const data = yield* _(parseFormData(request));

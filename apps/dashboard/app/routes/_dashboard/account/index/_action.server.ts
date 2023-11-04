@@ -1,6 +1,6 @@
 import * as Effect from 'effect/Effect';
 
-import {getCurrentUserId, parseFormData} from '~/modules/helpers.server.ts';
+import {authenticateUser, parseFormData} from '~/modules/helpers.server.ts';
 import {
   BadRequest,
   Ok,
@@ -14,7 +14,7 @@ export const action = withAction(
   Effect.gen(function* (_) {
     yield* _(Effect.log('Action(_dashboard/account/index): Init'));
     const {request} = yield* _(ActionArgs);
-    const userId = yield* _(getCurrentUserId(request));
+    const {id: userId} = yield* _(authenticateUser(request));
 
     const {validate, execute} = editUser();
     const data = yield* _(parseFormData(request));

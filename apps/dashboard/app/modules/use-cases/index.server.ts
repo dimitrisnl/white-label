@@ -19,4 +19,3 @@ export * from './reset-password/reset-password.server.ts';
 export * from './verify-email-token/verify-email-token.server.ts';
 export * from './verify-password-reset/verify-password-reset.server.ts';
 export * from './verify-user-credentials/verify-user-credentials.server.ts';
-export * from './who-am-i/who-am-i.server.ts';
