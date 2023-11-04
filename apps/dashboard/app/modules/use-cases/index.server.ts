@@ -12,6 +12,7 @@ export * from './get-org-invitations/get-org-invitations.server.ts';
 export * from './get-org-memberships/get-org-memberships.server.ts';
 export * from './get-org/get-org.server.ts';
 export * from './get-user-invitations/get-user-invitations.server.ts';
+export * from './get-user-memberships/get-user-memberships.server.ts';
 export * from './get-user/get-user.server.ts';
 export * from './request-password-reset/request-password-reset.server.ts';
 export * from './reset-password/reset-password.server.ts';
