@@ -1,6 +1,6 @@
 import * as Effect from 'effect/Effect';
 
-import {getCurrentUserId} from '~/modules/helpers.server.ts';
+import {authenticateUser} from '~/modules/helpers.server.ts';
 import {decideNextTeamRedirect} from '~/modules/navigation.server';
 import {Redirect, ServerError} from '~/modules/responses.server.ts';
 import {getUserMemberships} from '~/modules/use-cases/index.server';
@@ -10,7 +10,7 @@ export const loader = withLoader(
   Effect.gen(function* (_) {
     yield* _(Effect.log('Loader(_dashboard/index): Init'));
     const {request} = yield* _(LoaderArgs);
-    const userId = yield* _(getCurrentUserId(request));
+    const {id: userId} = yield* _(authenticateUser(request));
 
     // todo: replace with query that gets the last accessed team
     const {memberships} = yield* _(getUserMemberships().execute(userId));

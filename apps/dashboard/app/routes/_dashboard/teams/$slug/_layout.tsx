@@ -12,11 +12,13 @@ import {
   PresentationChartBarIcon,
 } from '@heroicons/react/24/outline';
 
-import {useCurrentUserData} from '../../use-current-user.ts';
+import {MainNav} from '~/components/main-nav.tsx';
+
+import {useOrgData} from './use-org-data.ts';
 
 export default function OrgLayout() {
-  const {currentUser} = useCurrentUserData();
   const {slug} = useParams();
+  const {org} = useOrgData();
 
   const navigationMenu = [
     {name: 'Home', href: '', icon: HomeIcon, end: true},
@@ -41,7 +43,11 @@ export default function OrgLayout() {
   ];
 
   return (
-    <BaseLayout currentUser={currentUser} navigationMenu={navigationMenu}>
+    <BaseLayout
+      navigationMenu={
+        <MainNav navigationMenu={navigationMenu} currentOrg={org} />
+      }
+    >
       <Outlet />
     </BaseLayout>
   );

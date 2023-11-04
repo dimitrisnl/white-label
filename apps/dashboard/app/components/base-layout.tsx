@@ -7,9 +7,6 @@ import {
 import React from 'react';
 
 import {UserNav} from '~/components/user-nav.tsx';
-import type {Membership, User} from '~/modules/domain/index.server.ts';
-
-import {MainNav} from './main-nav.tsx';
 
 function UpdatesPopover() {
   return (
@@ -27,17 +24,10 @@ function UpdatesPopover() {
 
 export function BaseLayout({
   children,
-  currentUser,
   navigationMenu,
 }: {
   children: React.ReactNode;
-  currentUser: {user: User.User; memberships: Array<Membership.Membership>};
-  navigationMenu: Array<{
-    name: string;
-    href: string;
-    icon: React.ElementType;
-    end: boolean;
-  }>;
+  navigationMenu: React.ReactNode;
 }) {
   return (
     <>
@@ -47,10 +37,7 @@ export function BaseLayout({
             <div className="flex h-16 shrink-0 items-center text-2xl font-bold">
               White Label
             </div>
-            <MainNav
-              memberships={currentUser.memberships}
-              navigationMenu={navigationMenu}
-            />
+            {navigationMenu}
           </div>
         </div>
 
@@ -72,7 +59,7 @@ export function BaseLayout({
                     aria-hidden="true"
                   />
 
-                  <UserNav user={currentUser.user} />
+                  <UserNav />
                 </div>
               </div>
             </div>

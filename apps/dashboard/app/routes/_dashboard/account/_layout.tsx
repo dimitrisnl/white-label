@@ -7,8 +7,7 @@ import {Outlet} from '@remix-run/react';
 
 import {BaseLayout} from '~/components/base-layout.tsx';
 import {BaseErrorBoundary} from '~/components/error-boundary.tsx';
-
-import {useCurrentUserData} from '../use-current-user';
+import {MainNav} from '~/components/main-nav';
 
 const navigationMenu = [
   {
@@ -32,10 +31,8 @@ const navigationMenu = [
 ];
 
 export default function OrgLayout() {
-  const {currentUser} = useCurrentUserData();
-
   return (
-    <BaseLayout currentUser={currentUser} navigationMenu={navigationMenu}>
+    <BaseLayout navigationMenu={<MainNav navigationMenu={navigationMenu} />}>
       <Outlet />
     </BaseLayout>
   );

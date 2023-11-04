@@ -1,7 +1,7 @@
 import * as Effect from 'effect/Effect';
 
 import {
-  getCurrentUserId,
+  authenticateUser,
   identifyOrgByParams,
 } from '~/modules/helpers.server.ts';
 import {
@@ -18,9 +18,9 @@ export const loader = withLoader(
     yield* _(Effect.log('Loader(_dashboard/teams/$slug/_layout): Init'));
     const {request, params} = yield* _(LoaderArgs);
 
-    const currentUserId = yield* _(getCurrentUserId(request));
+    const {id: userId} = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
-    const org = yield* _(getOrg().execute(orgId, currentUserId));
+    const org = yield* _(getOrg().execute(orgId, userId));
 
     return new Ok({data: {org}});
   }).pipe(

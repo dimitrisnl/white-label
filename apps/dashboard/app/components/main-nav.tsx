@@ -1,19 +1,20 @@
+import {BuildingOffice2Icon, PlusCircleIcon} from '@heroicons/react/24/outline';
 import {NavLink} from '@remix-run/react';
 import {cn} from '@white-label/ui-core/utils';
 
-import type {Membership} from '~/modules/domain/index.server.ts';
+import type {Org} from '~/modules/domain/index.server';
 
 export function MainNav({
-  memberships,
   navigationMenu,
+  currentOrg,
 }: {
-  memberships: Array<Membership.Membership>;
   navigationMenu: Array<{
     name: string;
     href: string;
     icon: React.ElementType;
     end: boolean;
   }>;
+  currentOrg?: Org.Org;
 }) {
   return (
     <nav className="flex flex-1 flex-col">
@@ -47,40 +48,33 @@ export function MainNav({
           </ul>
         </li>
         <li className="mt-auto">
-          <div className="text-xs font-semibold leading-6 text-gray-400">
-            Your teams
-          </div>
           <ul className="-mx-2 mt-2 space-y-1">
-            {memberships.map((membership) => (
-              <li key={membership.org.id}>
-                <NavLink
-                  to={`/teams/${membership.org.slug}`}
-                  className={({isActive}) =>
-                    cn(
-                      'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
-                      {
-                        'active bg-gray-50 text-blue-600': isActive,
-                        'text-gray-700 hover:bg-gray-50 hover:text-blue-600':
-                          !isActive,
-                      }
-                    )
-                  }
-                >
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-[0.625rem] font-medium uppercase text-gray-400 group-hover:border-blue-600 group-hover:text-blue-600 group-[.active]:border-blue-600 group-[.active]:text-blue-600">
-                    {membership.org.name[0]}
+            <hr className="my-4 border-gray-200" />
+            {currentOrg ? (
+              <li>
+                <div className="group flex select-none gap-x-3 rounded-md bg-gray-50 p-2 text-sm font-semibold leading-6 text-blue-600">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border  border-blue-600 bg-white text-[0.625rem] font-medium  uppercase text-blue-600 group-hover:border-blue-600 group-hover:text-blue-600">
+                    {currentOrg.name[0]}
                   </span>
-                  <span className="truncate">{membership.org.name}</span>
-                </NavLink>
+                  <span className="truncate">{currentOrg.name}</span>
+                </div>
               </li>
-            ))}
+            ) : null}
+            <li>
+              <NavLink
+                to={`/teams`}
+                className="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+              >
+                <BuildingOffice2Icon className="h-5 w-5 shrink-0 text-gray-400 group-hover:text-blue-600" />
+                <span className="truncate">All Teams</span>
+              </NavLink>
+            </li>
             <li>
               <NavLink
                 to={`/teams/create-new-team`}
                 className="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-blue-600"
               >
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-sm font-medium uppercase text-gray-400 group-hover:border-blue-600 group-hover:text-blue-600 group-[.active]:border-blue-600 group-[.active]:text-blue-600">
-                  &#43;
-                </span>
+                <PlusCircleIcon className="h-5 w-5 shrink-0 text-gray-400 group-hover:text-blue-600" />
                 <span className="truncate">Create new Team</span>
               </NavLink>
             </li>
