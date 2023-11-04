@@ -1,4 +1,4 @@
-import {Membership} from './domain/index.server.ts';
+import type {Membership} from './domain/index.server.ts';
 import {Redirect} from './responses.server.ts';
 
 // Todo: This should be extended and look for the previous used team
