@@ -1,6 +1,7 @@
-import {EyeIcon, EyeSlashIcon} from '@heroicons/react/24/outline';
-import {Input} from '@white-label/ui-core/input';
+import EyeIcon from '@heroicons/react/24/outline/EyeIcon';
+import EyeSlashIcon from '@heroicons/react/24/outline/EyeSlashIcon';
 import * as React from 'react';
+import {Input} from './input';
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}

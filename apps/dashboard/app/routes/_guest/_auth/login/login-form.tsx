@@ -10,11 +10,11 @@ import {
 } from '@white-label/ui-core/card';
 import {Input} from '@white-label/ui-core/input';
 import {Label} from '@white-label/ui-core/label';
+import {PasswordInput} from '@white-label/ui-core/password-input';
 import {cn} from '@white-label/ui-core/utils';
 import {useTypedFetcher} from 'remix-typedjson';
 
 import {ErrorMessage} from '~/components/error-feedback.tsx';
-import {PasswordInput} from '~/components/password-input.tsx';
 
 import type {LoginRequestAction} from './_action.server.ts';
 

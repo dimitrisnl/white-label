@@ -3,5 +3,8 @@
   "parserOptions": {
     "tsconfigRootDir": "."
   },
-  "extends": ["@white-label/eslint-config-react"]
+  "extends": [
+    "@white-label/eslint-config-react",
+    "plugin:storybook/recommended"
+  ]
 }
