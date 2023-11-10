@@ -4,10 +4,10 @@ import animatePlugin from 'tailwindcss-animate';
 export default {
   darkMode: ['class'],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    './pages/**/*.{ts,tsx,jsx}',
+    './components/**/*.{ts,tsx,jsx}',
+    './app/**/*.{ts,tsx,jsx}',
+    './src/**/*.{ts,tsx,jsx}',
   ],
   theme: {
     container: {
