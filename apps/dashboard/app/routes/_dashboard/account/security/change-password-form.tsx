@@ -8,12 +8,12 @@ import {
   CardTitle,
 } from '@white-label/ui-core/card';
 import {Label} from '@white-label/ui-core/label';
+import {PasswordInput} from '@white-label/ui-core/password-input';
 import {toast} from '@white-label/ui-core/toast';
 import React from 'react';
 import {useTypedFetcher} from 'remix-typedjson';
 
 import {ErrorMessage} from '~/components/error-feedback.tsx';
-import {PasswordInput} from '~/components/password-input.tsx';
 
 import type {ChangePasswordAction} from './_action.server.ts';
 
