@@ -11,14 +11,14 @@ function genRandomID(): string {
   return Buffer.from(randomBytes).toString('hex');
 }
 
-const expiresToSeconds = (expires: Date) => {
+function expiresToSeconds(expires: Date) {
   const now = new Date();
   const expiresDate = new Date(expires);
   const secondsDelta = Math.round(
     (expiresDate.getTime() - now.getTime()) / 1000
   );
   return secondsDelta < 0 ? 0 : secondsDelta;
-};
+}
 
 interface redisSessionArguments {
   cookie: SessionIdStorageStrategy['cookie'];
