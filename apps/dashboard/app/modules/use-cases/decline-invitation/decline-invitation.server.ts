@@ -58,7 +58,7 @@ export function declineInvitation() {
       yield* _(
         updateMembershipInvitationRecord({
           id: invitationId,
-          status: InviteStatus.DECLINED as InviteStatus.InviteStatus, // todo: fix
+          status: InviteStatus.DECLINED,
         })
       );
 

@@ -6,8 +6,6 @@ export const ACCEPTED = 'ACCEPTED' as const;
 export const DECLINED = 'DECLINED' as const;
 export const EXPIRED = 'EXPIRED' as const;
 
-const InviteStatusBrand = Symbol.for('InviteStatusBrand');
-
 export const inviteStatusSchema = Schema.literal(
   PENDING,
   ACCEPTED,
@@ -17,8 +15,7 @@ export const inviteStatusSchema = Schema.literal(
   Schema.message(
     () =>
       "Invitation status must be one of 'PENDING', 'ACCEPTED', 'DECLINED' or 'EXPIRED'"
-  ),
-  Schema.brand(InviteStatusBrand)
+  )
 );
 
 export type InviteStatus = Schema.Schema.To<typeof inviteStatusSchema>;
