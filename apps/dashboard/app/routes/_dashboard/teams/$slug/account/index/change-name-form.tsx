@@ -22,7 +22,7 @@ export function ChangeNameForm({initialName}: {initialName: string}) {
 
   React.useEffect(() => {
     if (data?.ok) {
-      toast.success('Team name changed');
+      toast.success('Name changed');
     }
   }, [data]);
 
@@ -31,7 +31,9 @@ export function ChangeNameForm({initialName}: {initialName: string}) {
       <Card>
         <CardHeader>
           <CardTitle>Personal Details</CardTitle>
-          <CardDescription>Change your display name</CardDescription>
+          <CardDescription>
+            Change your disCardDescriptionlay name
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid w-full items-center gap-4">

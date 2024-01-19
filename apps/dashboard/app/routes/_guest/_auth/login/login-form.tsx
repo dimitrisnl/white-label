@@ -1,3 +1,4 @@
+import ArrowLongRightIcon from '@heroicons/react/16/solid/ArrowLongRightIcon';
 import {Link} from '@remix-run/react';
 import {Button, buttonVariants} from '@white-label/ui-core/button';
 import {
@@ -23,13 +24,13 @@ export function LoginForm() {
 
   return (
     <Form method="post">
-      <Card className="w-[480px] border-t-4 border-t-blue-700">
-        <CardHeader>
-          <CardTitle>Log in to your account</CardTitle>
-          <CardDescription>Welcome back!</CardDescription>
+      <Card className="w-[420px]">
+        <CardHeader className="text-center">
+          <CardTitle>Welcome back!</CardTitle>
+          <CardDescription>Please login to continue</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid w-full items-center gap-4">
+          <div className="grid w-full items-center gap-6">
             <div className="flex flex-col space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -48,7 +49,7 @@ export function LoginForm() {
                   to="/password/request-reset"
                   className={cn(
                     buttonVariants({variant: 'link'}),
-                    'h-auto p-0'
+                    'h-auto p-0 text-xs text-gray-700'
                   )}
                   tabIndex={-1}
                 >
@@ -64,18 +65,27 @@ export function LoginForm() {
                 minLength={8}
               />
             </div>
+            <Button className="space-x-2">
+              <div>Continue</div>
+              <ArrowLongRightIcon className="h-4 w-4 text-gray-300" />
+            </Button>
             {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}
           </div>
         </CardContent>
-        <CardFooter className="flex justify-between">
-          <Link
-            to="/register"
-            className={buttonVariants({variant: 'link'})}
-            tabIndex={-1}
-          >
-            Don't have an account yet?
-          </Link>
-          <Button>Login</Button>
+        <CardFooter className="flex items-center justify-items-center py-2 text-xs">
+          <div className="flex w-full items-center justify-center space-x-1">
+            <div className="text-gray-700">Don't have an account yet?</div>
+            <Link
+              to="/register"
+              className={cn(
+                buttonVariants({variant: 'link'}),
+                'p-0 text-xs font-semibold text-gray-700'
+              )}
+              tabIndex={-1}
+            >
+              Sign up
+            </Link>
+          </div>
         </CardFooter>
       </Card>
     </Form>

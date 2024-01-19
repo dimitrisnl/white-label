@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@white-label/ui-core/card';
@@ -68,10 +69,12 @@ function InvitationTableEntry({
 
   return (
     <Form className="flex items-center" method="DELETE">
-      <div className="space-y-2">
+      <div className="flex items-center">
+        <div className="w-20">
+          <RoleBadge role={invitation.role} />
+        </div>
         <input type="hidden" name="invitationId" value={invitation.id} />
-        <p className="text-sm font-medium leading-none">{invitation.email}</p>
-        <RoleBadge role={invitation.role} />
+        <p className="pl-1 text-sm leading-none">{invitation.email}</p>
       </div>
       <div className="ml-auto flex items-center space-x-2">
         {invitation.status === 'DECLINED' ? (
@@ -116,11 +119,14 @@ function PendingInvitationsList({
           All the pending invitations for this team
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-3 bg-blue-50/25">
+      <CardContent className="space-y-4">
         {invitations.map((invitation) => (
           <InvitationTableEntry key={invitation.id} invitation={invitation} />
         ))}
       </CardContent>
+      <CardFooter className="text-xs">
+        There are {invitations.length} invitation(s) pending
+      </CardFooter>
     </Card>
   );
 }

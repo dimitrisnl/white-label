@@ -3,12 +3,16 @@ import {Redis} from 'ioredis';
 import {config} from './config.server.ts';
 
 function makeRedis() {
-  return new Redis({
-    host: config.REDIS_HOST,
-    port: config.REDIS_PORT,
-    password: config.REDIS_PASSWORD,
-    maxRetriesPerRequest: null,
-  });
+  return config.REDIS_TLS === 'true'
+    ? new Redis(
+        `rediss://${config.REDIS_USER}:${config.REDIS_PASSWORD}@${config.REDIS_HOST}:${config.REDIS_PORT}`
+      )
+    : new Redis({
+        host: config.REDIS_HOST,
+        port: config.REDIS_PORT,
+        password: config.REDIS_PASSWORD,
+        maxRetriesPerRequest: 0,
+      });
 }
 
 let redis: ReturnType<typeof makeRedis>;

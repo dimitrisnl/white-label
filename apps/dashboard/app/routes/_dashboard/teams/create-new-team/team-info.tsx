@@ -10,6 +10,7 @@ import {
 } from '@white-label/ui-core/card';
 import {Input} from '@white-label/ui-core/input';
 import {Label} from '@white-label/ui-core/label';
+import {cn} from '@white-label/ui-core/utils';
 import {useTypedFetcher} from 'remix-typedjson';
 
 import {ErrorMessage} from '~/components/error-feedback.tsx';
@@ -23,10 +24,10 @@ export function TeamInfo() {
 
   return (
     <Form method="post">
-      <Card className="min-w-[400px] border-t-4 border-t-blue-700">
-        <CardHeader>
+      <Card className="min-w-[400px]">
+        <CardHeader className="text-center">
           <CardTitle>Create your team</CardTitle>
-          <CardDescription>You will be the Owner of this team.</CardDescription>
+          <CardDescription>You will be the Owner of this team</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid w-full items-center gap-4">
@@ -42,18 +43,18 @@ export function TeamInfo() {
                 disabled={state !== 'idle'}
               />
             </div>
+            <Button disabled={state !== 'idle'}>Save</Button>
             {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}
           </div>
         </CardContent>
-        <CardFooter className="flex justify-between">
+        <CardFooter className="flex justify-center">
           <Link
-            to="/teams"
+            to="/"
             reloadDocument
-            className={buttonVariants({variant: 'ghost'})}
+            className={cn(buttonVariants({variant: 'link'}), 'text-xs')}
           >
-            Back
+            Go back
           </Link>
-          <Button disabled={state !== 'idle'}>Save</Button>
         </CardFooter>
       </Card>
     </Form>

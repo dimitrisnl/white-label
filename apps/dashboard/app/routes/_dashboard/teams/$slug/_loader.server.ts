@@ -10,7 +10,7 @@ import {
   Redirect,
   ServerError,
 } from '~/modules/responses.server.ts';
-import {getOrg} from '~/modules/use-cases/index.server.ts';
+import {getOrg, getUserMemberships} from '~/modules/use-cases/index.server.ts';
 import {LoaderArgs, withLoader} from '~/modules/with-loader.server.ts';
 
 export const loader = withLoader(
@@ -21,8 +21,9 @@ export const loader = withLoader(
     const {id: userId} = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
     const org = yield* _(getOrg().execute(orgId, userId));
+    const {memberships} = yield* _(getUserMemberships().execute(userId));
 
-    return new Ok({data: {org}});
+    return new Ok({data: {org, memberships}});
   }).pipe(
     Effect.catchTags({
       ParseOrgSlugError: () =>

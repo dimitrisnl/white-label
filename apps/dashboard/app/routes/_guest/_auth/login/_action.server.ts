@@ -19,7 +19,7 @@ export const action = withAction(
     return yield* _(
       createUserSession({
         userId: user.id,
-        redirectToPath: '/teams',
+        redirectToPath: '/',
         remember: true,
         request,
       })
