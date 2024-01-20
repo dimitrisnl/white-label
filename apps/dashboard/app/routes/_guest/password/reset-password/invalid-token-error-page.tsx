@@ -1,9 +1,10 @@
-import {ExclamationTriangleIcon} from '@heroicons/react/24/outline';
+import {XCircleIcon} from '@heroicons/react/24/outline';
 import {Link} from '@remix-run/react';
 import {buttonVariants} from '@white-label/ui-core/button';
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -14,29 +15,28 @@ import {GuestLayout} from '~/components/guest-layout.tsx';
 export function InvalidTokenErrorPage() {
   return (
     <GuestLayout>
-      <Card className="w-[480px] border-t-4 border-t-blue-700">
+      <Card className="w-[420px] text-center">
         <CardHeader>
-          <div className="mb-4 h-10 w-10 rounded-full bg-red-100 p-2">
-            <ExclamationTriangleIcon className="h-full w-full text-red-600" />
-          </div>
           <CardTitle>Cannot reset password</CardTitle>
+          <CardDescription>The process could not be completed</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-1 text-gray-700">
+        <CardContent className="flex flex-col items-center justify-center gap-4 text-center text-gray-700">
           <p>
             Your password reset link is <strong>invalid</strong> or has{' '}
             <strong>expired</strong>.
           </p>
-          <p>You can request a new one by clicking the button below.</p>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <Link to="/login" className={buttonVariants({variant: 'link'})}>
-            Back to Login
-          </Link>
+          <XCircleIcon className="h-12 w-12 stroke-red-600" />
+
           <Link
             to="/password/request-reset"
             className={buttonVariants({variant: 'default'})}
           >
-            Request a new Password Reset link
+            Request a new password reset link
+          </Link>
+        </CardContent>
+        <CardFooter>
+          <Link to="/login" className={buttonVariants({variant: 'link'})}>
+            Back to Login
           </Link>
         </CardFooter>
       </Card>

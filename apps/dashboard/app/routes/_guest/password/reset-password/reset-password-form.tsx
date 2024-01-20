@@ -1,4 +1,5 @@
-import {Button} from '@white-label/ui-core/button';
+import {Link} from '@remix-run/react';
+import {Button, buttonVariants} from '@white-label/ui-core/button';
 import {
   Card,
   CardContent,
@@ -23,8 +24,8 @@ export function ResetPasswordForm({token}: {token: string}) {
 
   return (
     <Form method="post">
-      <Card className="w-[480px] border-t-4 border-t-blue-700">
-        <CardHeader>
+      <Card className="w-[480px]">
+        <CardHeader className="text-center">
           <CardTitle>Create a new password</CardTitle>
           <CardDescription>
             Ensure you're using a mix of characters
@@ -51,12 +52,15 @@ export function ResetPasswordForm({token}: {token: string}) {
               defaultValue={token}
               disabled={state !== 'idle'}
             />
+            <Button>Set new Password</Button>
 
             {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}
           </div>
         </CardContent>
-        <CardFooter className="flex justify-end">
-          <Button>Set new Password</Button>
+        <CardFooter className="text-center">
+          <Link to="/login" className={buttonVariants({variant: 'link'})}>
+            Back to login
+          </Link>
         </CardFooter>
       </Card>
     </Form>
