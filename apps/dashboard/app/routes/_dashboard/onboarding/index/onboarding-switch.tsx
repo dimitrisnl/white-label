@@ -1,3 +1,4 @@
+import {UserIcon, UsersIcon} from '@heroicons/react/24/solid';
 import {Link} from '@remix-run/react';
 import {buttonVariants} from '@white-label/ui-core/button';
 import {
@@ -12,16 +13,20 @@ import {
 export function OnboardingSwitch() {
   return (
     <div className="grid max-w-[1000px] grid-cols-2 gap-8">
-      <Card className="min-w-[400px]">
+      <Card className="text-center">
         <CardHeader>
-          <CardTitle className="text-center text-xl">
-            I want to create a new team
-          </CardTitle>
-          <CardDescription></CardDescription>
+          <CardTitle>I want to create a new team</CardTitle>
+          <CardDescription>
+            <div className="mt-4 inline-flex rounded-full bg-blue-100 p-2">
+              <UserIcon className="h-8 w-8 fill-blue-400" />
+            </div>
+          </CardDescription>
         </CardHeader>
-        <CardContent className="text-center text-gray-800 ">
-          If you're new to WhiteLabel, you need to set up a team first. This
-          will allow you to invite other and collaborate
+        <CardContent className="flex flex-col items-center justify-center text-left text-gray-700">
+          <ul className="w-80 max-w-sm list-inside list-disc text-sm">
+            <li>You will be the owner of the team</li>
+            <li>You can invite others to collaborate with you</li>
+          </ul>
         </CardContent>
         <CardFooter className="flex justify-center">
           <Link
@@ -32,21 +37,25 @@ export function OnboardingSwitch() {
           </Link>
         </CardFooter>
       </Card>
-      <Card className="min-w-[400px]">
+      <Card className="text-center">
         <CardHeader>
-          <CardTitle className="text-center text-xl">
-            I want to join my team
-          </CardTitle>
+          <CardTitle>I want to join my team</CardTitle>
+          <CardDescription>
+            <div className="mt-4 inline-flex rounded-full bg-blue-100 p-2">
+              <UsersIcon className="h-8 w-8 fill-blue-400" />
+            </div>
+          </CardDescription>
         </CardHeader>
-        <CardContent className="text-center text-gray-800 ">
-          Are you joining an existing team? Let's figure out the next steps
+        <CardContent className="text-sm text-gray-700">
+          <p>Are you joining an existing team?</p>
+          <p>Let's look for your invitations..</p>
         </CardContent>
         <CardFooter className="flex justify-center">
           <Link
             to="/onboarding/join-team"
-            className={buttonVariants({variant: 'secondary'})}
+            className={buttonVariants({variant: 'default'})}
           >
-            Join your team
+            Find my team
           </Link>
         </CardFooter>
       </Card>

@@ -23,10 +23,10 @@ export function TeamInfo() {
 
   return (
     <Form method="post">
-      <Card className="min-w-[400px] border-t-4 border-t-blue-700">
-        <CardHeader>
+      <Card>
+        <CardHeader className="text-center">
           <CardTitle>Create your team</CardTitle>
-          <CardDescription className="mt-2">
+          <CardDescription>
             <div>
               You will be the <strong>Owner</strong> of this team.
             </div>
@@ -47,14 +47,17 @@ export function TeamInfo() {
                 disabled={state !== 'idle'}
               />
             </div>
+            <Button className="w-full" disabled={state !== 'idle'}>
+              Create team
+            </Button>
+
             {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}
           </div>
         </CardContent>
-        <CardFooter className="flex justify-between">
+        <CardFooter className="text-center">
           <Link to="/onboarding" className={buttonVariants({variant: 'ghost'})}>
-            Back
+            Go back
           </Link>
-          <Button disabled={state !== 'idle'}>Save</Button>
         </CardFooter>
       </Card>
     </Form>

@@ -23,17 +23,16 @@ export function JoinTeamForm({
 
   return (
     <Form method="post">
-      <Card className="min-w-[400px]">
+      <Card className="max-w-[400px]">
         <CardHeader>
           <CardTitle>
             You've been invited to join <strong>{invitation.org.name}</strong>
           </CardTitle>
           <CardDescription>
-            When you accept the invitation, you will be immediately redirected
-            to the team's dashboard
+            Accept your invitation to view your team's projects
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="text-sm">
           You've been invited to {invitation.org.name}. Your role within the
           team will be {invitation.role}
           {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}
@@ -45,7 +44,7 @@ export function JoinTeamForm({
             value={invitation.id}
             name="invitationId"
           >
-            Join team
+            Join {invitation.org.name}
           </Button>
         </CardFooter>
       </Card>

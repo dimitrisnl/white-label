@@ -20,10 +20,12 @@ export function InvitationsList() {
   }
 
   return (
-    <div className="space-y-10">
-      {invitations.map((invitation) => (
-        <JoinTeamForm invitation={invitation} key={invitation.id} />
-      ))}
+    <div className="space-y-12">
+      <div className="grid grid-cols-2 gap-8">
+        {invitations.map((invitation) => (
+          <JoinTeamForm invitation={invitation} key={invitation.id} />
+        ))}
+      </div>
       <hr />
       <div className="text-center">
         <Link to="/onboarding" className={buttonVariants({variant: 'outline'})}>

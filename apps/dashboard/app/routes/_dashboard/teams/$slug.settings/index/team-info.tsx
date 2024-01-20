@@ -39,7 +39,7 @@ export function TeamInfo({initialName}: {initialName: string}) {
           value="EDIT_ORG_FORM"
           disabled={state !== 'idle'}
         >
-          Save
+          Create new team
         </Button>
         {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}
       </div>

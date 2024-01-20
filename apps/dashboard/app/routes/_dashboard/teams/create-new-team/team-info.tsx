@@ -43,7 +43,7 @@ export function TeamInfo() {
                 disabled={state !== 'idle'}
               />
             </div>
-            <Button disabled={state !== 'idle'}>Save</Button>
+            <Button disabled={state !== 'idle'}>Create new team</Button>
             {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}
           </div>
         </CardContent>

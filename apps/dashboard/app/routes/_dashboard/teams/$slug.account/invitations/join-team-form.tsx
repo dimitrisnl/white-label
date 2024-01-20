@@ -1,3 +1,4 @@
+import {Badge} from '@white-label/ui-core/badge';
 import {Button} from '@white-label/ui-core/button';
 import {
   Card,
@@ -25,7 +26,7 @@ export function JoinTeamForm({
 
   return (
     <Form method="post">
-      <Card className="min-w-[400px]">
+      <Card>
         <CardHeader>
           <CardTitle>
             You've been invited to join <strong>{invitation.org.name}</strong>
@@ -35,19 +36,23 @@ export function JoinTeamForm({
             to the team's dashboard
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          You've been invited to {invitation.org.name}. Your role within the
-          team will be {invitation.role}
+        <CardContent className="text-sm">
+          You've been invited to {invitation.org.name} as a{' '}
+          <Badge variant="outline">{invitation.role}</Badge>
           {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}
         </CardContent>
-        <CardFooter className="flex justify-center">
+        <CardFooter className="flex justify-between">
+          <Button variant="destructive" size="sm">
+            Decline
+          </Button>
           <Button
             disabled={state !== 'idle'}
             variant="default"
             value={invitation.id}
             name="invitationId"
+            size="sm"
           >
-            Join team
+            Join {invitation.org.name}
           </Button>
         </CardFooter>
       </Card>

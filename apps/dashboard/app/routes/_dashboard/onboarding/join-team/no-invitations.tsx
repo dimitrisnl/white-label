@@ -11,23 +11,24 @@ import {
 
 export function NoInvitations() {
   return (
-    <Card className="max-w-[500px]">
+    <Card className="text-center">
       <CardHeader>
-        <CardTitle className="text-center text-xl">
-          No Invitations found
-        </CardTitle>
-        <CardDescription className="text-center">
+        <CardTitle>No Invitations found</CardTitle>
+        <CardDescription>
           We searched everywhere, but couldn't find any invites for you
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-2 text-center">
-        <div>Please request an invite from your team.</div>
-        <div>They can do this under:</div>
-        <div className="font-medium">Settings &gt; Invitations</div>
+      <CardContent className="space-y-1 text-sm">
+        <div>
+          Please request an invite from your team. They can do this under:
+        </div>
+        <div className="inline-block rounded-sm bg-blue-50 px-2 py-1 font-medium">
+          Team Settings &gt; Invitations
+        </div>
       </CardContent>
-      <CardFooter className="flex justify-between">
+      <CardFooter>
         <Link to="/onboarding" className={buttonVariants({variant: 'link'})}>
-          Back
+          Go back
         </Link>
       </CardFooter>
     </Card>
