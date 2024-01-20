@@ -1,5 +1,7 @@
 import {useTypedLoaderData} from 'remix-typedjson';
 
+import {PageSkeleton} from '~/components/page-skeleton.tsx';
+
 import type {MembershipsLoaderData} from './_loader.server.ts';
 import {TeamList} from './team-list.tsx';
 
@@ -11,8 +13,13 @@ export default function MembersPage() {
   } = useTypedLoaderData<MembershipsLoaderData>();
 
   return (
-    <div className="grid gap-8">
-      <TeamList memberships={memberships} />
-    </div>
+    <PageSkeleton
+      header="Team members"
+      description="Handle your team's members"
+    >
+      <div>
+        <TeamList memberships={memberships} />
+      </div>
+    </PageSkeleton>
   );
 }

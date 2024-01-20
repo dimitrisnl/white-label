@@ -36,8 +36,8 @@ export default function App() {
         <Outlet />
         <Toaster richColors position="top-right" closeButton={true} />
         <ScrollRestoration />
-        <LiveReload />
         <Scripts />
+        <LiveReload />
       </body>
     </html>
   );

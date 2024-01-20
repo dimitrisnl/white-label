@@ -27,7 +27,7 @@ export function TeamInfo() {
       <Card className="min-w-[400px]">
         <CardHeader className="text-center">
           <CardTitle>Create your team</CardTitle>
-          <CardDescription>You will be the Owner of this team</CardDescription>
+          <CardDescription>You will be the owner of this team</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid w-full items-center gap-4">

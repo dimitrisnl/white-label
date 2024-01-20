@@ -21,15 +21,15 @@
   "dependencies": {
     "@jsx-email/all": "^2.2.3",
     "@jsx-email/render": "^1.1.1",
-    "clsx": "^2.0.0"
+    "clsx": "^2.1.0"
   },
   "devDependencies": {
     "@jsx-email/cli": "^1.4.3",
     "@types/pretty": "^2.0.3",
-    "@types/react": "^18.2.37",
-    "@types/react-dom": "^18.2.15",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
     "@white-label/eslint-config-react": "workspace:*",
-    "esbuild": "^0.19.5",
+    "esbuild": "^0.19.11",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

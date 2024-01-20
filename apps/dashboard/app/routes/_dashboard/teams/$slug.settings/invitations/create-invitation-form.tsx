@@ -1,12 +1,4 @@
 import {Button} from '@white-label/ui-core/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@white-label/ui-core/card';
 import {Input} from '@white-label/ui-core/input';
 import {Label} from '@white-label/ui-core/label';
 import {
@@ -38,16 +30,18 @@ export function CreateInvitationForm() {
   }, [data]);
 
   return (
-    <Form method="post" ref={formRef}>
-      <Card>
-        <CardHeader>
-          <CardTitle>Add a team member</CardTitle>
-          <CardDescription>
-            Provide the email address of the person you would like to invite to
-            this team.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+    <div className="grid grid-cols-3 gap-12">
+      <div>
+        <h2 className="text-lg font-medium leading-10 text-gray-700">
+          Add a team member
+        </h2>
+        <p className="w-80 text-sm text-gray-500">
+          Provide the email address of the person you would like to invite to
+          this team.
+        </p>
+      </div>
+      <div className="col-span-2">
+        <Form method="post" ref={formRef}>
           <div className="flex items-center gap-6">
             <div className="flex flex-1 flex-col space-y-1.5">
               <Label htmlFor="new-member-email">Email</Label>
@@ -77,14 +71,14 @@ export function CreateInvitationForm() {
                 </SelectContent>
               </Select>
             </div>
+            <div className="mt-auto">
+              <Button name="intent" disabled={state !== 'idle'} value="create">
+                Invite
+              </Button>
+            </div>
           </div>
-        </CardContent>
-        <CardFooter className="flex justify-end">
-          <Button name="intent" disabled={state !== 'idle'} value="create">
-            Invite
-          </Button>
-        </CardFooter>
-      </Card>
-    </Form>
+        </Form>
+      </div>
+    </div>
   );
 }

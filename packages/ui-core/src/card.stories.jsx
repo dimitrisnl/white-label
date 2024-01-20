@@ -27,13 +27,18 @@ export const Base = {
         <CardTitle>Notifications</CardTitle>
         <CardDescription>You have 3 unread messages.</CardDescription>
       </CardHeader>
-      <CardContent>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-        voluptatibus, voluptatem, quibusdam, quod voluptas dolorum quia
-        accusantium voluptatum quae doloribus aperiam? Quae, voluptatibus
+      <CardContent className="space-y-6">
+        <p className="text-sm">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
+          voluptatibus, voluptatem, quibusdam, quod voluptas dolorum quia
+          accusantium voluptatum quae doloribus aperiam? Quae, voluptatibus
+        </p>
+        <Button className="w-full">Mark all as read</Button>
       </CardContent>
       <CardFooter>
-        <Button>Mark all as read</Button>
+        <p className="text-center text-xs font-medium text-gray-700">
+          Lorem ipsum dolor sit amet?
+        </p>
       </CardFooter>
     </Card>
   ),

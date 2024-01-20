@@ -2,11 +2,12 @@ import {
   CogIcon,
   GlobeAltIcon,
   HomeIcon,
+  // LifebuoyIcon,
   PowerIcon,
   PresentationChartBarIcon,
 } from '@heroicons/react/24/outline';
 import UserCircleIcon from '@heroicons/react/24/outline/UserCircleIcon';
-import {NavLink, useParams} from '@remix-run/react';
+import {Link, NavLink, useParams} from '@remix-run/react';
 import {cn} from '@white-label/ui-core/utils';
 
 function StyledLink({
@@ -25,10 +26,10 @@ function StyledLink({
       to={item.href}
       className={({isActive}) =>
         cn(
-          'group flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
+          'group flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold',
           {
             'active bg-gray-200 text-gray-900': isActive,
-            'hover:text-gray-90 text-gray-600 hover:bg-white hover:shadow':
+            'text-gray-600 hover:bg-white hover:text-gray-900 hover:shadow':
               !isActive,
           }
         )
@@ -47,7 +48,7 @@ export function MainNav() {
   const {slug} = useParams();
 
   const topMenu = [
-    {name: 'Home', href: '', icon: HomeIcon, end: true},
+    {name: 'Dashboard', href: '', icon: HomeIcon, end: true},
     {
       name: 'Feature A',
       href: `/teams/${slug}/feature-a`,
@@ -61,7 +62,7 @@ export function MainNav() {
       end: false,
     },
     {
-      name: 'Settings',
+      name: 'Team Settings',
       href: `/teams/${slug}/settings`,
       icon: CogIcon,
       end: false,
@@ -73,12 +74,6 @@ export function MainNav() {
       name: 'Account',
       href: `/teams/${slug}/account`,
       icon: UserCircleIcon,
-      end: false,
-    },
-    {
-      name: 'Logout',
-      href: `/logout`,
-      icon: PowerIcon,
       end: false,
     },
   ];
@@ -103,6 +98,30 @@ export function MainNav() {
                 <StyledLink item={item} />
               </li>
             ))}
+            {/* <li>
+              <Link
+                to="/support"
+                className="group flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold text-gray-600 hover:bg-white hover:text-blue-600 hover:shadow"
+              >
+                <LifebuoyIcon
+                  className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-blue-600"
+                  aria-hidden="true"
+                />
+                Support
+              </Link>
+            </li> */}
+            <li>
+              <Link
+                to="/logout"
+                className="group flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold text-gray-600 hover:bg-white hover:text-red-600 hover:shadow"
+              >
+                <PowerIcon
+                  className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-red-600"
+                  aria-hidden="true"
+                />
+                Logout
+              </Link>
+            </li>
           </ul>
         </li>
       </ul>

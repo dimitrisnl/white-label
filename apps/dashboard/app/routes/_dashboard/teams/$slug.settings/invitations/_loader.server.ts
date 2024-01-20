@@ -23,7 +23,10 @@ export const loader = withLoader(
     const {id: userId} = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
 
-    const invitations = yield* _(getOrgInvitations().execute(orgId, userId));
+    const allInvitations = yield* _(getOrgInvitations().execute(orgId, userId));
+    const invitations = allInvitations.filter(
+      ({status}) => status !== 'ACCEPTED'
+    );
 
     return new Ok({data: {invitations}});
   }).pipe(
