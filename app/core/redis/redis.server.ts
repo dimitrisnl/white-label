@@ -7,6 +7,11 @@ function makeRedis() {
     `rediss://${config.REDIS_USER}:${config.REDIS_PASSWORD}@${config.REDIS_HOST}:${config.REDIS_PORT}`,
     {
       maxRetriesPerRequest: null,
+      lazyConnect: true,
+      retryStrategy(times) {
+        if (times > 20) return null; // return null to stop retrying
+        return Math.min(times * 500, 2000);
+      },
     }
   );
 }

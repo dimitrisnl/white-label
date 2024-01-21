@@ -1,3 +1,4 @@
+import {CheckCircleIcon} from '@heroicons/react/24/outline';
 import {Form, Link} from '@remix-run/react';
 import {useTypedActionData} from 'remix-typedjson';
 
@@ -26,10 +27,11 @@ export function RequestPasswordResetForm() {
         <CardHeader className="text-center">
           <CardTitle>Email sent</CardTitle>
         </CardHeader>
-        <CardContent>
-          We've sent you an email with a link to reset your password.
+        <CardContent className="flex flex-col items-center justify-center gap-4 text-center text-gray-700">
+          <div>We've sent you an email with a link to reset your password.</div>
+          <CheckCircleIcon className="h-12 w-12 stroke-green-600" />
         </CardContent>
-        <CardFooter className="flex justify-end">
+        <CardFooter className="flex justify-center">
           <Link
             to="/login"
             className={buttonVariants({variant: 'default'})}

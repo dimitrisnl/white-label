@@ -4,8 +4,7 @@ import {pipe} from 'effect/Function';
 
 import {addEmailJob} from '~/core/jobs/email-queue.server.ts';
 
-import {buildTemplate} from '../build-template.server.tsx';
-// import {config} from '../config.server.ts';
+import {config} from '../config.server.ts';
 
 export function sendVerificationEmail({
   email,
@@ -18,15 +17,11 @@ export function sendVerificationEmail({
     yield* _(
       Effect.log(`Mailer(verification-email): Sending email to ${email}`)
     );
-    console.log({verifyEmailTokenId});
-    // eslint-disable-next-line
-    const html = yield* _(
-      buildTemplate()
-      // <VerificationEmailTemplate
-      //   dashboardUrl={config.DASHBOARD_URL}
-      //   verificationUrl={`${config.DASHBOARD_URL}/email/verify-email?token=${verifyEmailTokenId}`}
-      // />
-    );
+
+    const html = `
+      Welcome!
+      Verify your email: ${config.DASHBOARD_URL}/email/verify-email?token=${verifyEmailTokenId}
+    `;
 
     const payload = {
       to: email,

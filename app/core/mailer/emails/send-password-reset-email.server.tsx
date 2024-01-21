@@ -1,11 +1,9 @@
-// import {PasswordResetEmailTemplate} from '@white-label/email-templates/templates/password-reset-email';
 import * as Effect from 'effect/Effect';
 import {pipe} from 'effect/Function';
 
 import {addEmailJob} from '~/core/jobs/email-queue.server.ts';
 
-import {buildTemplate} from '../build-template.server.tsx';
-// import {config} from '../config.server.ts';
+import {config} from '../config.server.ts';
 
 export function sendPasswordResetEmail({
   email,
@@ -16,15 +14,11 @@ export function sendPasswordResetEmail({
 }) {
   return Effect.gen(function* (_) {
     yield* _(Effect.log('Mailer(password-reset-email): Preparing email'));
-    console.log({passwordResetTokenId});
-    // eslint-disable-next-line
-    const html = yield* _(
-      buildTemplate()
-      // <PasswordResetEmailTemplate
-      //   dashboardUrl={config.DASHBOARD_URL}
-      //   passwordResetUrl={`${config.DASHBOARD_URL}/password/reset-password?token=${passwordResetTokenId}`}
-      // />
-    );
+
+    const html = `
+    You requested a password reset\n
+    Change your password here: ${config.DASHBOARD_URL}/password/reset-password?token=${passwordResetTokenId}
+    `;
 
     const payload = {
       to: email,

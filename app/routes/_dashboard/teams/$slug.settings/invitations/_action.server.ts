@@ -16,7 +16,7 @@ import {
   ServerError,
 } from '~/core/lib/responses.server';
 import {ActionArgs, withAction} from '~/core/lib/with-action.server';
-// import {sendInvitationEmail} from '~/core/mailer/emails/send-invitation-email.server';
+import {sendInvitationEmail} from '~/core/mailer/emails/send-invitation-email.server';
 import {
   createInvitation,
   deleteInvitation,
@@ -37,14 +37,13 @@ function handleInvitationCreation({
 
     const invitation = yield* _(execute(props, orgId, userId));
 
-    // yield* _(
-    //   sendInvitationEmail({
-    //     email: invitation.email,
-    //     orgName: invitation.org.name,
-    //     invitationTokenId: invitation.id,
-    //   })
-    // );
-    console.log(invitation);
+    yield* _(
+      sendInvitationEmail({
+        email: invitation.email,
+        orgName: invitation.org.name,
+        invitationTokenId: invitation.id,
+      })
+    );
   });
 }
 

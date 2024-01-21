@@ -9,6 +9,7 @@ interface SendEmailProps {
 
 // todo: pass through context
 export function sendEmail(props: SendEmailProps) {
+  console.log(props);
   return transporter.sendMail({
     from: config.EMAIL_FROM,
     to: props.to,

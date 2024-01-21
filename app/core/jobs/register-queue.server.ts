@@ -15,6 +15,7 @@ const LOCK_DURATION = 1000 * 60 * 15;
 export function registerQueue<T>(name: string, processor: Processor<T>) {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!registeredQueues[name]) {
+    console.log(connection);
     const queue = new Queue(name, {connection});
     const queueEvents = new QueueEvents(name, {
       connection,

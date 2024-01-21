@@ -3,7 +3,7 @@ import * as Effect from 'effect/Effect';
 import {parseFormData} from '~/core/lib/helpers.server.ts';
 import {BadRequest, Ok, ServerError} from '~/core/lib/responses.server.ts';
 import {ActionArgs, withAction} from '~/core/lib/with-action.server.ts';
-// import {sendPasswordResetEmail} from '~/core/mailer/emails/send-password-reset-email.server.tsx';
+import {sendPasswordResetEmail} from '~/core/mailer/emails/send-password-reset-email.server.tsx';
 import {requestPasswordReset} from '~/core/use-cases/index.server.ts';
 
 export const action = withAction(
@@ -16,8 +16,7 @@ export const action = withAction(
     const props = yield* _(validate(data));
     const {passwordResetTokenId, email} = yield* _(execute(props));
 
-    // yield* _(sendPasswordResetEmail({email, passwordResetTokenId}));
-    console.log({passwordResetTokenId, email});
+    yield* _(sendPasswordResetEmail({email, passwordResetTokenId}));
 
     return new Ok({data: null});
   }).pipe(

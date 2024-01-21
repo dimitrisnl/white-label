@@ -4,7 +4,7 @@ import {parseFormData} from '~/core/lib/helpers.server';
 import {BadRequest, ServerError} from '~/core/lib/responses.server';
 import {createUserSession} from '~/core/lib/session.server';
 import {ActionArgs, withAction} from '~/core/lib/with-action.server';
-// import {sendVerificationEmail} from '~/core/mailer/emails/send-verification-email.server';
+import {sendVerificationEmail} from '~/core/mailer/emails/send-verification-email.server';
 import {createUser} from '~/core/use-cases/index.server';
 
 export const action = withAction(
@@ -18,8 +18,7 @@ export const action = withAction(
     const props = yield* _(validate(data));
     const {user, verifyEmailTokenId} = yield* _(execute(props));
 
-    // yield* _(sendVerificationEmail({email: user.email, verifyEmailTokenId}));
-    console.log({verifyEmailTokenId});
+    yield* _(sendVerificationEmail({email: user.email, verifyEmailTokenId}));
 
     return yield* _(
       createUserSession({
