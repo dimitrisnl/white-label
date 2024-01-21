@@ -97,7 +97,6 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-storybook": "^0.6.15",
-    "husky": "^8.0.3",
     "prettier": "^3.2.4",
     "prettier-eslint": "^16.3.0",
     "prettier-plugin-packagejson": "^2.4.9",
@@ -111,6 +110,9 @@
     "vite": "^5.0.12",
     "vite-tsconfig-paths": "^4.3.1",
     "vitest": "^1.2.1"
+  },
+  "optionalDependencies": {
+    "husky": "^8.0.3"
   },
   "engines": {
     "node": ">=18"

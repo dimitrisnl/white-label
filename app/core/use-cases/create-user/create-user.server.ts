@@ -30,7 +30,7 @@ function createUserRecord({
       db
         .insert('users', {
           id,
-          email,
+          email: email.toLowerCase(),
           email_verified: false,
           password: passwordHash,
           name,

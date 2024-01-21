@@ -23,7 +23,7 @@ function getInvitationRecords(email: User.User['email']) {
         .select(
           'membership_invitations',
           {
-            email: email,
+            email: email.toLowerCase(),
             status: 'PENDING',
           },
           {

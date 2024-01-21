@@ -107,7 +107,7 @@ export const action = withAction(
       ForbiddenActionError: () =>
         Effect.fail(
           new Forbidden({
-            errors: ["You don't have access to invite a team member"],
+            errors: ["You don't have access to do this action"],
           })
         ),
       ParseOrgSlugError: () =>

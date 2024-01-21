@@ -3,17 +3,14 @@ import {Redis} from 'ioredis';
 import {config} from './config.server.ts';
 
 function makeRedis() {
-  return new Redis(
-    `rediss://${config.REDIS_USER}:${config.REDIS_PASSWORD}@${config.REDIS_HOST}:${config.REDIS_PORT}`,
-    {
-      maxRetriesPerRequest: null,
-      lazyConnect: true,
-      retryStrategy(times) {
-        if (times > 20) return null; // return null to stop retrying
-        return Math.min(times * 500, 2000);
-      },
-    }
-  );
+  return new Redis({
+    username: config.REDIS_USER,
+    password: config.REDIS_PASSWORD,
+    host: config.REDIS_HOST,
+    port: config.REDIS_PORT,
+    maxRetriesPerRequest: null,
+    lazyConnect: true,
+  });
 }
 
 let redis: ReturnType<typeof makeRedis>;
