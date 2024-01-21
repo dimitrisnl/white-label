@@ -2,3 +2,5 @@ build
 tmp
 .cache
 .eslintrc
+public
+dist

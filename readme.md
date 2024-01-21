@@ -7,7 +7,7 @@ This is a ["white-label"](https://en.wikipedia.org/wiki/White-label_product) pro
 ### Technologies
 
 - **Remix**
-- **PNPM Workspaces**
+- **PNPM**
 - **Effect-TS**
 - **RadixUI**
 - **Zapatos**
