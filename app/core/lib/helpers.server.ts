@@ -19,13 +19,6 @@ export function identifyOrgByParams(params: Params) {
   });
 }
 
-export function parseFormData(request: Request) {
-  return Effect.gen(function* (_) {
-    const formData = yield* _(Effect.promise(() => request.clone().formData()));
-    return Object.fromEntries(formData);
-  });
-}
-
 export function authenticateUser(request: Request) {
   return Effect.gen(function* (_) {
     const session = yield* _(getSession(request));

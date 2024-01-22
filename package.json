@@ -13,13 +13,14 @@
     "preinstall": "npx only-allow pnpm",
     "lint": "eslint --ext .ts,.tsx .",
     "lint-fix": "eslint --ext .ts,.tsx . --fix",
-    "mgr-create": "dbmate -d './app/core/db/migrations' new",
-    "mgr-rollback": "dbmate -d './app/core/db/migrations' rollback",
-    "mgr-run": "dbmate -d './app/core/db/migrations' migrate",
-    "mgr-status": "dbmate -d './app/core/db/migrations' status",
+    "migrations-create": "dbmate -d './app/core/db/migrations' new",
+    "migrations-rollback": "dbmate -d './app/core/db/migrations' rollback",
+    "migrations-run": "dbmate -d './app/core/db/migrations' migrate",
+    "migrations-status": "dbmate -d './app/core/db/migrations' status",
     "prepare": "husky install",
     "start": "remix-serve ./build/index.js",
     "storybook": "storybook dev -p 6006",
+    "test": "vitest",
     "typecheck": "tsc"
   },
   "dependencies": {

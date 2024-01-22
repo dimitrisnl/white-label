@@ -26,8 +26,8 @@ export const orgNameSchema = Schema.string.pipe(
   Schema.minLength(2, {
     message: () => 'Organization name must be at least 2 characters',
   }),
-  Schema.maxLength(120, {
-    message: () => 'Organization name cannot be more than 120 characters',
+  Schema.maxLength(100, {
+    message: () => 'Organization name cannot be more than 100 characters',
   })
 );
 

@@ -8,6 +8,7 @@ const EmailBrand = Symbol.for('EmailBrand');
 
 export const emailSchema = Schema.string.pipe(
   Schema.trim,
+  Schema.lowercase,
   Schema.pattern(emailRegex, {
     message: () => 'Email address is invalid',
   }),

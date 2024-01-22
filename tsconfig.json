@@ -34,5 +34,7 @@
     "forceConsistentCasingInFileNames": true,
     "exactOptionalPropertyTypes": true,
     "allowImportingTsExtensions": true,
+
+    "types": ["vitest/globals"],
   },
 }

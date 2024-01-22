@@ -14,7 +14,7 @@ export const passwordResetTokenSchema = Schema.struct({
   updatedAt: DateString.dateSchema,
 }).pipe(Schema.brand(PasswordResetTokenBrand));
 
-export type MembershipInvitation = Schema.Schema.To<
+export type PasswordResetToken = Schema.Schema.To<
   typeof passwordResetTokenSchema
 >;
 
