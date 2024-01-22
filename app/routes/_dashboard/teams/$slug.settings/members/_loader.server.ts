@@ -8,7 +8,7 @@ import {
   ServerError,
 } from '~/core/lib/responses.server';
 import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
-import {getOrgMemberships} from '~/core/use-cases/index.server';
+import {getOrgMemberships} from '~/core/use-cases/get-org-memberships.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {

@@ -8,7 +8,7 @@ import {
   ServerError,
 } from '~/core/lib/responses.server';
 import {ActionArgs, withAction} from '~/core/lib/with-action.server';
-import {changePassword} from '~/core/use-cases/index.server';
+import {changePassword} from '~/core/use-cases/change-password.server';
 
 export const action = withAction(
   Effect.gen(function* (_) {

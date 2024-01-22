@@ -1,6 +1,8 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
+import * as Email from '~/core/domain/email.server.ts';
 import * as User from '~/core/domain/user.server.ts';
 import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
@@ -8,9 +10,15 @@ import {
   InternalServerError,
   UserNotFoundError,
 } from '~/core/lib/errors.server.ts';
+import {schemaResolver} from '~/core/lib/validation-helper.server';
 
-import type {RequestPasswordResetProps} from './validation.server.ts';
-import {validate} from './validation.server.ts';
+const validationSchema = Schema.struct({
+  email: Email.emailSchema,
+});
+
+export type RequestPasswordResetProps = Schema.Schema.To<
+  typeof validationSchema
+>;
 
 function selectUserRecord(email: User.User['email']) {
   return Effect.tryPromise({
@@ -66,6 +74,8 @@ export function requestPasswordReset() {
       })
     );
   }
+
+  const validate = schemaResolver(validationSchema);
 
   return {
     execute,

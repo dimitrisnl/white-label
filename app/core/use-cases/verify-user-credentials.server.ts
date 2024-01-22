@@ -1,6 +1,8 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
+import * as Email from '~/core/domain/email.server.ts';
 import * as Password from '~/core/domain/password.server.ts';
 import * as User from '~/core/domain/user.server.ts';
 import {
@@ -8,9 +10,16 @@ import {
   InternalServerError,
   InvalidCredentialsError,
 } from '~/core/lib/errors.server.ts';
+import {schemaResolver} from '~/core/lib/validation-helper.server';
 
-import type {VerifyUserCredentialsProps} from './validation.server.ts';
-import {validate} from './validation.server.ts';
+const validationSchema = Schema.struct({
+  email: Email.emailSchema,
+  password: Password.passwordSchema,
+});
+
+export type VerifyUserCredentialsProps = Schema.Schema.To<
+  typeof validationSchema
+>;
 
 function selectUserRecord(email: User.User['email']) {
   return Effect.tryPromise({
@@ -58,6 +67,8 @@ export function verifyUserCredentials() {
       })
     );
   }
+
+  const validate = schemaResolver(validationSchema);
 
   return {
     execute,

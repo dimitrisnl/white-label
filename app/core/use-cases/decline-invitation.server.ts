@@ -1,17 +1,22 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
 import * as InviteStatus from '~/core/domain/invite-status.server.ts';
 import type * as MembershipInvitation from '~/core/domain/membership-invitation.server.ts';
+import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   InvitationNotFoundError,
 } from '~/core/lib/errors.server.ts';
+import {schemaResolver} from '~/core/lib/validation-helper.server';
 
-import type {DeclineInvitationProps} from './validation.server.ts';
-import {validate} from './validation.server.ts';
+const validationSchema = Schema.struct({
+  invitationId: Uuid.uuidSchema,
+});
 
+export type DeclineInvitationProps = Schema.Schema.To<typeof validationSchema>;
 function selectInvitationRecord(
   invitationId: MembershipInvitation.MembershipInvitation['id']
 ) {
@@ -69,6 +74,8 @@ export function declineInvitation() {
       })
     );
   }
+
+  const validate = schemaResolver(validationSchema);
 
   return {execute, validate};
 }

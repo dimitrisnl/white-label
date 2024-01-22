@@ -3,7 +3,7 @@ import * as Effect from 'effect/Effect';
 import {InvitationNotFoundError} from '~/core/lib/errors.server';
 import {BadRequest, Ok, ServerError} from '~/core/lib/responses.server';
 import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
-import {declineInvitation} from '~/core/use-cases/index.server';
+import {declineInvitation} from '~/core/use-cases/decline-invitation.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {

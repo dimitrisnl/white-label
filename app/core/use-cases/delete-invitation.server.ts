@@ -1,18 +1,24 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
 import type * as MembershipInvitation from '~/core/domain/membership-invitation.server.ts';
 import type * as Org from '~/core/domain/org.server.ts';
 import type * as User from '~/core/domain/user.server.ts';
+import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   InvitationNotFoundError,
 } from '~/core/lib/errors.server.ts';
+import {schemaResolver} from '~/core/lib/validation-helper.server';
 import {invitationAuthorizationService} from '~/core/services/invitation-authorization-service.server.ts';
 
-import type {DeleteInvitationProps} from './validation.server.ts';
-import {validate} from './validation.server.ts';
+const validationSchema = Schema.struct({
+  invitationId: Uuid.uuidSchema,
+});
+
+export type DeleteInvitationProps = Schema.Schema.To<typeof validationSchema>;
 
 function deleteInvitationRecord(
   invitationId: MembershipInvitation.MembershipInvitation['id']
@@ -56,6 +62,8 @@ export function deleteInvitation() {
       })
     );
   }
+
+  const validate = schemaResolver(validationSchema);
 
   return {
     execute,

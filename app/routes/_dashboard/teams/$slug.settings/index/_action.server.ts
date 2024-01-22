@@ -13,7 +13,7 @@ import {
   ServerError,
 } from '~/core/lib/responses.server';
 import {ActionArgs, withAction} from '~/core/lib/with-action.server.ts';
-import {editOrg} from '~/core/use-cases/edit-org/edit-org.server';
+import {editOrg} from '~/core/use-cases/edit-org.server';
 
 export const action = withAction(
   Effect.gen(function* (_) {

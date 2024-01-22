@@ -3,7 +3,7 @@ import * as Effect from 'effect/Effect';
 import {PasswordResetTokenNotFoundError} from '~/core/lib/errors.server';
 import {BadRequest, Ok, ServerError} from '~/core/lib/responses.server';
 import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
-import {verifyPasswordReset} from '~/core/use-cases/index.server';
+import {verifyPasswordReset} from '~/core/use-cases/verify-password-reset.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {

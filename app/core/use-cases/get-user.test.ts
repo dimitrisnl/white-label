@@ -2,7 +2,7 @@ import {faker} from '@faker-js/faker';
 import {fail} from 'assert';
 import {Effect, Exit} from 'effect';
 
-import {createUser} from '../index.server';
+import {createUser} from './create-user.server';
 import {getUser} from './get-user.server';
 
 describe('use-cases/get-user', () => {

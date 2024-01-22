@@ -2,8 +2,8 @@ import {faker} from '@faker-js/faker';
 import {fail} from 'assert';
 import {Effect, Exit} from 'effect';
 
-import {createUser} from '../index.server';
 import {createOrg} from './create-org.server';
+import {createUser} from './create-user.server';
 
 describe('use-cases/create-org', () => {
   describe('validation', () => {

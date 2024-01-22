@@ -1,3 +1,4 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
@@ -8,10 +9,14 @@ import {
   InternalServerError,
   OrgNotFoundError,
 } from '~/core/lib/errors.server.ts';
+import {schemaResolver} from '~/core/lib/validation-helper.server';
 import {orgAuthorizationService} from '~/core/services/org-authorization-service.server.ts';
 
-import type {EditOrgProps} from './validation.server.ts';
-import {validate} from './validation.server.ts';
+const validationSchema = Schema.struct({
+  name: Org.orgNameSchema,
+});
+
+export type EditOrgProps = Schema.Schema.To<typeof validationSchema>;
 
 function updateOrgRecord({
   name,
@@ -58,6 +63,9 @@ export function editOrg() {
       })
     );
   }
+
+  const validate = schemaResolver(validationSchema);
+
   return {
     execute,
     validate,

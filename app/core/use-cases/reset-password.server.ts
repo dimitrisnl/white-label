@@ -1,16 +1,23 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
 import * as Password from '~/core/domain/password.server.ts';
+import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   PasswordResetTokenNotFoundError,
   UserNotFoundError,
 } from '~/core/lib/errors.server.ts';
+import {schemaResolver} from '~/core/lib/validation-helper.server.ts';
 
-import type {ResetPasswordProps} from './validation.server.ts';
-import {validate} from './validation.server.ts';
+const validationSchema = Schema.struct({
+  password: Password.passwordSchema,
+  token: Uuid.uuidSchema,
+});
+
+export type ResetPasswordProps = Schema.Schema.To<typeof validationSchema>;
 
 function selectPasswordResetTokenRecord(token: string) {
   return Effect.tryPromise({
@@ -91,6 +98,8 @@ export function resetPassword() {
       })
     );
   }
+
+  const validate = schemaResolver(validationSchema);
 
   return {
     execute,

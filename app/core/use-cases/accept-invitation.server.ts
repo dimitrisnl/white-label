@@ -1,17 +1,23 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
 import * as InviteStatus from '~/core/domain/invite-status.server.ts';
 import * as MembershipInvitation from '~/core/domain/membership-invitation.server.ts';
 import type * as User from '~/core/domain/user.server.ts';
+import {uuidSchema} from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   InvitationNotFoundError,
 } from '~/core/lib/errors.server.ts';
+import {schemaResolver} from '~/core/lib/validation-helper.server';
 
-import type {AcceptInvitationProps} from './validation.server.ts';
-import {validate} from './validation.server.ts';
+const validationSchema = Schema.struct({
+  invitationId: uuidSchema,
+});
+
+export type AcceptInvitationProps = Schema.Schema.To<typeof validationSchema>;
 
 function fetchInvitation(invitationId: string) {
   return Effect.tryPromise({
@@ -104,6 +110,8 @@ export function acceptInvitation() {
       })
     );
   }
+
+  const validate = schemaResolver(validationSchema);
 
   return {execute, validate};
 }

@@ -1,8 +1,10 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
+import * as Email from '~/core/domain/email.server';
 import * as MembershipInvitation from '~/core/domain/membership-invitation.server.ts';
-import type * as MembershipRole from '~/core/domain/membership-role.server.ts';
+import * as MembershipRole from '~/core/domain/membership-role.server.ts';
 import type * as Org from '~/core/domain/org.server.ts';
 import type * as User from '~/core/domain/user.server.ts';
 import * as Uuid from '~/core/domain/uuid.server.ts';
@@ -12,10 +14,15 @@ import {
   InviteeAlreadyMemberError,
   OrgNotFoundError,
 } from '~/core/lib/errors.server.ts';
+import {schemaResolver} from '~/core/lib/validation-helper.server';
 import {invitationAuthorizationService} from '~/core/services/invitation-authorization-service.server.ts';
 
-import type {CreateInvitationProps} from './validation.server.ts';
-import {validate} from './validation.server.ts';
+const validationSchema = Schema.struct({
+  email: Email.emailSchema,
+  role: MembershipRole.membershipRoleSchema,
+});
+
+export type CreateInvitationProps = Schema.Schema.To<typeof validationSchema>;
 
 function insertInvitation({
   role,
@@ -146,6 +153,8 @@ export function createInvitation() {
       })
     );
   }
+
+  const validate = schemaResolver(validationSchema);
 
   return {
     execute,

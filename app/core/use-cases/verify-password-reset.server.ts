@@ -1,14 +1,22 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
+import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   PasswordResetTokenNotFoundError,
 } from '~/core/lib/errors.server.ts';
+import {schemaResolver} from '~/core/lib/validation-helper.server.ts';
 
-import type {VerifyPasswordResetProps} from './validation.server.ts';
-import {validate} from './validation.server.ts';
+const validationSchema = Schema.struct({
+  token: Uuid.uuidSchema,
+});
+
+export type VerifyPasswordResetProps = Schema.Schema.To<
+  typeof validationSchema
+>;
 
 function selectPasswordResetTokenRecord(token: string) {
   return Effect.tryPromise({
@@ -39,6 +47,8 @@ export function verifyPasswordReset() {
       })
     );
   }
+
+  const validate = schemaResolver(validationSchema);
 
   return {
     execute,

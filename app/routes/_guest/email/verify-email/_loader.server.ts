@@ -8,7 +8,7 @@ import {
   ServerError,
 } from '~/core/lib/responses.server';
 import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
-import {verifyEmailToken} from '~/core/use-cases/index.server';
+import {verifyEmailToken} from '~/core/use-cases/verify-email-token.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {

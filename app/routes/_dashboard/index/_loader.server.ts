@@ -4,7 +4,7 @@ import {authenticateUser} from '~/core/lib/helpers.server';
 import {decideNextTeamRedirect} from '~/core/lib/navigation.server';
 import {Redirect, ServerError} from '~/core/lib/responses.server';
 import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
-import {getUserMemberships} from '~/core/use-cases/index.server';
+import {getUserMemberships} from '~/core/use-cases/get-user-memberships.server.ts';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {

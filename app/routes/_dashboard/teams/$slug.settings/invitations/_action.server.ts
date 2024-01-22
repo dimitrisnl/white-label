@@ -17,10 +17,8 @@ import {
 } from '~/core/lib/responses.server';
 import {ActionArgs, withAction} from '~/core/lib/with-action.server';
 import {sendInvitationEmail} from '~/core/mailer/emails/send-invitation-email.server';
-import {
-  createInvitation,
-  deleteInvitation,
-} from '~/core/use-cases/index.server';
+import {createInvitation} from '~/core/use-cases/create-invitation.server';
+import {deleteInvitation} from '~/core/use-cases/delete-invitation.server';
 
 function handleInvitationCreation({
   userId,

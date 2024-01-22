@@ -1,3 +1,4 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
@@ -7,9 +8,13 @@ import {
   InternalServerError,
   UserNotFoundError,
 } from '~/core/lib/errors.server.ts';
+import {schemaResolver} from '~/core/lib/validation-helper.server';
 
-import type {EditUserProps} from './validation.server.ts';
-import {validate} from './validation.server.ts';
+const validationSchema = Schema.struct({
+  name: User.userNameSchema,
+});
+
+export type EditUserProps = Schema.Schema.To<typeof validationSchema>;
 
 function updateUserRecord({
   id,
@@ -52,6 +57,8 @@ export function editUser() {
       })
     );
   }
+
+  const validate = schemaResolver(validationSchema);
 
   return {
     execute,

@@ -1,3 +1,4 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
@@ -9,9 +10,14 @@ import {
   InternalServerError,
   UserNotFoundError,
 } from '~/core/lib/errors.server.ts';
+import {schemaResolver} from '~/core/lib/validation-helper.server';
 
-import type {ChangePasswordProps} from './validation.server.ts';
-import {validate} from './validation.server.ts';
+const validationSchema = Schema.struct({
+  oldPassword: Password.passwordSchema,
+  newPassword: Password.passwordSchema,
+});
+
+export type ChangePasswordProps = Schema.Schema.To<typeof validationSchema>;
 
 function selectUserRecord(userId: User.User['id']) {
   return Effect.tryPromise({
@@ -66,6 +72,8 @@ export function changePassword() {
       })
     );
   }
+
+  const validate = schemaResolver(validationSchema);
 
   return {
     execute,

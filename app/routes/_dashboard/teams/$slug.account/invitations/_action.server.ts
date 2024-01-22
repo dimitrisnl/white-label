@@ -3,7 +3,7 @@ import * as Effect from 'effect/Effect';
 import {authenticateUser, parseFormData} from '~/core/lib/helpers.server';
 import {BadRequest, Redirect, ServerError} from '~/core/lib/responses.server';
 import {ActionArgs, withAction} from '~/core/lib/with-action.server';
-import {acceptInvitation} from '~/core/use-cases/index.server';
+import {acceptInvitation} from '~/core/use-cases/accept-invitation.server';
 
 export const action = withAction(
   Effect.gen(function* (_) {

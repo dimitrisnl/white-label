@@ -1,3 +1,4 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
@@ -12,9 +13,12 @@ import {
   SlugAlreadyExistsError,
   UserNotFoundError,
 } from '~/core/lib/errors.server.ts';
+import {schemaResolver} from '~/core/lib/validation-helper.server';
 
-import type {CreateOrgProps} from './validation.server.ts';
-import {validate} from './validation.server.ts';
+const validationSchema = Schema.struct({
+  name: Org.orgNameSchema,
+});
+export type CreateOrgProps = Schema.Schema.To<typeof validationSchema>;
 
 function insertOrg({
   id,
@@ -91,6 +95,8 @@ export function createOrg() {
       })
     );
   }
+
+  const validate = schemaResolver(validationSchema);
 
   return {
     execute,

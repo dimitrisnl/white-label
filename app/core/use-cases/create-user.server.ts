@@ -1,7 +1,9 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
 import {UNIQUE_CONSTRAINT} from '~/core/db/pg-error.ts';
+import * as Email from '~/core/domain/email.server';
 import * as Password from '~/core/domain/password.server.ts';
 import * as User from '~/core/domain/user.server.ts';
 import * as Uuid from '~/core/domain/uuid.server.ts';
@@ -10,9 +12,15 @@ import {
   DatabaseError,
   InternalServerError,
 } from '~/core/lib/errors.server.ts';
+import {schemaResolver} from '~/core/lib/validation-helper.server';
 
-import type {CreateUserProps} from './validation.server.ts';
-import {validate} from './validation.server.ts';
+const validationSchema = Schema.struct({
+  password: Password.passwordSchema,
+  email: Email.emailSchema,
+  name: User.userNameSchema,
+});
+
+export type CreateUserProps = Schema.Schema.To<typeof validationSchema>;
 
 function createUserRecord({
   email,
@@ -86,6 +94,8 @@ export function createUser() {
       })
     );
   }
+
+  const validate = schemaResolver(validationSchema);
 
   return {
     execute,

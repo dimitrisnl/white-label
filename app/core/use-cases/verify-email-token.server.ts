@@ -1,15 +1,21 @@
+import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
+import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   UserNotFoundError,
   VerifyEmailTokenNotFoundError,
 } from '~/core/lib/errors.server.ts';
+import {schemaResolver} from '~/core/lib/validation-helper.server.ts';
 
-import type {VerifyEmailProps} from './validation.server.ts';
-import {validate} from './validation.server.ts';
+const validationSchema = Schema.struct({
+  token: Uuid.uuidSchema,
+});
+
+export type VerifyEmailProps = Schema.Schema.To<typeof validationSchema>;
 
 function selectVerifyEmailTokenRecord(token: string) {
   return Effect.tryPromise({
@@ -85,6 +91,8 @@ export function verifyEmailToken() {
       })
     );
   }
+
+  const validate = schemaResolver(validationSchema);
 
   return {
     execute,

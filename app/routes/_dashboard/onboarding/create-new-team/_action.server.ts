@@ -3,7 +3,7 @@ import * as Effect from 'effect/Effect';
 import {authenticateUser, parseFormData} from '~/core/lib/helpers.server';
 import {BadRequest, Redirect, ServerError} from '~/core/lib/responses.server';
 import {ActionArgs, withAction} from '~/core/lib/with-action.server';
-import {createOrg} from '~/core/use-cases/index.server';
+import {createOrg} from '~/core/use-cases/create-org.server';
 
 export const action = withAction(
   Effect.gen(function* (_) {
@@ -25,6 +25,12 @@ export const action = withAction(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError({})),
       ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
+      UserNotFoundError: () =>
+        ActionArgs.pipe(
+          Effect.flatMap(({request}) =>
+            Effect.fail(new Redirect({to: '/login', init: request}))
+          )
+        ),
       SessionNotFoundError: () =>
         ActionArgs.pipe(
           Effect.flatMap(({request}) =>

@@ -4,7 +4,7 @@ import {parseFormData} from '~/core/lib/helpers.server.ts';
 import {BadRequest, Ok, ServerError} from '~/core/lib/responses.server.ts';
 import {ActionArgs, withAction} from '~/core/lib/with-action.server.ts';
 import {sendPasswordResetEmail} from '~/core/mailer/emails/send-password-reset-email.server.tsx';
-import {requestPasswordReset} from '~/core/use-cases/index.server.ts';
+import {requestPasswordReset} from '~/core/use-cases/request-password-reset.server';
 
 export const action = withAction(
   Effect.gen(function* (_) {

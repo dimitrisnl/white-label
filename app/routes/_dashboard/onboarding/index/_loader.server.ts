@@ -3,7 +3,7 @@ import * as Effect from 'effect/Effect';
 import {authenticateUser} from '~/core/lib/helpers.server';
 import {Ok, Redirect, ServerError} from '~/core/lib/responses.server';
 import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
-import {getUserMemberships} from '~/core/use-cases/index.server';
+import {getUserMemberships} from '~/core/use-cases/get-user-memberships.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {

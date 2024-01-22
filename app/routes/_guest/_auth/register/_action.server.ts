@@ -5,7 +5,7 @@ import {BadRequest, ServerError} from '~/core/lib/responses.server';
 import {createUserSession} from '~/core/lib/session.server';
 import {ActionArgs, withAction} from '~/core/lib/with-action.server';
 import {sendVerificationEmail} from '~/core/mailer/emails/send-verification-email.server';
-import {createUser} from '~/core/use-cases/index.server';
+import {createUser} from '~/core/use-cases/create-user.server';
 
 export const action = withAction(
   Effect.gen(function* (_) {
