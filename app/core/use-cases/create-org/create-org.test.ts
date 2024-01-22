@@ -1,39 +1,100 @@
-// import {test} from '@japa/runner';
-// import {E} from '~/utils/fp';
-// import {pipe} from 'fp-ts/lib/function';
+import {faker} from '@faker-js/faker';
+import {fail} from 'assert';
+import {Effect, Exit} from 'effect';
 
-// import {getOrgObj} from '~/database/factories/OrgFactory';
-// import {UserFactory} from '~/database/factories/UserFactory';
+import {createUser} from '../index.server';
+import {createOrg} from './create-org.server';
 
-// import {createOrg} from './createOrg';
+describe('use-cases/create-org', () => {
+  describe('validation', () => {
+    const orgObj = {
+      name: faker.company.name(),
+    };
+    test('it validates the org', async () => {
+      const {validate} = createOrg();
 
-// test.group('createOrg', () => {
-//   test('should create a new org', async ({assert}) => {
-//     const payload = getOrgObj();
+      const result = await Effect.runPromiseExit(validate(orgObj));
+      expect(result._tag).toBe('Success');
+    });
+    test('it fails on missing `name`', async () => {
+      const {validate} = createOrg();
 
-//     const user = await UserFactory.create();
-//     const {execute} = createOrg();
-//     const result = await execute(payload, user);
+      const result = await Effect.runPromiseExit(
+        validate({...orgObj, name: undefined})
+      );
+      expect(result._tag).toBe('Failure');
+    });
+  });
 
-//     pipe(
-//       result,
-//       E.fold(
-//         (error) => {
-//           assert.fail(error);
-//         },
-//         async (org) => {
-//           assert.isTrue(org.name === payload.name);
+  describe('execute', () => {
+    test('creates a new org', async () => {
+      const orgObj = {
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+      };
+      const userObj = {
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+      };
+      const {validate, execute} = createOrg();
 
-//           const membership = await user
-//             .related('orgs')
-//             .query()
-//             .where('org_id', org.id)
-//             .pivotColumns(['role'])
-//             .first();
+      const result = await Effect.runPromiseExit(
+        Effect.gen(function* (_) {
+          const props = yield* _(validate(orgObj));
 
-//           assert.isTrue(membership?.$extras.pivot_role === 'OWNER');
-//         }
-//       )
-//     );
-//   });
-// });
+          const userProps = yield* _(createUser().validate(userObj));
+          const {user: newUser} = yield* _(createUser().execute(userProps));
+
+          return yield* _(execute(props, newUser.id));
+        })
+      );
+
+      Exit.match(result, {
+        onFailure: () => {
+          fail();
+        },
+        onSuccess: (data) => {
+          expect(data.name).toEqual(orgObj.name);
+          expect(data.slug).toBeDefined();
+          expect(data.id).toBeDefined();
+          expect(data.createdAt).toBeDefined();
+          expect(data.updatedAt).toBeDefined();
+        },
+      });
+    });
+
+    test('fails creating a new org when user is non-existant', async () => {
+      const orgObj = {
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+      };
+
+      const {validate, execute} = createOrg();
+
+      const result = await Effect.runPromiseExit(
+        Effect.gen(function* (_) {
+          const props = yield* _(validate(orgObj));
+
+          // @ts-expect-error
+          return yield* _(execute(props, faker.string.uuid()));
+        })
+      );
+
+      Exit.match(result, {
+        onFailure: (cause) => {
+          if (cause._tag === 'Fail') {
+            expect(cause.error._tag).toEqual('UserNotFoundError');
+          } else {
+            fail();
+          }
+        },
+        onSuccess: () => {
+          fail();
+        },
+      });
+    });
+  });
+});

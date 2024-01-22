@@ -10,6 +10,7 @@ import {
   DatabaseError,
   InternalServerError,
   SlugAlreadyExistsError,
+  UserNotFoundError,
 } from '~/core/lib/errors.server.ts';
 
 import type {CreateOrgProps} from './validation.server.ts';
@@ -51,11 +52,25 @@ function insertMembership(orgId: Org.Org['id'], userId: User.User['id']) {
   });
 }
 
+function selectUserRecord(id: User.User['id']) {
+  return Effect.tryPromise({
+    try: () => db.selectOne('users', {id}).run(pool),
+    catch: () => new DatabaseError(),
+  });
+}
+
 export function createOrg() {
   function execute(props: CreateOrgProps, userId: User.User['id']) {
     const {name} = props;
     return Effect.gen(function* (_) {
       yield* _(Effect.log(`Use-case(create-org): Creating org ${name}`));
+
+      const userRecord = yield* _(selectUserRecord(userId));
+
+      if (!userRecord) {
+        return yield* _(Effect.fail(new UserNotFoundError()));
+      }
+
       const orgId = yield* _(Uuid.generate());
 
       const [orgIdPrefix] = orgId.split('-');

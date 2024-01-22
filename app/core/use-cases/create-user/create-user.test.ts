@@ -1,110 +1,112 @@
-// import Mail from '@ioc:Adonis/Addons/Mail';
-// import {test} from '@japa/runner';
-// import {E} from '~/utils/fp';
-// import {pipe} from 'fp-ts/lib/function';
+import {faker} from '@faker-js/faker';
+import {fail} from 'assert';
+import {Effect, Exit} from 'effect';
 
-// import {getUserObj, UserFactory} from '~/database/factories/UserFactory';
+import {createUser} from './create-user.server';
 
-// import {AccessToken} from '~/core/domain/AccessToken';
-// import {AccessTokenService} from '../../services/accessTokenService';
-// import {getVerifyEmailService} from '../../services/verifyEmailService';
-// import {register} from './createUser';
+describe('use-cases/create-user', () => {
+  describe('validation', () => {
+    const userObj = {
+      name: faker.person.fullName(),
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    };
+    test('it validates the user', async () => {
+      const {validate} = createUser();
 
-// function getAccessTokenServiceStub(): AccessTokenService {
-//   async function generate(): Promise<AccessToken> {
-//     return Promise.resolve({type: 'bearer', token: 'token'});
-//   }
-//   async function revoke(): Promise<void> {
-//     return Promise.resolve();
-//   }
-//   async function attempt(): Promise<AccessToken> {
-//     return Promise.resolve({type: 'bearer', token: 'token'});
-//   }
-//   return {
-//     generate,
-//     revoke,
-//     attempt,
-//   };
-// }
+      const result = await Effect.runPromiseExit(validate(userObj));
+      expect(result._tag).toBe('Success');
+    });
+    test('it fails on missing `name`', async () => {
+      const {validate} = createUser();
 
-// test.group('register', () => {
-//   test('should register user', async ({assert}) => {
-//     const payload = getUserObj();
+      const result = await Effect.runPromiseExit(
+        validate({...userObj, name: undefined})
+      );
+      expect(result._tag).toBe('Failure');
+    });
 
-//     const result = await register({
-//       accessTokenService: getAccessTokenServiceStub(),
-//       verifyEmailService: getVerifyEmailService(),
-//     }).execute(payload);
+    test('it fails on missing `email`', async () => {
+      const {validate} = createUser();
 
-//     pipe(
-//       result,
-//       E.fold(
-//         (error) => {
-//           assert.fail(error);
-//         },
-//         (result) => {
-//           const {user, token} = result;
-//           assert.isTrue(user.email === payload.email);
-//           assert.isTrue(user.name === payload.name);
-//           assert.isTrue(token.token === 'token');
-//         }
-//       )
-//     );
-//   });
+      const result = await Effect.runPromiseExit(
+        validate({...userObj, email: undefined})
+      );
+      expect(result._tag).toBe('Failure');
+    });
+    test('it fails on missing `password`', async () => {
+      const {validate} = createUser();
 
-//   test('should send a verification email', async ({assert}) => {
-//     const mailer = Mail.fake();
-//     const payload = getUserObj();
+      const result = await Effect.runPromiseExit(
+        validate({...userObj, password: undefined})
+      );
+      expect(result._tag).toBe('Failure');
+    });
+  });
 
-//     const result = await register({
-//       accessTokenService: getAccessTokenServiceStub(),
-//       verifyEmailService: getVerifyEmailService(),
-//     }).execute(payload);
+  describe('execute', () => {
+    test('it creates a new user', async () => {
+      const userObj = {
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+      };
+      const {validate, execute} = createUser();
 
-//     pipe(
-//       result,
-//       E.fold(
-//         (error) => {
-//           assert.fail(error);
-//         },
-//         ({user}) => {
-//           assert.isTrue(
-//             mailer.exists((mail) => {
-//               if (!mail.to) {
-//                 return false;
-//               }
-//               return mail.to[0].address === user.email;
-//             })
-//           );
-//         }
-//       )
-//     );
+      const result = await Effect.runPromiseExit(
+        Effect.gen(function* (_) {
+          const props = yield* _(validate(userObj));
+          return yield* _(execute(props));
+        })
+      );
 
-//     Mail.restore();
-//   });
+      Exit.match(result, {
+        onFailure: (error) => {
+          console.log(error);
+          fail();
+        },
+        onSuccess: (data) => {
+          expect(data.user.name).toEqual(userObj.name);
+          expect(data.user.email).toEqual(userObj.email.toLowerCase());
+          expect(data.user.emailVerified).toEqual(false);
+          expect(data.user.createdAt).toBeDefined();
+          expect(data.user.updatedAt).toBeDefined();
+          //
+          expect(data.verifyEmailTokenId).toBeDefined();
+        },
+      });
+    });
 
-//   test('should not register user with duplicate email', async ({assert}) => {
-//     const user = await UserFactory.create();
-//     const payload = getUserObj();
+    test('it fails creating when email exists', async () => {
+      const userObj = {
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+      };
+      const {validate, execute} = createUser();
 
-//     const result = await register({
-//       accessTokenService: getAccessTokenServiceStub(),
-//       verifyEmailService: getVerifyEmailService(),
-//     }).execute({
-//       ...payload,
-//       email: user.email,
-//     });
+      const result = await Effect.runPromiseExit(
+        Effect.gen(function* (_) {
+          const props = yield* _(validate(userObj));
+          // Add once
+          yield* _(execute(props));
+          // Try again
+          return yield* _(execute(props));
+        })
+      );
 
-//     pipe(
-//       result,
-//       E.fold(
-//         (error) => {
-//           assert.equal(error, 'AccountAlreadyExistsError');
-//         },
-//         () => {
-//           assert.fail();
-//         }
-//       )
-//     );
-//   });
-// });
+      Exit.match(result, {
+        onFailure: (cause) => {
+          if (cause._tag === 'Fail') {
+            expect(cause.error._tag).toEqual('AccountAlreadyExistsError');
+          } else {
+            fail();
+          }
+        },
+        onSuccess: () => {
+          fail();
+        },
+      });
+    });
+  });
+});
