@@ -17,13 +17,12 @@ class ParseUserError {
   readonly _tag = 'ParseUserError';
 }
 
-export const userNameSchema = Schema.string.pipe(
-  Schema.trim,
+export const userNameSchema = Schema.Trim.pipe(
   Schema.minLength(2, {
     message: () => 'Name must be at least 2 characters',
   }),
   Schema.maxLength(100, {
-    message: () => 'Name cannot be more than 120 characters',
+    message: () => 'Name cannot be more than 100 characters',
   })
 );
 

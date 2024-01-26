@@ -6,9 +6,7 @@ const emailRegex =
 
 const EmailBrand = Symbol.for('EmailBrand');
 
-export const emailSchema = Schema.string.pipe(
-  Schema.trim,
-  Schema.lowercase,
+export const emailSchema = Schema.compose(Schema.Trim, Schema.Lowercase).pipe(
   Schema.pattern(emailRegex, {
     message: () => 'Email address is invalid',
   }),

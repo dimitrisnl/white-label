@@ -18,6 +18,7 @@ import {schemaResolver} from '~/core/lib/validation-helper.server';
 const validationSchema = Schema.struct({
   name: Org.orgNameSchema,
 });
+
 export type CreateOrgProps = Schema.Schema.To<typeof validationSchema>;
 
 function insertOrg({

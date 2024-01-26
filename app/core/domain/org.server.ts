@@ -21,8 +21,7 @@ class ParseOrgIdError {
   readonly _tag = 'ParseOrgIdError';
 }
 
-export const orgNameSchema = Schema.string.pipe(
-  Schema.trim,
+export const orgNameSchema = Schema.Trim.pipe(
   Schema.minLength(2, {
     message: () => 'Organization name must be at least 2 characters',
   }),
