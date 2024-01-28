@@ -1,5 +1,7 @@
 # White Label
 
+![https://github.com/dimitrisnl/white-label/blob/main/content/dashboard.png](https://github.com/dimitrisnl/white-label/blob/main/content/dashboard.png)
+
 This is a ["white-label"](https://en.wikipedia.org/wiki/White-label_product) project I wanted to create to test various ideas. It's a full-stack Typescript app, powered by Remix.
 
 ---
