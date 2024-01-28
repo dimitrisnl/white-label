@@ -2,12 +2,11 @@ import {
   ChevronRightIcon,
   CogIcon,
   EnvelopeIcon,
-  GlobeAltIcon,
   HomeIcon,
   LifebuoyIcon,
+  MegaphoneIcon,
   PlusCircleIcon,
   PowerIcon,
-  PresentationChartBarIcon,
 } from '@heroicons/react/24/outline';
 import UserCircleIcon from '@heroicons/react/24/outline/UserCircleIcon';
 import {Link, NavLink, useParams} from '@remix-run/react';
@@ -66,15 +65,9 @@ export function MainNav({user}: {user: User}) {
   const topMenu = [
     {name: 'Dashboard', href: '', icon: HomeIcon, end: true},
     {
-      name: 'Feature A',
-      href: `/teams/${slug}/feature-a`,
-      icon: GlobeAltIcon,
-      end: false,
-    },
-    {
-      name: 'Feature B',
-      href: `/teams/${slug}/feature-b`,
-      icon: PresentationChartBarIcon,
+      name: 'Announcements',
+      href: `/teams/${slug}/announcements`,
+      icon: MegaphoneIcon,
       end: false,
     },
     {
@@ -105,10 +98,13 @@ export function MainNav({user}: {user: User}) {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="w-full justify-between px-4"
+                  className="w-full justify-between px-4 text-gray-700"
                   size="lg"
                 >
-                  <div className="truncate">{user.name}</div>
+                  <div className="flex min-w-0 items-center space-x-2">
+                    <div className="h-2 w-2 rounded-full bg-green-600"></div>
+                    <div className="truncate">{user.name}</div>
+                  </div>
                   <ChevronRightIcon className="h-4 w-4 opacity-50" />
                 </Button>
               </DropdownMenuTrigger>
