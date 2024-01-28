@@ -2,9 +2,9 @@ import {useTypedRouteLoaderData} from 'remix-typedjson';
 
 import type {BaseOrgLoader} from './_loader.server.ts';
 
-export function useOrgData() {
+export function useMetadata() {
   const {
-    data: {org, memberships},
+    data: {org, memberships, user},
   } = useTypedRouteLoaderData<BaseOrgLoader>(
     'routes/_dashboard/teams/$slug/_layout'
   )!;
@@ -12,5 +12,6 @@ export function useOrgData() {
   return {
     org,
     memberships,
+    user,
   };
 }

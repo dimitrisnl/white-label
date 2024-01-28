@@ -4,14 +4,17 @@ import {BaseLayout} from '~/components/base-layout.tsx';
 import {BaseErrorBoundary} from '~/components/error-boundary.tsx';
 import {TeamSelector} from '~/components/team-selector.tsx';
 
-import {useOrgData} from './use-org-data.ts';
+import {useMetadata} from './use-metadata-data.ts';
 
 export {loader} from './_loader.server.ts';
 
 export default function OrgLayout() {
-  const {memberships} = useOrgData();
+  const {memberships, user} = useMetadata();
   return (
-    <BaseLayout teamSelector={<TeamSelector memberships={memberships} />}>
+    <BaseLayout
+      teamSelector={<TeamSelector memberships={memberships} />}
+      user={user}
+    >
       <Outlet />
     </BaseLayout>
   );

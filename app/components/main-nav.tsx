@@ -1,15 +1,30 @@
 import {
+  ChevronRightIcon,
   CogIcon,
+  EnvelopeIcon,
   GlobeAltIcon,
   HomeIcon,
-  // LifebuoyIcon,
+  LifebuoyIcon,
+  PlusCircleIcon,
   PowerIcon,
   PresentationChartBarIcon,
 } from '@heroicons/react/24/outline';
 import UserCircleIcon from '@heroicons/react/24/outline/UserCircleIcon';
 import {Link, NavLink, useParams} from '@remix-run/react';
 
+import type {User} from '~/core/domain/user.server';
 import {cn} from '~/utils/classname-utils';
+
+import {Button} from './ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
+import {VerifyEmailBanner} from './verify-email-banner';
 
 function StyledLink({
   item,
@@ -45,7 +60,7 @@ function StyledLink({
   );
 }
 
-export function MainNav() {
+export function MainNav({user}: {user: User}) {
   const {slug} = useParams();
 
   const topMenu = [
@@ -70,15 +85,6 @@ export function MainNav() {
     },
   ];
 
-  const bottomMenu = [
-    {
-      name: 'Account',
-      href: `/teams/${slug}/account`,
-      icon: UserCircleIcon,
-      end: false,
-    },
-  ];
-
   return (
     <nav className="flex flex-1 flex-col">
       <ul className="flex flex-1 flex-col gap-y-7">
@@ -93,37 +99,75 @@ export function MainNav() {
         </li>
         <li className="mt-auto">
           <hr className="my-4 border-gray-200" />
-          <ul className="mt-2 space-y-1">
-            {bottomMenu.map((item) => (
-              <li key={item.name}>
-                <StyledLink item={item} />
-              </li>
-            ))}
-            {/* <li>
-              <Link
-                to="/support"
-                className="group flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold text-gray-600 hover:bg-white hover:text-blue-600 hover:shadow"
-              >
-                <LifebuoyIcon
-                  className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-blue-600"
-                  aria-hidden="true"
-                />
-                Support
-              </Link>
-            </li> */}
-            <li>
-              <Link
-                to="/logout"
-                className="group flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold text-gray-600 hover:bg-white hover:text-red-600 hover:shadow"
-              >
-                <PowerIcon
-                  className="h-6 w-6 shrink-0 text-gray-400 group-hover:text-red-600"
-                  aria-hidden="true"
-                />
-                Logout
-              </Link>
-            </li>
-          </ul>
+          <div className="space-y-2">
+            {!user.emailVerified ? <VerifyEmailBanner /> : null}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-between px-4"
+                  size="lg"
+                >
+                  <div className="truncate">{user.name}</div>
+                  <ChevronRightIcon className="h-4 w-4 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to={`/teams/${slug}/account`}
+                      className="group flex cursor-pointer items-center gap-x-3 rounded-md p-2 text-sm text-gray-600"
+                    >
+                      <UserCircleIcon className="h-5 w-5 shrink-0 text-gray-400 group-hover:text-gray-600" />
+                      Account
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to={`/teams/${slug}/account/invitations`}
+                      className="group flex cursor-pointer items-center gap-x-3 rounded-md p-2 text-sm text-gray-600"
+                    >
+                      <EnvelopeIcon className="h-5 w-5 shrink-0 text-gray-400 group-hover:text-gray-600" />
+                      Invitations
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to={`/teams/create-new-team`}
+                      className="group flex cursor-pointer items-center gap-x-3 rounded-md p-2 text-sm text-gray-600"
+                    >
+                      <PlusCircleIcon className="h-5 w-5 shrink-0 text-gray-400 group-hover:text-gray-600" />
+                      Create new team
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem disabled asChild>
+                  <div className="group flex cursor-pointer items-center gap-x-3 rounded-md p-2 text-sm text-gray-600">
+                    <LifebuoyIcon className="h-5 w-5 shrink-0 text-gray-400 group-hover:text-gray-600" />
+                    Support
+                  </div>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link
+                    to="/logout"
+                    className="group flex cursor-pointer items-center gap-x-3 rounded-md p-2 text-sm text-red-600 hover:!text-red-600"
+                  >
+                    <PowerIcon
+                      className="h-5 w-5 shrink-0 text-red-400 group-hover:text-red-600"
+                      aria-hidden="true"
+                    />
+                    Logout
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </li>
       </ul>
     </nav>

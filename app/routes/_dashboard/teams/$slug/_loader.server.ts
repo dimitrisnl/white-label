@@ -16,12 +16,12 @@ export const loader = withLoader(
     yield* _(Effect.log('Loader(_dashboard/teams/$slug/_layout): Init'));
     const {request, params} = yield* _(LoaderArgs);
 
-    const {id: userId} = yield* _(authenticateUser(request));
+    const user = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
-    const org = yield* _(getOrg().execute(orgId, userId));
-    const {memberships} = yield* _(getUserMemberships().execute(userId));
+    const org = yield* _(getOrg().execute(orgId, user.id));
+    const {memberships} = yield* _(getUserMemberships().execute(user.id));
 
-    return new Ok({data: {org, memberships}});
+    return new Ok({data: {org, memberships, user}});
   }).pipe(
     Effect.catchTags({
       ParseOrgSlugError: () =>

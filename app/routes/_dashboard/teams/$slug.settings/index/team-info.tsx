@@ -22,7 +22,7 @@ export function TeamInfo({initialName}: {initialName: string}) {
     <Form method="patch">
       <div className="max-w-96 space-y-4">
         <div className="flex flex-col space-y-2">
-          <Label htmlFor="name">Team Name</Label>
+          <Label htmlFor="name">Name</Label>
           <Input
             id="name"
             name="name"
@@ -39,7 +39,7 @@ export function TeamInfo({initialName}: {initialName: string}) {
           value="EDIT_ORG_FORM"
           disabled={state !== 'idle'}
         >
-          Create new team
+          Save
         </Button>
         {data?.ok === false ? <ErrorMessage errors={data.errors} /> : null}
       </div>

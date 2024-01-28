@@ -4,7 +4,7 @@ import {isRouteErrorResponse, useRouteError} from '@remix-run/react';
 import {ErrorPage} from '~/components/error-page.tsx';
 import {PageSkeleton} from '~/components/page-skeleton.tsx';
 
-import {useOrgData} from '../../$slug/use-org-data.ts';
+import {useMetadata} from '../../$slug/use-metadata-data.ts';
 import {TeamInfo} from './team-info.tsx';
 
 export {action} from './_action.server.ts';
@@ -17,7 +17,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function TeamPage() {
-  const {org} = useOrgData();
+  const {org} = useMetadata();
 
   return (
     <PageSkeleton

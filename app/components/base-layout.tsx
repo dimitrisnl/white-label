@@ -3,8 +3,9 @@ import {Link} from '@remix-run/react';
 // import {Input} from '~/components/ui/input';
 import React from 'react';
 
+import type {User} from '~/core/domain/user.server';
+
 import {MainNav} from './main-nav';
-import {VerifyEmailBanner} from './verify-email-banner';
 
 function Sidebar({
   children,
@@ -25,7 +26,6 @@ function Sidebar({
       {teamSelector}
       {children}
       {/* <Input placeholder="Search" /> */}
-      <VerifyEmailBanner />
     </div>
   );
 }
@@ -43,14 +43,16 @@ function MainContent({children}: {children: React.ReactNode}) {
 export function BaseLayout({
   children,
   teamSelector,
+  user,
 }: {
   children: React.ReactNode;
   teamSelector: React.ReactNode;
+  user: User;
 }) {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar teamSelector={teamSelector}>
-        <MainNav />
+        <MainNav user={user} />
       </Sidebar>
       <MainContent>{children}</MainContent>
     </div>
