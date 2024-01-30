@@ -21,7 +21,7 @@ describe('use-cases/create-user', () => {
       const {validate} = createUser();
 
       const result = await Effect.runPromiseExit(
-        validate({...userObj, name: undefined})
+        validate({...userObj, name: ''})
       );
       expect(result._tag).toBe('Failure');
     });
@@ -30,7 +30,7 @@ describe('use-cases/create-user', () => {
       const {validate} = createUser();
 
       const result = await Effect.runPromiseExit(
-        validate({...userObj, email: undefined})
+        validate({...userObj, email: ''})
       );
       expect(result._tag).toBe('Failure');
     });
@@ -38,7 +38,7 @@ describe('use-cases/create-user', () => {
       const {validate} = createUser();
 
       const result = await Effect.runPromiseExit(
-        validate({...userObj, password: undefined})
+        validate({...userObj, password: ''})
       );
       expect(result._tag).toBe('Failure');
     });
@@ -61,8 +61,7 @@ describe('use-cases/create-user', () => {
       );
 
       Exit.match(result, {
-        onFailure: (error) => {
-          console.log(error);
+        onFailure: () => {
           fail();
         },
         onSuccess: (data) => {

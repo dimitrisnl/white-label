@@ -1,12 +1,13 @@
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server';
-import * as Membership from '~/core/domain/membership.server.ts';
-import type * as User from '~/core/domain/user.server.ts';
 import {DatabaseError, InternalServerError} from '~/core/lib/errors.server';
 
+import {Membership} from '../domain/membership.server';
+import type {User} from '../domain/user.server';
+
 export function getUserMemberships() {
-  function execute(userId: User.User['id']) {
+  function execute(userId: User['id']) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
@@ -43,19 +44,19 @@ export function getUserMemberships() {
       const memberships = yield* _(
         Effect.all(
           membershipRecords.map((membershipRecord) =>
-            Membership.dbRecordToDomain(
-              membershipRecord,
-              {
+            Membership.fromRecord({
+              record: membershipRecord,
+              org: {
                 name: membershipRecord.org.name,
                 id: membershipRecord.org_id,
                 slug: membershipRecord.org.slug,
               },
-              {
+              user: {
                 name: membershipRecord.user.name,
                 id: membershipRecord.user_id,
                 email: membershipRecord.user.email,
-              }
-            )
+              },
+            })
           )
         )
       );
@@ -64,7 +65,7 @@ export function getUserMemberships() {
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),
-        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        MembershipParseError: () => Effect.fail(new InternalServerError()),
       })
     );
   }

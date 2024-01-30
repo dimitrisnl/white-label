@@ -9,7 +9,7 @@ const envValidationSchema = Schema.struct({
 });
 
 // Throw on-load if missing
-const config = Schema.parseSync(envValidationSchema)(process.env);
+const config = Schema.decodeUnknownSync(envValidationSchema)(process.env);
 export const USER_SESSION_KEY = 'userId';
 
 export const sessionStorage = createCookieSessionStorage({

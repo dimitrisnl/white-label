@@ -2,7 +2,8 @@ import {faker} from '@faker-js/faker';
 import {fail} from 'assert';
 import {Effect, Exit} from 'effect';
 
-import * as Membership from './membership.server';
+import {Membership} from './membership.server';
+import {OWNER} from './membership-role.server';
 
 describe('domain/membership', () => {
   describe('parsing', () => {
@@ -20,14 +21,14 @@ describe('domain/membership', () => {
         email: 'dimitrios@example.com',
       },
       role: 'OWNER',
-      createdAt: '2024-01-21 16:20:01.150513+00',
-      updatedAt: '2024-01-21 16:20:01.150513+00',
+      createdAt: '2012-06-01T12:34:00Z' as const,
+      updatedAt: '2012-06-01T12:34:00Z' as const,
     };
 
     describe('parse-membership', () => {
       it('parses a normal membership record', () => {
         const result = Effect.runSyncExit(
-          Membership.parse(validMembershipObject)
+          Membership.fromUnknown(validMembershipObject)
         );
 
         Exit.match(result, {
@@ -45,8 +46,8 @@ describe('domain/membership', () => {
                 email: 'dimitrios@example.com',
               },
               role: 'OWNER',
-              createdAt: new Date('2024-01-21 16:20:01.150513+00'),
-              updatedAt: new Date('2024-01-21 16:20:01.150513+00'),
+              createdAt: new Date('2012-06-01T12:34:00Z'),
+              updatedAt: new Date('2012-06-01T12:34:00Z'),
             });
           },
         });
@@ -54,28 +55,34 @@ describe('domain/membership', () => {
 
       it('fails parsing when missing `org`', () => {
         const result = Effect.runSyncExit(
-          Membership.parse({...validMembershipObject, org: {}})
+          Membership.fromUnknown({...validMembershipObject, org: {}})
         );
         expect(result._tag).toBe('Failure');
       });
 
       it('fails parsing with invalid `user`', () => {
         const result = Effect.runSyncExit(
-          Membership.parse({...validMembershipObject, user: {}})
+          Membership.fromUnknown({...validMembershipObject, user: {}})
         );
         expect(result._tag).toBe('Failure');
       });
 
       it('fails parsing when missing `createdAt`', () => {
         const result = Effect.runSyncExit(
-          Membership.parse({...validMembershipObject, createdAt: undefined})
+          Membership.fromUnknown({
+            ...validMembershipObject,
+            createdAt: undefined,
+          })
         );
         expect(result._tag).toBe('Failure');
       });
 
       it('fails parsing when missing `updatedAt`', () => {
         const result = Effect.runSyncExit(
-          Membership.parse({...validMembershipObject, updatedAt: undefined})
+          Membership.fromUnknown({
+            ...validMembershipObject,
+            updatedAt: undefined,
+          })
         );
         expect(result._tag).toBe('Failure');
       });
@@ -99,14 +106,20 @@ describe('domain/membership', () => {
     };
 
     const membershipRecord = {
-      role: 'OWNER',
-      created_at: '2024-01-21 16:20:01.150513+00',
-      updated_at: '2024-01-21 16:20:01.150513+00',
+      org_id: orgId,
+      user_id: userId,
+      role: OWNER,
+      created_at: '2012-06-01T12:34:00Z' as const,
+      updated_at: '2012-06-01T12:34:00Z' as const,
     };
 
     it('parses a normal record', () => {
       const result = Effect.runSyncExit(
-        Membership.dbRecordToDomain(membershipRecord, orgRecord, userRecord)
+        Membership.fromRecord({
+          record: membershipRecord,
+          org: orgRecord,
+          user: userRecord,
+        })
       );
 
       Exit.match(result, {
@@ -114,8 +127,8 @@ describe('domain/membership', () => {
         onSuccess: (value) => {
           expect(value).toStrictEqual({
             role: 'OWNER',
-            createdAt: new Date('2024-01-21 16:20:01.150513+00'),
-            updatedAt: new Date('2024-01-21 16:20:01.150513+00'),
+            createdAt: new Date('2012-06-01T12:34:00Z'),
+            updatedAt: new Date('2012-06-01T12:34:00Z'),
             org: {
               id: orgId,
               name: 'Wolfwave',
@@ -134,7 +147,7 @@ describe('domain/membership', () => {
     it('fails parsing when missing `org`', () => {
       const result = Effect.runSyncExit(
         // @ts-expect-error
-        Membership.dbRecordToDomain(membershipRecord, {}, userRecord)
+        Membership.fromRecord(membershipRecord, {}, userRecord)
       );
       expect(result._tag).toBe('Failure');
     });
@@ -142,7 +155,7 @@ describe('domain/membership', () => {
     it('fails parsing when missing `user`', () => {
       const result = Effect.runSyncExit(
         // @ts-expect-error
-        Membership.dbRecordToDomain(membershipRecord, orgRecord, {})
+        Membership.fromRecord(membershipRecord, orgRecord, {})
       );
       expect(result._tag).toBe('Failure');
     });
@@ -150,7 +163,7 @@ describe('domain/membership', () => {
     it('fails parsing when missing `membership`', () => {
       const result = Effect.runSyncExit(
         // @ts-expect-error
-        Membership.dbRecordToDomain({membershipRecord}, orgRecord, userRecord)
+        Membership.fromRecord({membershipRecord}, orgRecord, userRecord)
       );
       expect(result._tag).toBe('Failure');
     });

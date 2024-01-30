@@ -12,10 +12,6 @@ export class InviteeAlreadyMemberError {
   readonly _tag = 'InviteeAlreadyMemberError';
 }
 
-export class UnknownError {
-  readonly _tag = 'UnknownError';
-}
-
 export class DatabaseError {
   readonly _tag = 'DatabaseError';
 }
@@ -24,16 +20,8 @@ export class InvitationNotFoundError {
   readonly _tag = 'InvitationNotFoundError';
 }
 
-export class DbRecordParseError {
-  readonly _tag = 'DbRecordParseError';
-}
-
 export class AccountAlreadyExistsError {
   readonly _tag = 'AccountAlreadyExistsError';
-}
-
-export class PasswordHashError {
-  readonly _tag = 'PasswordHashError';
 }
 
 export class UserNotFoundError {

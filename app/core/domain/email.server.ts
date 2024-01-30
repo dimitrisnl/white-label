@@ -1,5 +1,7 @@
+import type {ParseError} from '@effect/schema/ParseResult';
 import * as Schema from '@effect/schema/Schema';
-import * as Effect from 'effect/Effect';
+import {Data, Effect} from 'effect';
+import {compose} from 'effect/Function';
 
 const emailRegex =
   /^([A-Z0-9_+-]+\.?)*[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i;
@@ -12,15 +14,14 @@ export const emailSchema = Schema.compose(Schema.Trim, Schema.Lowercase).pipe(
   }),
   Schema.brand(EmailBrand)
 );
+
 export type Email = Schema.Schema.To<typeof emailSchema>;
 
-class ParseEmailError {
-  readonly _tag = 'ParseEmailError';
-}
+class EmailParseError extends Data.TaggedError('EmailParseError')<{
+  cause: ParseError;
+}> {}
 
-export function parse(value: unknown) {
-  return Effect.try({
-    try: () => Schema.parseSync(emailSchema)(value),
-    catch: () => new ParseEmailError(),
-  });
-}
+export const parseEmail = compose(
+  Schema.decodeUnknown(emailSchema),
+  Effect.mapError((cause) => new EmailParseError({cause}))
+);

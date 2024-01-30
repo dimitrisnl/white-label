@@ -14,3 +14,7 @@ export const meta: MetaFunction = () => {
     {name: 'description', content: 'Main dashboard'},
   ];
 };
+
+export default function Page() {
+  return null;
+}

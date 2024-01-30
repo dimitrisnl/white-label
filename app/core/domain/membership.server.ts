@@ -1,62 +1,73 @@
+import type {ParseError} from '@effect/schema/ParseResult';
 import * as Schema from '@effect/schema/Schema';
+import {Data} from 'effect';
 import * as Effect from 'effect/Effect';
+import {compose} from 'effect/Function';
+import type {memberships, orgs, users} from 'zapatos/schema';
 
-import {DbRecordParseError} from '../lib/errors.server.ts';
-import * as DateString from './date.server.ts';
-import * as Email from './email.server.ts';
-import * as MembershipRole from './membership-role.server.ts';
-import * as Org from './org.server.ts';
-import * as User from './user.server.ts';
+import {db} from '../db/db.server.ts';
+import {emailSchema} from './email.server.ts';
+import {membershipRoleSchema} from './membership-role.server.ts';
+import {orgIdSchema, orgNameSchema, orgSlugSchema} from './org.server.ts';
+import {userIdSchema, userNameSchema} from './user.server.ts';
 
-const MembershipBrand = Symbol.for('MembershipBrand');
+class MembershipParseError extends Data.TaggedError('MembershipParseError')<{
+  cause: ParseError;
+}> {}
 
-export const membershipSchema = Schema.struct({
+export class Membership extends Schema.Class<Membership>()({
   org: Schema.struct({
-    name: Org.orgNameSchema,
-    id: Org.orgIdSchema,
-    slug: Org.orgSlugSchema,
+    name: orgNameSchema,
+    id: orgIdSchema,
+    slug: orgSlugSchema,
   }),
   user: Schema.struct({
-    name: User.userNameSchema,
-    id: User.userIdSchema,
-    email: Email.emailSchema,
+    name: userNameSchema,
+    id: userIdSchema,
+    email: emailSchema,
   }),
-  role: MembershipRole.membershipRoleSchema,
-  createdAt: DateString.dateSchema,
-  updatedAt: DateString.dateSchema,
-}).pipe(Schema.brand(MembershipBrand));
+  role: membershipRoleSchema,
+  createdAt: Schema.Date,
+  updatedAt: Schema.Date,
+}) {
+  static fromUnknown = compose(
+    Schema.decodeUnknown(this),
+    Effect.mapError((cause) => new MembershipParseError({cause}))
+  );
 
-export type Membership = Schema.Schema.To<typeof membershipSchema>;
+  static fromRecord({
+    record,
+    org,
+    user,
+  }: {
+    record: memberships.JSONSelectable;
+    org: Pick<orgs.JSONSelectable, 'id' | 'slug' | 'name'>;
+    user: Pick<users.JSONSelectable, 'id' | 'name' | 'email'>;
+  }) {
+    return Membership.fromUnknown({
+      role: record.role,
+      createdAt: record.created_at,
+      updatedAt: record.updated_at,
+      org: {
+        id: org.id,
+        name: org.name,
+        slug: org.slug,
+      },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+  }
 
-export class ParseMembershipError {
-  readonly _tag = 'ParseMembershipError';
-}
-
-export function parse(value: unknown) {
-  return Effect.try({
-    try: () => Schema.parseSync(membershipSchema)(value),
-    catch: () => new ParseMembershipError(),
-  });
-}
-
-export function dbRecordToDomain(
-  entity: {role: string; created_at: string; updated_at: string},
-  orgEntity: {id: string; name: string; slug: string},
-  userEntity: {id: string; name: string; email: string}
-) {
-  return parse({
-    role: entity.role,
-    createdAt: entity.created_at,
-    updatedAt: entity.updated_at,
-    org: {
-      id: orgEntity.id,
-      name: orgEntity.name,
-      slug: orgEntity.slug,
-    },
-    user: {
-      id: userEntity.id,
-      name: userEntity.name,
-      email: userEntity.email,
-    },
-  }).pipe(Effect.catchAll(() => Effect.fail(new DbRecordParseError())));
+  getRecord() {
+    return {
+      role: this.role,
+      updated_at: db.toString(this.updatedAt, 'timestamptz'),
+      created_at: db.toString(this.createdAt, 'timestamptz'),
+      org_id: this.org.id,
+      user_id: this.user.id,
+    };
+  }
 }

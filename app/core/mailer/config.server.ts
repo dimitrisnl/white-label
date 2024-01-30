@@ -15,4 +15,6 @@ const envValidationSchema = Schema.struct({
 });
 
 // Throw on-load if missing
-export const config = Schema.parseSync(envValidationSchema)(process.env);
+export const config = Schema.decodeUnknownSync(envValidationSchema)(
+  process.env
+);

@@ -1,17 +1,24 @@
+import type {ParseError} from '@effect/schema/ParseResult';
 import * as Schema from '@effect/schema/Schema';
-import * as Effect from 'effect/Effect';
+import {Data, Effect} from 'effect';
+import {compose} from 'effect/Function';
+import type {announcements} from 'zapatos/schema';
 
-import {DbRecordParseError} from '../lib/errors.server.ts';
-import * as DateString from './date.server.ts';
-import * as Org from './org.server.ts';
-import * as Uuid from './uuid.server.ts';
+import {db} from '../db/db.server.ts';
+import {orgIdSchema} from './org.server.ts';
+import {uuidSchema} from './uuid.server.ts';
 
-const AnnouncementBrand = Symbol.for('AnnouncementBrand');
-const AnnouncementIdBrand = Symbol.for('AnnouncementIdBrand');
+class AnnouncementIdParseError extends Data.TaggedError(
+  'AnnouncementIdParseError'
+)<{
+  cause: ParseError;
+}> {}
 
-export const announcementIdSchema = Uuid.uuidSchema.pipe(
-  Schema.brand(AnnouncementIdBrand)
-);
+class AnnouncementParseError extends Data.TaggedError(
+  'AnnouncementParseError'
+)<{
+  cause: ParseError;
+}> {}
 
 export const announcementTitleSchema = Schema.Trim.pipe(
   Schema.minLength(2, {
@@ -31,43 +38,53 @@ export const announcementContentSchema = Schema.Trim.pipe(
   })
 );
 
-export const AnnouncementSchema = Schema.struct({
-  id: Uuid.uuidSchema,
-  orgId: Org.orgIdSchema,
+const AnnouncementIdBrand = Symbol.for('AnnouncementIdBrand');
+export const announcementIdSchema = uuidSchema.pipe(
+  Schema.brand(AnnouncementIdBrand)
+);
+
+export class Announcement extends Schema.Class<Announcement>()({
+  id: uuidSchema,
+  orgId: orgIdSchema,
   title: announcementTitleSchema,
   content: announcementContentSchema,
-  publishedAt: DateString.dateSchema,
-  createdAt: DateString.dateSchema,
-  updatedAt: Schema.compose(DateString.dateSchema, Schema.null),
-}).pipe(Schema.brand(AnnouncementBrand));
-
-export type Announcement = Schema.Schema.To<typeof AnnouncementSchema>;
-
-export class ParseAnnouncementError {
-  readonly _tag = 'ParseAnnouncementError';
-}
-
-export function parse(value: unknown) {
-  return Effect.try({
-    try: () => Schema.parseSync(AnnouncementSchema)(value),
-    catch: () => new ParseAnnouncementError(),
-  });
-}
-
-export function dbRecordToDomain(entity: {
-  id: string;
-  title: string;
-  content: string;
-  published_at: string | null;
-  created_at: string;
-  updated_at: string;
+  publishedAt: Schema.Date,
+  createdAt: Schema.Date,
+  updatedAt: Schema.union(Schema.Date, Schema.null),
 }) {
-  return parse({
-    id: entity.id,
-    title: entity.title,
-    content: entity.content,
-    publishedAt: entity.published_at,
-    createdAt: entity.created_at,
-    updatedAt: entity.updated_at,
-  }).pipe(Effect.catchAll(() => Effect.fail(new DbRecordParseError())));
+  static fromUnknown = compose(
+    Schema.decodeUnknown(this),
+    Effect.mapError((cause) => new AnnouncementParseError({cause}))
+  );
+
+  static fromRecord(record: announcements.JSONSelectable) {
+    return Announcement.fromUnknown({
+      id: record.id,
+      title: record.title,
+      orgId: record.org_id,
+      content: record.content,
+      publishedAt: record.published_at,
+      createdAt: record.created_at,
+      updatedAt: record.updated_at,
+    });
+  }
+
+  getRecord(): announcements.JSONSelectable {
+    return {
+      id: this.id,
+      content: this.content,
+      title: this.title,
+      org_id: this.orgId,
+      published_at: db.toString(this.publishedAt, 'timestamptz'),
+      created_at: db.toString(this.createdAt, 'timestamptz'),
+      updated_at: this.updatedAt
+        ? db.toString(this.updatedAt, 'timestamptz')
+        : null,
+    };
+  }
 }
+
+export const parseAnnouncementId = compose(
+  Schema.decodeUnknown(announcementIdSchema),
+  Effect.mapError((cause) => new AnnouncementIdParseError({cause}))
+);

@@ -3,10 +3,6 @@ import * as Effect from 'effect/Effect';
 import {isDatabaseError} from 'zapatos/db';
 
 import {db, pool} from '~/core/db/db.server.ts';
-import * as Email from '~/core/domain/email.server';
-import * as Password from '~/core/domain/password.server.ts';
-import * as User from '~/core/domain/user.server.ts';
-import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
   AccountAlreadyExistsError,
   DatabaseError,
@@ -14,10 +10,15 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
+import {emailSchema} from '../domain/email.server';
+import {hashPassword, passwordSchema} from '../domain/password.server';
+import {User, userNameSchema} from '../domain/user.server';
+import {generateUUID} from '../domain/uuid.server';
+
 const validationSchema = Schema.struct({
-  password: Password.passwordSchema,
-  email: Email.emailSchema,
-  name: User.userNameSchema,
+  password: passwordSchema,
+  email: emailSchema,
+  name: userNameSchema,
 });
 
 export type CreateUserProps = Schema.Schema.To<typeof validationSchema>;
@@ -27,8 +28,8 @@ export function createUser() {
     return Effect.gen(function* (_) {
       yield* _(Effect.log(`Use-case(create-user): Creating user ${email}`));
 
-      const passwordHash = yield* _(Password.hash(password));
-      const userId = yield* _(Uuid.generate());
+      const passwordHash = yield* _(hashPassword(password));
+      const userId = yield* _(generateUUID());
 
       const userRecord = yield* _(
         Effect.tryPromise({
@@ -58,8 +59,8 @@ export function createUser() {
         })
       );
 
-      const user = yield* _(User.dbRecordToDomain(userRecord));
-      const verifyEmailTokenId = yield* _(Uuid.generate());
+      const user = yield* _(User.fromRecord(userRecord));
+      const verifyEmailTokenId = yield* _(generateUUID());
 
       yield* _(
         Effect.tryPromise({
@@ -78,7 +79,7 @@ export function createUser() {
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),
-        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        UserParseError: () => Effect.fail(new InternalServerError()),
         PasswordHashError: () => Effect.fail(new InternalServerError()),
         UUIDGenerationError: () => Effect.fail(new InternalServerError()),
       })

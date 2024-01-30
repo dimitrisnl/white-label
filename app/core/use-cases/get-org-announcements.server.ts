@@ -1,15 +1,15 @@
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server';
-import * as Announcement from '~/core/domain/announcement.server.ts';
-import type * as Org from '~/core/domain/org.server.ts';
-import type * as User from '~/core/domain/user.server.ts';
 import {DatabaseError, InternalServerError} from '~/core/lib/errors.server';
 
+import {Announcement} from '../domain/announcement.server';
+import type {Org} from '../domain/org.server';
+import type {User} from '../domain/user.server';
 import {announcementAuthorizationService} from '../services/announcement-authorization-service.server';
 
 export function getOrgAnnouncements() {
-  function execute(orgId: Org.Org['id'], userId: User.User['id']) {
+  function execute(orgId: Org['id'], userId: User['id']) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
@@ -29,8 +29,7 @@ export function getOrgAnnouncements() {
       const announcements = yield* _(
         Effect.all(
           announcementRecords.map(
-            (announcementRecord) =>
-              Announcement.dbRecordToDomain(announcementRecord),
+            (announcementRecord) => Announcement.fromRecord(announcementRecord),
             {concurrency: 'unbounded'}
           )
         )
@@ -40,7 +39,7 @@ export function getOrgAnnouncements() {
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),
-        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        AnnouncementParseError: () => Effect.fail(new InternalServerError()),
       })
     );
   }

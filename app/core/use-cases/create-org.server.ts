@@ -3,10 +3,6 @@ import * as Effect from 'effect/Effect';
 import {isDatabaseError} from 'zapatos/db';
 
 import {db, pool} from '~/core/db/db.server.ts';
-import * as MembershipRole from '~/core/domain/membership-role.server.ts';
-import * as Org from '~/core/domain/org.server.ts';
-import type * as User from '~/core/domain/user.server.ts';
-import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
   InternalServerError,
@@ -15,14 +11,19 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
+import {OWNER} from '../domain/membership-role.server';
+import {Org, orgNameSchema} from '../domain/org.server';
+import type {User} from '../domain/user.server';
+import {generateUUID} from '../domain/uuid.server';
+
 const validationSchema = Schema.struct({
-  name: Org.orgNameSchema,
+  name: orgNameSchema,
 });
 
 export type CreateOrgProps = Schema.Schema.To<typeof validationSchema>;
 
 export function createOrg() {
-  function execute({name}: CreateOrgProps, userId: User.User['id']) {
+  function execute({name}: CreateOrgProps, userId: User['id']) {
     return Effect.gen(function* (_) {
       yield* _(Effect.log(`Use-case(create-org): Creating org ${name}`));
 
@@ -32,12 +33,12 @@ export function createOrg() {
           catch: () => new DatabaseError(),
         })
       );
-
+      console.log(userRecord);
       if (!userRecord) {
         return yield* _(Effect.fail(new UserNotFoundError()));
       }
 
-      const orgId = yield* _(Uuid.generate());
+      const orgId = yield* _(generateUUID());
       const [orgIdPrefix] = orgId.split('-');
       const baseSlug = yield* _(Org.slugify(name));
       const slug = `${baseSlug}-${orgIdPrefix}`;
@@ -68,20 +69,20 @@ export function createOrg() {
               .insert('memberships', {
                 org_id: orgId,
                 user_id: userId,
-                role: MembershipRole.OWNER,
+                role: OWNER,
               })
               .run(pool),
           catch: () => new DatabaseError(),
         })
       );
 
-      const org = yield* _(Org.dbRecordToDomain(orgRecord));
+      const org = yield* _(Org.fromRecord(orgRecord));
 
       return org;
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),
-        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        OrgParseError: () => Effect.fail(new InternalServerError()),
         UUIDGenerationError: () => Effect.fail(new InternalServerError()),
         SlugAlreadyExistsError: () => Effect.fail(new InternalServerError()),
       })

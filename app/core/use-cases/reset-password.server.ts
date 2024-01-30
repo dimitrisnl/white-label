@@ -2,8 +2,6 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
-import * as Password from '~/core/domain/password.server.ts';
-import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
   InternalServerError,
@@ -12,9 +10,12 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server.ts';
 
+import {hashPassword, passwordSchema} from '../domain/password.server';
+import {uuidSchema} from '../domain/uuid.server';
+
 const validationSchema = Schema.struct({
-  password: Password.passwordSchema,
-  token: Uuid.uuidSchema,
+  password: passwordSchema,
+  token: uuidSchema,
 });
 
 export type ResetPasswordProps = Schema.Schema.To<typeof validationSchema>;
@@ -51,7 +52,7 @@ export function resetPassword() {
         return yield* _(Effect.fail(new UserNotFoundError()));
       }
 
-      const passwordHash = yield* _(Password.hash(password));
+      const passwordHash = yield* _(hashPassword(password));
       const records = yield* _(
         Effect.tryPromise({
           try: () =>

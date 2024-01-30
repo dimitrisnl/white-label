@@ -1,19 +1,19 @@
 import {Effect} from 'effect';
 
-import * as Password from './password.server';
+import {comparePasswords, hashPassword, parsePassword} from './password.server';
 
 describe('domain/password', () => {
   describe('parsing', () => {
     it('parses a valid password', () => {
-      const result = Effect.runSyncExit(Password.parse('my-password-is-ok'));
+      const result = Effect.runSyncExit(parsePassword('my-password-is-ok'));
       expect(result._tag).toBe('Success');
     });
     it('throws on parsing a small password', () => {
-      const result = Effect.runSyncExit(Password.parse('1234567'));
+      const result = Effect.runSyncExit(parsePassword('1234567'));
       expect(result._tag).toBe('Failure');
     });
     it('throws on parsing a huge password', () => {
-      const result = Effect.runSyncExit(Password.parse('12'.repeat(51)));
+      const result = Effect.runSyncExit(parsePassword('12'.repeat(51)));
       expect(result._tag).toBe('Failure');
     });
   });
@@ -23,7 +23,7 @@ describe('domain/password', () => {
 
       const result = await Effect.runPromiseExit(
         Effect.gen(function* (_) {
-          const hash = yield* _(Password.hash(password));
+          const hash = yield* _(hashPassword(password));
           expect(hash).not.toBe(password);
         })
       );
@@ -35,8 +35,8 @@ describe('domain/password', () => {
 
       const result = await Effect.runPromiseExit(
         Effect.gen(function* (_) {
-          const hash1 = yield* _(Password.hash(password));
-          const hash2 = yield* _(Password.hash(password));
+          const hash1 = yield* _(hashPassword(password));
+          const hash2 = yield* _(hashPassword(password));
           expect(hash1).not.toBe(hash2);
         })
       );
@@ -51,10 +51,10 @@ describe('domain/password', () => {
 
       const result = await Effect.runPromiseExit(
         Effect.gen(function* (_) {
-          const hash = yield* _(Password.hash(password));
+          const hash = yield* _(hashPassword(password));
 
           const isValid = yield* _(
-            Password.compare({
+            comparePasswords({
               plainText: password,
               hashValue: hash,
             })
@@ -72,10 +72,10 @@ describe('domain/password', () => {
 
       const result = await Effect.runPromiseExit(
         Effect.gen(function* (_) {
-          const hash = yield* _(Password.hash(password));
+          const hash = yield* _(hashPassword(password));
 
           const isValid = yield* _(
-            Password.compare({
+            comparePasswords({
               plainText: 'my-password-is-not-ok',
               hashValue: hash,
             })

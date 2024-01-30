@@ -20,7 +20,7 @@ describe('use-cases/create-org', () => {
       const {validate} = createOrg();
 
       const result = await Effect.runPromiseExit(
-        validate({...orgObj, name: undefined})
+        validate({...orgObj, name: ''})
       );
       expect(result._tag).toBe('Failure');
     });

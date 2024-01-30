@@ -23,8 +23,7 @@ describe('use-cases/get-user', () => {
       );
 
       Exit.match(result, {
-        onFailure: (error) => {
-          console.log(error);
+        onFailure: () => {
           fail();
         },
         onSuccess: (data) => {

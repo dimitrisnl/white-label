@@ -1,15 +1,17 @@
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server';
-import * as Org from '~/core/domain/org.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   OrgNotFoundError,
 } from '~/core/lib/errors.server';
 
+import type {Org} from '../domain/org.server';
+import {parseOrgId} from '../domain/org.server';
+
 export function getOrgIdBySlug() {
-  function execute(slug: Org.Org['slug']) {
+  function execute(slug: Org['slug']) {
     return Effect.gen(function* (_) {
       yield* _(Effect.log(`Use-case(get-org-id-by-slug): Getting org ${slug}`));
 
@@ -24,13 +26,13 @@ export function getOrgIdBySlug() {
         return yield* _(Effect.fail(new OrgNotFoundError()));
       }
 
-      const orgId = yield* _(Org.parseId(orgRecord.id));
+      const orgId = yield* _(parseOrgId(orgRecord.id));
 
       return orgId;
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),
-        ParseOrgIdError: () => Effect.fail(new InternalServerError()),
+        OrgIdParseError: () => Effect.fail(new InternalServerError()),
       })
     );
   }

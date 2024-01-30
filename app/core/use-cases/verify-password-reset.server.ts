@@ -2,7 +2,6 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
-import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
   InternalServerError,
@@ -10,8 +9,10 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server.ts';
 
+import {uuidSchema} from '../domain/uuid.server';
+
 const validationSchema = Schema.struct({
-  token: Uuid.uuidSchema,
+  token: uuidSchema,
 });
 
 export type VerifyPasswordResetProps = Schema.Schema.To<

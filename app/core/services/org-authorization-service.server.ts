@@ -1,10 +1,11 @@
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server';
-import * as MembershipRole from '~/core/domain/membership-role.server.ts';
 import type {Org} from '~/core/domain/org.server.ts';
 import type {User} from '~/core/domain/user.server.ts';
 import {DatabaseError, ForbiddenActionError} from '~/core/lib/errors.server';
+
+import {ADMIN, OWNER} from '../domain/membership-role.server';
 
 function getMembershipRecord(userId: User['id'], orgId: Org['id']) {
   return Effect.tryPromise({
@@ -32,8 +33,8 @@ export const orgAuthorizationService = {
         return yield* _(Effect.fail(new ForbiddenActionError()));
       }
 
-      const isOwner = membershipRecord.role === MembershipRole.OWNER;
-      const isAdmin = membershipRecord.role === MembershipRole.ADMIN;
+      const isOwner = membershipRecord.role === OWNER;
+      const isAdmin = membershipRecord.role === ADMIN;
       const hasPermission = isOwner || isAdmin;
 
       return hasPermission
@@ -49,7 +50,7 @@ export const orgAuthorizationService = {
         return yield* _(Effect.fail(new ForbiddenActionError()));
       }
 
-      const hasPermission = membershipRecord.role === MembershipRole.OWNER;
+      const hasPermission = membershipRecord.role === OWNER;
 
       return hasPermission
         ? yield* _(Effect.succeed(null))

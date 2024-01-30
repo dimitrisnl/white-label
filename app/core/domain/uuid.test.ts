@@ -1,25 +1,22 @@
 import {faker} from '@faker-js/faker';
 import {Effect} from 'effect';
 
-import * as Uuid from './uuid.server';
-
-// todo: Pass `uuid` as a Service through Effect.Layer
-// Makes it easier to make the external service fail, and test our error handling
+import {generateUUID, parseUUID} from './uuid.server';
 
 describe('domain/uuid', () => {
   describe('parsing', () => {
     it('parses a uuid', () => {
-      const result = Effect.runSyncExit(Uuid.parse(faker.string.uuid()));
+      const result = Effect.runSyncExit(parseUUID(faker.string.uuid()));
       expect(result._tag).toBe('Success');
     });
     it('throws while parsing other strings', () => {
-      const result = Effect.runSyncExit(Uuid.parse(faker.string.nanoid()));
+      const result = Effect.runSyncExit(parseUUID(faker.string.nanoid()));
       expect(result._tag).toBe('Failure');
     });
   });
   describe('generation', () => {
     it('generates a new uuid', () => {
-      const result = Effect.runSyncExit(Uuid.generate());
+      const result = Effect.runSyncExit(generateUUID());
       expect(result._tag).toBe('Success');
     });
   });

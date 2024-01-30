@@ -2,7 +2,7 @@ import {faker} from '@faker-js/faker';
 import {fail} from 'assert';
 import {Effect, Exit} from 'effect';
 
-import * as Org from './org.server';
+import {Org, parseOrgId, parseOrgSlug} from './org.server';
 
 describe('domain/org', () => {
   describe('parsing', () => {
@@ -11,13 +11,13 @@ describe('domain/org', () => {
       id: uuid,
       name: 'wolfwave',
       slug: 'wolfwave-123',
-      createdAt: '2024-01-21 16:20:01.150513+00',
-      updatedAt: '2024-01-21 16:20:01.150513+00',
+      createdAt: '2012-06-01T12:34:00Z' as const,
+      updatedAt: '2012-06-01T12:34:00Z' as const,
     };
 
     describe('parse-org', () => {
       it('parses a normal org record', () => {
-        const result = Effect.runSyncExit(Org.parse(validOrgObject));
+        const result = Effect.runSyncExit(Org.fromUnknown(validOrgObject));
 
         Exit.match(result, {
           onFailure: () => fail(),
@@ -26,8 +26,8 @@ describe('domain/org', () => {
               id: uuid,
               name: 'wolfwave',
               slug: 'wolfwave-123',
-              createdAt: new Date('2024-01-21 16:20:01.150513+00'),
-              updatedAt: new Date('2024-01-21 16:20:01.150513+00'),
+              createdAt: new Date('2012-06-01T12:34:00Z'),
+              updatedAt: new Date('2012-06-01T12:34:00Z'),
             });
           },
         });
@@ -35,49 +35,49 @@ describe('domain/org', () => {
 
       it('fails parsing with short `name`', () => {
         const result = Effect.runSyncExit(
-          Org.parse({...validOrgObject, name: 'A'})
+          Org.fromUnknown({...validOrgObject, name: 'A'})
         );
         expect(result._tag).toBe('Failure');
       });
 
       it('fails parsing with huge `name`', () => {
         const result = Effect.runSyncExit(
-          Org.parse({...validOrgObject, name: 'AB'.repeat(51)})
+          Org.fromUnknown({...validOrgObject, name: 'AB'.repeat(51)})
         );
         expect(result._tag).toBe('Failure');
       });
 
       it('fails parsing when missing `uuid`', () => {
         const result = Effect.runSyncExit(
-          Org.parse({...validOrgObject, id: undefined})
+          Org.fromUnknown({...validOrgObject, id: undefined})
         );
         expect(result._tag).toBe('Failure');
       });
 
       it('fails parsing when missing `name`', () => {
         const result = Effect.runSyncExit(
-          Org.parse({...validOrgObject, name: undefined})
+          Org.fromUnknown({...validOrgObject, name: undefined})
         );
         expect(result._tag).toBe('Failure');
       });
 
       it('fails parsing when missing `slug`', () => {
         const result = Effect.runSyncExit(
-          Org.parse({...validOrgObject, slug: undefined})
+          Org.fromUnknown({...validOrgObject, slug: undefined})
         );
         expect(result._tag).toBe('Failure');
       });
 
       it('fails parsing when missing `createdAt`', () => {
         const result = Effect.runSyncExit(
-          Org.parse({...validOrgObject, createdAt: undefined})
+          Org.fromUnknown({...validOrgObject, createdAt: undefined})
         );
         expect(result._tag).toBe('Failure');
       });
 
       it('fails parsing when missing `updatedAt`', () => {
         const result = Effect.runSyncExit(
-          Org.parse({...validOrgObject, updatedAt: undefined})
+          Org.fromUnknown({...validOrgObject, updatedAt: undefined})
         );
         expect(result._tag).toBe('Failure');
       });
@@ -85,12 +85,12 @@ describe('domain/org', () => {
 
     describe('parse-id', () => {
       it('parses a valid uuid as org-id', () => {
-        const result = Effect.runSyncExit(Org.parseId(validOrgObject.id));
+        const result = Effect.runSyncExit(parseOrgId(validOrgObject.id));
         expect(result._tag).toBe('Success');
       });
 
       it('fails parsing gibberish as org-id', () => {
-        const result = Effect.runSyncExit(Org.parseId('gibberish'));
+        const result = Effect.runSyncExit(parseOrgId('gibberish'));
         expect(result._tag).toBe('Failure');
       });
     });
@@ -102,12 +102,12 @@ describe('domain/org', () => {
       id: uuid,
       name: 'wolfwave',
       slug: 'wolfwave-123',
-      created_at: '2024-01-21 16:20:01.150513+00',
-      updated_at: '2024-01-21 16:20:01.150513+00',
+      created_at: '2012-06-01T12:34:00Z' as const,
+      updated_at: '2012-06-01T12:34:00Z' as const,
     };
 
     it('parses a normal record', () => {
-      const result = Effect.runSyncExit(Org.dbRecordToDomain(validRecord));
+      const result = Effect.runSyncExit(Org.fromRecord(validRecord));
 
       Exit.match(result, {
         onFailure: () => fail(),
@@ -116,8 +116,8 @@ describe('domain/org', () => {
             id: uuid,
             name: 'wolfwave',
             slug: 'wolfwave-123',
-            createdAt: new Date('2024-01-21 16:20:01.150513+00'),
-            updatedAt: new Date('2024-01-21 16:20:01.150513+00'),
+            createdAt: new Date('2012-06-01T12:34:00Z'),
+            updatedAt: new Date('2012-06-01T12:34:00Z'),
           });
         },
       });
@@ -126,7 +126,7 @@ describe('domain/org', () => {
     it('fails parsing when missing `uuid`', () => {
       const result = Effect.runSyncExit(
         // @ts-expect-error
-        Org.dbRecordToDomain({...validRecord, id: undefined})
+        Org.fromRecord({...validRecord, id: undefined})
       );
       expect(result._tag).toBe('Failure');
     });
@@ -134,7 +134,7 @@ describe('domain/org', () => {
     it('fails parsing when missing `name`', () => {
       const result = Effect.runSyncExit(
         // @ts-expect-error
-        Org.dbRecordToDomain({...validRecord, name: undefined})
+        Org.fromRecord({...validRecord, name: undefined})
       );
       expect(result._tag).toBe('Failure');
     });
@@ -142,7 +142,7 @@ describe('domain/org', () => {
     it('fails parsing when missing `slug`', () => {
       const result = Effect.runSyncExit(
         // @ts-expect-error
-        Org.dbRecordToDomain({...validRecord, slug: undefined})
+        Org.fromRecord({...validRecord, slug: undefined})
       );
       expect(result._tag).toBe('Failure');
     });
@@ -150,7 +150,7 @@ describe('domain/org', () => {
     it('fails parsing when missing `createdAt`', () => {
       const result = Effect.runSyncExit(
         // @ts-expect-error
-        Org.dbRecordToDomain({...validRecord, created_at: undefined})
+        Org.fromRecord({...validRecord, created_at: undefined})
       );
       expect(result._tag).toBe('Failure');
     });
@@ -158,7 +158,7 @@ describe('domain/org', () => {
     it('fails parsing when missing `updatedAt`', () => {
       const result = Effect.runSyncExit(
         // @ts-expect-error
-        Org.dbRecordToDomain({...validRecord, updated_at: undefined})
+        Org.fromRecord({...validRecord, updated_at: undefined})
       );
       expect(result._tag).toBe('Failure');
     });
@@ -175,11 +175,11 @@ describe('domain/org', () => {
       });
     });
     it('parses a slug', () => {
-      const result = Effect.runSyncExit(Org.parseSlug('wolfwave'));
+      const result = Effect.runSyncExit(parseOrgSlug('wolfwave'));
       expect(result._tag).toBe('Success');
     });
     it('fails parsing a small slug', () => {
-      const result = Effect.runSyncExit(Org.parseSlug('w'));
+      const result = Effect.runSyncExit(parseOrgSlug('w'));
       expect(result._tag).toBe('Failure');
     });
   });

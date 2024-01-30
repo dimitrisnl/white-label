@@ -2,8 +2,6 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
-import * as Email from '~/core/domain/email.server.ts';
-import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
   InternalServerError,
@@ -11,8 +9,11 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
+import {emailSchema} from '../domain/email.server';
+import {generateUUID} from '../domain/uuid.server';
+
 const validationSchema = Schema.struct({
-  email: Email.emailSchema,
+  email: emailSchema,
 });
 
 export type RequestPasswordResetProps = Schema.Schema.To<
@@ -38,7 +39,7 @@ export function requestPasswordReset() {
         return yield* _(Effect.fail(new UserNotFoundError()));
       }
 
-      const passwordResetTokenId = yield* _(Uuid.generate());
+      const passwordResetTokenId = yield* _(generateUUID());
 
       yield* _(
         Effect.tryPromise({

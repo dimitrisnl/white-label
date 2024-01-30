@@ -2,12 +2,6 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
-import * as Email from '~/core/domain/email.server';
-import * as MembershipInvitation from '~/core/domain/membership-invitation.server.ts';
-import * as MembershipRole from '~/core/domain/membership-role.server.ts';
-import type * as Org from '~/core/domain/org.server.ts';
-import type * as User from '~/core/domain/user.server.ts';
-import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
   InternalServerError,
@@ -17,9 +11,16 @@ import {
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 import {invitationAuthorizationService} from '~/core/services/invitation-authorization-service.server.ts';
 
+import {emailSchema} from '../domain/email.server';
+import {MembershipInvitation} from '../domain/membership-invitation.server';
+import {membershipRoleSchema} from '../domain/membership-role.server';
+import type {Org} from '../domain/org.server';
+import type {User} from '../domain/user.server';
+import {generateUUID} from '../domain/uuid.server';
+
 const validationSchema = Schema.struct({
-  email: Email.emailSchema,
-  role: MembershipRole.membershipRoleSchema,
+  email: emailSchema,
+  role: membershipRoleSchema,
 });
 
 export type CreateInvitationProps = Schema.Schema.To<typeof validationSchema>;
@@ -27,8 +28,8 @@ export type CreateInvitationProps = Schema.Schema.To<typeof validationSchema>;
 export function createInvitation() {
   function execute(
     {email, role}: CreateInvitationProps,
-    orgId: Org.Org['id'],
-    userId: User.User['id']
+    orgId: Org['id'],
+    userId: User['id']
   ) {
     return Effect.gen(function* (_) {
       yield* _(
@@ -39,7 +40,7 @@ export function createInvitation() {
 
       yield* _(invitationAuthorizationService.canCreate(userId, orgId));
 
-      const invitationId = yield* _(Uuid.generate());
+      const invitationId = yield* _(generateUUID());
 
       // Delete any previous invitation
       yield* _(
@@ -106,10 +107,13 @@ export function createInvitation() {
       );
 
       const invitation = yield* _(
-        MembershipInvitation.dbRecordToDomain(invitationRecord, {
-          slug: orgRecord.slug,
-          name: orgRecord.name,
-          id: orgRecord.id,
+        MembershipInvitation.fromRecord({
+          record: invitationRecord,
+          org: {
+            slug: orgRecord.slug,
+            name: orgRecord.name,
+            id: orgRecord.id,
+          },
         })
       );
 
@@ -117,7 +121,7 @@ export function createInvitation() {
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),
-        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        MembershipInvitationParse: () => Effect.fail(new InternalServerError()),
         UUIDGenerationError: () => Effect.fail(new InternalServerError()),
       })
     );

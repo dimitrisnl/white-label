@@ -2,8 +2,6 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
-import * as Org from '~/core/domain/org.server.ts';
-import type * as User from '~/core/domain/user.server.ts';
 import {
   DatabaseError,
   InternalServerError,
@@ -12,18 +10,17 @@ import {
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 import {orgAuthorizationService} from '~/core/services/org-authorization-service.server.ts';
 
+import {Org, orgNameSchema} from '../domain/org.server';
+import type {User} from '../domain/user.server';
+
 const validationSchema = Schema.struct({
-  name: Org.orgNameSchema,
+  name: orgNameSchema,
 });
 
 export type EditOrgProps = Schema.Schema.To<typeof validationSchema>;
 
 export function editOrg() {
-  function execute(
-    {name}: EditOrgProps,
-    orgId: Org.Org['id'],
-    userId: User.User['id']
-  ) {
+  function execute({name}: EditOrgProps, orgId: Org['id'], userId: User['id']) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(`Use-case(edit-org): Editing org ${orgId} with name ${name}`)
@@ -45,12 +42,12 @@ export function editOrg() {
         return yield* _(Effect.fail(new OrgNotFoundError()));
       }
 
-      const org = yield* _(Org.dbRecordToDomain(records[0]));
+      const org = yield* _(Org.fromRecord(records[0]));
       return org;
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),
-        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        OrgParseError: () => Effect.fail(new InternalServerError()),
       })
     );
   }

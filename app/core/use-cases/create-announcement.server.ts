@@ -2,16 +2,21 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
-import * as Announcement from '~/core/domain/announcement.server.ts';
-import type * as Org from '~/core/domain/org.server.ts';
-import type * as User from '~/core/domain/user.server.ts';
-import * as Uuid from '~/core/domain/uuid.server.ts';
 import {DatabaseError, InternalServerError} from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
+import {
+  Announcement,
+  announcementContentSchema,
+  announcementTitleSchema,
+} from '../domain/announcement.server';
+import type {Org} from '../domain/org.server';
+import type {User} from '../domain/user.server';
+import {generateUUID} from '../domain/uuid.server';
+
 const validationSchema = Schema.struct({
-  title: Announcement.announcementTitleSchema,
-  content: Announcement.announcementContentSchema,
+  title: announcementTitleSchema,
+  content: announcementContentSchema,
 });
 
 export type CreateAnnouncementProps = Schema.Schema.To<typeof validationSchema>;
@@ -19,8 +24,8 @@ export type CreateAnnouncementProps = Schema.Schema.To<typeof validationSchema>;
 export function createAnnouncement() {
   function execute(
     {content, title}: CreateAnnouncementProps,
-    orgId: Org.Org['id'],
-    userId: User.User['id']
+    orgId: Org['id'],
+    userId: User['id']
   ) {
     return Effect.gen(function* (_) {
       yield* _(
@@ -29,7 +34,7 @@ export function createAnnouncement() {
         )
       );
 
-      const announcementId = yield* _(Uuid.generate());
+      const announcementId = yield* _(generateUUID());
 
       const announcementRecord = yield* _(
         Effect.tryPromise({
@@ -49,14 +54,14 @@ export function createAnnouncement() {
       );
 
       const announcement = yield* _(
-        Announcement.dbRecordToDomain(announcementRecord)
+        Announcement.fromRecord(announcementRecord)
       );
 
       return announcement;
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),
-        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        AnnouncementParseError: () => Effect.fail(new InternalServerError()),
         UUIDGenerationError: () => Effect.fail(new InternalServerError()),
       })
     );

@@ -1,28 +1,29 @@
+import type {ParseError} from '@effect/schema/ParseResult';
 import * as Schema from '@effect/schema/Schema';
-import * as Effect from 'effect/Effect';
+import {Data, Effect} from 'effect';
+import {compose} from 'effect/Function';
 
-import * as DateString from './date.server.ts';
-import * as Uuid from './uuid.server.ts';
+import {uuidSchema} from './uuid.server';
 
 const VerifyEmailTokenBrand = Symbol.for('VerifyEmailTokenBrand');
 
 export const verifyEmailTokenSchema = Schema.struct({
-  id: Uuid.uuidSchema.pipe(Schema.message(() => 'Token is in invalid format')),
-  userId: Uuid.uuidSchema,
-  expiresAt: DateString.dateSchema,
-  createdAt: DateString.dateSchema,
-  updatedAt: DateString.dateSchema,
+  id: uuidSchema.pipe(Schema.message(() => 'Token is in invalid format')),
+  userId: uuidSchema,
+  expiresAt: Schema.Date,
+  createdAt: Schema.Date,
+  updatedAt: Schema.Date,
 }).pipe(Schema.brand(VerifyEmailTokenBrand));
 
 export type VerifyEmailToken = Schema.Schema.To<typeof verifyEmailTokenSchema>;
 
-export class ParseVerifyTokenError {
-  readonly _tag = 'ParseVerifyTokenError';
-}
+class VerifyEmailTokenParseError extends Data.TaggedError(
+  'VerifyEmailTokenParseError'
+)<{
+  cause: ParseError;
+}> {}
 
-export function parse(value: unknown) {
-  return Effect.try({
-    try: () => Schema.parseSync(verifyEmailTokenSchema)(value),
-    catch: () => new ParseVerifyTokenError(),
-  });
-}
+export const parseVerifyEmailToken = compose(
+  Schema.decodeUnknown(verifyEmailTokenSchema),
+  Effect.mapError((cause) => new VerifyEmailTokenParseError({cause}))
+);

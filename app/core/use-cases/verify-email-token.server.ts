@@ -2,7 +2,6 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
-import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
   InternalServerError,
@@ -11,18 +10,13 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server.ts';
 
+import {uuidSchema} from '../domain/uuid.server';
+
 const validationSchema = Schema.struct({
-  token: Uuid.uuidSchema,
+  token: uuidSchema,
 });
 
 export type VerifyEmailProps = Schema.Schema.To<typeof validationSchema>;
-
-function deleteVerifyEmailTokenRecord(token: string) {
-  return Effect.tryPromise({
-    try: () => db.deletes('verify_email_tokens', {id: token}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
 
 export function verifyEmailToken() {
   function execute({token}: VerifyEmailProps) {
@@ -70,7 +64,12 @@ export function verifyEmailToken() {
         return new DatabaseError();
       }
 
-      yield* _(deleteVerifyEmailTokenRecord(token));
+      yield* _(
+        Effect.tryPromise({
+          try: () => db.deletes('verify_email_tokens', {id: token}).run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
       return null;
     }).pipe(

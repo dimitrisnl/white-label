@@ -108,7 +108,7 @@ export const action = withAction(
             errors: ["You don't have access to do this action"],
           })
         ),
-      ParseOrgSlugError: () =>
+      OrgSlugParseError: () =>
         ActionArgs.pipe(
           Effect.flatMap(({request}) =>
             Effect.fail(new Redirect({to: '/login', init: request}))

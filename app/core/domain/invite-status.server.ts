@@ -1,5 +1,7 @@
+import type {ParseError} from '@effect/schema/ParseResult';
 import * as Schema from '@effect/schema/Schema';
-import * as Effect from 'effect/Effect';
+import {Data, Effect} from 'effect';
+import {compose} from 'effect/Function';
 
 export const PENDING = 'PENDING' as const;
 export const DECLINED = 'DECLINED' as const;
@@ -17,13 +19,13 @@ export const inviteStatusSchema = Schema.literal(
 
 export type InviteStatus = Schema.Schema.To<typeof inviteStatusSchema>;
 
-export class ParseInviteStatusError {
-  readonly _tag = 'ParseInviteStatusError';
-}
+class InviteStatusParseError extends Data.TaggedError(
+  'InviteStatusParseError'
+)<{
+  cause: ParseError;
+}> {}
 
-export function parse(value: unknown) {
-  return Effect.try({
-    try: () => Schema.parseSync(inviteStatusSchema)(value),
-    catch: () => new ParseInviteStatusError(),
-  });
-}
+export const parseInviteStatus = compose(
+  Schema.decodeUnknown(inviteStatusSchema),
+  Effect.mapError((cause) => new InviteStatusParseError({cause}))
+);

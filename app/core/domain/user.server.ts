@@ -1,21 +1,20 @@
+import type {ParseError} from '@effect/schema/ParseResult';
 import * as Schema from '@effect/schema/Schema';
-import * as Effect from 'effect/Effect';
+import {Data, Effect} from 'effect';
+import {compose} from 'effect/Function';
+import type {users} from 'zapatos/schema';
 
-import {DbRecordParseError} from '../lib/errors.server.ts';
-import * as DateString from './date.server.ts';
-import * as Email from './email.server.ts';
-import * as Uuid from './uuid.server.ts';
+import {db} from '../db/db.server.ts';
+import {emailSchema} from './email.server.ts';
+import {uuidSchema} from './uuid.server.ts';
 
-const UserBrand = Symbol.for('UserBrand');
-const UserIdBrand = Symbol.for('UserIdBrand');
+class UserIdParseError extends Data.TaggedError('UserIdParseError')<{
+  cause: ParseError;
+}> {}
 
-class ParseUserIdError {
-  readonly _tag = 'ParseUserIdError';
-}
-
-class ParseUserError {
-  readonly _tag = 'ParseUserError';
-}
+class UserParseError extends Data.TaggedError('UserParseError')<{
+  cause: ParseError;
+}> {}
 
 export const userNameSchema = Schema.Trim.pipe(
   Schema.minLength(2, {
@@ -26,47 +25,46 @@ export const userNameSchema = Schema.Trim.pipe(
   })
 );
 
-export const userIdSchema = Uuid.uuidSchema.pipe(Schema.brand(UserIdBrand));
+const UserIdBrand = Symbol.for('UserIdBrand');
+export const userIdSchema = uuidSchema.pipe(Schema.brand(UserIdBrand));
 
-export const userSchema = Schema.struct({
+export class User extends Schema.Class<User>()({
   id: userIdSchema,
   name: userNameSchema,
-  email: Email.emailSchema,
+  email: emailSchema,
   emailVerified: Schema.boolean,
-  createdAt: DateString.dateSchema,
-  updatedAt: DateString.dateSchema,
-}).pipe(Schema.brand(UserBrand));
-
-export type User = Schema.Schema.To<typeof userSchema>;
-
-export function parse(value: unknown) {
-  return Effect.try({
-    try: () => Schema.parseSync(userSchema)(value),
-    catch: () => new ParseUserError(),
-  });
-}
-
-export function parseId(value: unknown) {
-  return Effect.try({
-    try: () => Schema.parseSync(userIdSchema)(value),
-    catch: () => new ParseUserIdError(),
-  });
-}
-
-export function dbRecordToDomain(entity: {
-  id: string;
-  name: string;
-  email: string;
-  email_verified: boolean;
-  created_at: string;
-  updated_at: string;
+  createdAt: Schema.Date,
+  updatedAt: Schema.Date,
 }) {
-  return parse({
-    id: entity.id,
-    name: entity.name,
-    email: entity.email,
-    emailVerified: entity.email_verified,
-    createdAt: entity.created_at,
-    updatedAt: entity.updated_at,
-  }).pipe(Effect.catchAll(() => Effect.fail(new DbRecordParseError())));
+  static fromUnknown = compose(
+    Schema.decodeUnknown(this),
+    Effect.mapError((cause) => new UserParseError({cause}))
+  );
+
+  static fromRecord(record: users.JSONSelectable) {
+    return User.fromUnknown({
+      id: record.id,
+      name: record.name,
+      email: record.email,
+      emailVerified: record.email_verified,
+      createdAt: record.created_at,
+      updatedAt: record.updated_at,
+    });
+  }
+
+  getRecord() {
+    return {
+      id: this.id,
+      name: this.name,
+      email: this.email,
+      email_verified: this.emailVerified,
+      updated_at: db.toString(this.updatedAt, 'timestamptz'),
+      created_at: db.toString(this.createdAt, 'timestamptz'),
+    };
+  }
 }
+
+export const parseUserId = compose(
+  Schema.decodeUnknown(userIdSchema),
+  Effect.mapError((cause) => new UserIdParseError({cause}))
+);

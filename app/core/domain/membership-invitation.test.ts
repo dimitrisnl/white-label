@@ -2,7 +2,9 @@ import {faker} from '@faker-js/faker';
 import {fail} from 'assert';
 import {Effect, Exit} from 'effect';
 
-import * as MembershipInvitation from './membership-invitation.server';
+import {DECLINED} from './invite-status.server';
+import {MembershipInvitation} from './membership-invitation.server';
+import {OWNER} from './membership-role.server';
 
 describe('domain/membership-invitation', () => {
   describe('parsing', () => {
@@ -19,14 +21,14 @@ describe('domain/membership-invitation', () => {
       email: 'dimitrios@example.com',
       status: 'PENDING',
       role: 'OWNER',
-      createdAt: '2024-01-21 16:20:01.150513+00',
-      updatedAt: '2024-01-21 16:20:01.150513+00',
+      createdAt: '2012-06-01T12:34:00Z',
+      updatedAt: '2012-06-01T12:34:00Z',
     };
 
     describe('parse-membership-invitation', () => {
       it('parses a normal membership-invitation record', () => {
         const result = Effect.runSyncExit(
-          MembershipInvitation.parse(validMembershipInvitationObject)
+          MembershipInvitation.fromUnknown(validMembershipInvitationObject)
         );
 
         Exit.match(result, {
@@ -42,8 +44,8 @@ describe('domain/membership-invitation', () => {
               email: 'dimitrios@example.com',
               status: 'PENDING',
               role: 'OWNER',
-              createdAt: new Date('2024-01-21 16:20:01.150513+00'),
-              updatedAt: new Date('2024-01-21 16:20:01.150513+00'),
+              createdAt: new Date('2012-06-01T12:34:00Z'),
+              updatedAt: new Date('2012-06-01T12:34:00Z'),
             });
           },
         });
@@ -51,7 +53,7 @@ describe('domain/membership-invitation', () => {
 
       it('fails parsing when missing `org`', () => {
         const result = Effect.runSyncExit(
-          MembershipInvitation.parse({
+          MembershipInvitation.fromUnknown({
             ...validMembershipInvitationObject,
             org: {},
           })
@@ -61,7 +63,7 @@ describe('domain/membership-invitation', () => {
 
       it('fails parsing with invalid `email`', () => {
         const result = Effect.runSyncExit(
-          MembershipInvitation.parse({
+          MembershipInvitation.fromUnknown({
             ...validMembershipInvitationObject,
             email: 'foo',
           })
@@ -71,7 +73,7 @@ describe('domain/membership-invitation', () => {
 
       it('fails parsing with invalid `status`', () => {
         const result = Effect.runSyncExit(
-          MembershipInvitation.parse({
+          MembershipInvitation.fromUnknown({
             ...validMembershipInvitationObject,
             email: 'COMPLICATED',
           })
@@ -81,7 +83,7 @@ describe('domain/membership-invitation', () => {
 
       it('fails parsing when missing `createdAt`', () => {
         const result = Effect.runSyncExit(
-          MembershipInvitation.parse({
+          MembershipInvitation.fromUnknown({
             ...validMembershipInvitationObject,
             createdAt: undefined,
           })
@@ -91,7 +93,7 @@ describe('domain/membership-invitation', () => {
 
       it('fails parsing when missing `updatedAt`', () => {
         const result = Effect.runSyncExit(
-          MembershipInvitation.parse({
+          MembershipInvitation.fromUnknown({
             ...validMembershipInvitationObject,
             updatedAt: undefined,
           })
@@ -108,10 +110,11 @@ describe('domain/membership-invitation', () => {
     const membershipInvitationRecord = {
       id: invitationId,
       email: 'dimitrios@example.com',
-      status: 'DECLINED',
-      role: 'OWNER',
-      created_at: '2024-01-21 16:20:01.150513+00',
-      updated_at: '2024-01-21 16:20:01.150513+00',
+      status: DECLINED,
+      role: OWNER,
+      created_at: '2012-06-01T12:34:00Z' as const,
+      updated_at: '2012-06-01T12:34:00Z' as const,
+      org_id: orgId,
     };
 
     const orgRecord = {
@@ -122,10 +125,10 @@ describe('domain/membership-invitation', () => {
 
     it('parses a normal record', () => {
       const result = Effect.runSyncExit(
-        MembershipInvitation.dbRecordToDomain(
-          membershipInvitationRecord,
-          orgRecord
-        )
+        MembershipInvitation.fromRecord({
+          record: membershipInvitationRecord,
+          org: orgRecord,
+        })
       );
 
       Exit.match(result, {
@@ -134,8 +137,8 @@ describe('domain/membership-invitation', () => {
           expect(value).toStrictEqual({
             id: invitationId,
             role: 'OWNER',
-            createdAt: new Date('2024-01-21 16:20:01.150513+00'),
-            updatedAt: new Date('2024-01-21 16:20:01.150513+00'),
+            createdAt: new Date('2012-06-01T12:34:00Z'),
+            updatedAt: new Date('2012-06-01T12:34:00Z'),
             email: 'dimitrios@example.com',
             status: 'DECLINED',
             org: {
@@ -151,27 +154,28 @@ describe('domain/membership-invitation', () => {
     it('fails parsing when missing `org`', () => {
       const result = Effect.runSyncExit(
         // @ts-expect-error
-        MembershipInvitation.dbRecordToDomain(membershipInvitationRecord, {})
+        MembershipInvitation.fromRecord(membershipInvitationRecord, {})
       );
       expect(result._tag).toBe('Failure');
     });
 
     it('fails parsing when missing `email`', () => {
       const result = Effect.runSyncExit(
-        MembershipInvitation.dbRecordToDomain(
-          {...membershipInvitationRecord, email: ''},
-          orgRecord
-        )
+        MembershipInvitation.fromRecord({
+          record: {...membershipInvitationRecord, email: ''},
+          org: orgRecord,
+        })
       );
       expect(result._tag).toBe('Failure');
     });
 
     it('fails parsing when missing `status`', () => {
       const result = Effect.runSyncExit(
-        MembershipInvitation.dbRecordToDomain(
-          {...membershipInvitationRecord, status: ''},
-          orgRecord
-        )
+        MembershipInvitation.fromRecord({
+          // @ts-expect-error
+          record: {...membershipInvitationRecord, status: ''},
+          org: orgRecord,
+        })
       );
       expect(result._tag).toBe('Failure');
     });

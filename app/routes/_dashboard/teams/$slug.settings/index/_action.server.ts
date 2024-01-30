@@ -41,7 +41,7 @@ export const action = withAction(
           })
         ),
       ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
-      ParseOrgSlugError: () =>
+      OrgSlugParseError: () =>
         ActionArgs.pipe(
           Effect.flatMap(({request}) =>
             Effect.fail(new Redirect({to: '/login', init: request}))

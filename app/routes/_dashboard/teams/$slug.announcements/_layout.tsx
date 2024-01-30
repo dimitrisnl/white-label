@@ -17,13 +17,13 @@ function Nav() {
       <SubMenuLink to={`/teams/${slug}/announcements`} end>
         <DocumentTextIcon className="h-5 w-5" /> <div>All announcements</div>
       </SubMenuLink>
-      <SubMenuLink to={`/teams/${slug}/announcements`}>
+      <SubMenuLink to={`/teams/${slug}/announcements/published`}>
         <DocumentCheckIcon className="h-5 w-5" /> <div>Published</div>
       </SubMenuLink>
-      <SubMenuLink to={`/teams/${slug}/announcements`}>
+      <SubMenuLink to={`/teams/${slug}/announcements/draft`}>
         <PencilSquareIcon className="h-5 w-5" /> <div>Draft</div>
       </SubMenuLink>
-      <SubMenuLink to={`/teams/${slug}/announcements`}>
+      <SubMenuLink to={`/teams/${slug}/announcements/scheduled`}>
         <ClockIcon className="h-5 w-5" /> <div>Scheduled</div>
       </SubMenuLink>
     </SubMenu>

@@ -1,16 +1,17 @@
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server';
-import * as MembershipInvitation from '~/core/domain/membership-invitation.server';
-import * as User from '~/core/domain/user.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   UserNotFoundError,
 } from '~/core/lib/errors.server';
 
+import {MembershipInvitation} from '../domain/membership-invitation.server';
+import type {User} from '../domain/user.server';
+
 export function getUserInvitations() {
-  function execute(userId: User.User['id']) {
+  function execute(userId: User['id']) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
@@ -28,15 +29,13 @@ export function getUserInvitations() {
         return yield* _(Effect.fail(new UserNotFoundError()));
       }
 
-      const user = yield* _(User.dbRecordToDomain(userRecord));
-
       const invitationRecords = yield* _(
         Effect.tryPromise({
           try: () =>
             db
               .select(
                 'membership_invitations',
-                {email: user.email.toLowerCase(), status: 'PENDING'},
+                {email: userRecord.email.toLowerCase(), status: 'PENDING'},
                 {
                   lateral: {
                     org: db.selectExactlyOne(
@@ -55,10 +54,13 @@ export function getUserInvitations() {
       const invitations = yield* _(
         Effect.all(
           invitationRecords.map((invitationRecord) =>
-            MembershipInvitation.dbRecordToDomain(invitationRecord, {
-              name: invitationRecord.org.name,
-              id: invitationRecord.org_id,
-              slug: invitationRecord.org.slug,
+            MembershipInvitation.fromRecord({
+              record: invitationRecord,
+              org: {
+                name: invitationRecord.org.name,
+                id: invitationRecord.org_id,
+                slug: invitationRecord.org.slug,
+              },
             })
           ),
           {concurrency: 'unbounded'}
@@ -69,7 +71,7 @@ export function getUserInvitations() {
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),
-        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        MembershipInvitationParse: () => Effect.fail(new InternalServerError()),
       })
     );
   }

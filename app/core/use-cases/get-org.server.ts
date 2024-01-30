@@ -1,8 +1,6 @@
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server';
-import * as Org from '~/core/domain/org.server.ts';
-import type * as User from '~/core/domain/user.server.ts';
 import {
   DatabaseError,
   InternalServerError,
@@ -10,8 +8,11 @@ import {
 } from '~/core/lib/errors.server';
 import {orgAuthorizationService} from '~/core/services/org-authorization-service.server';
 
+import {Org} from '../domain/org.server';
+import type {User} from '../domain/user.server';
+
 export function getOrg() {
-  function execute(orgId: Org.Org['id'], userId: User.User['id']) {
+  function execute(orgId: Org['id'], userId: User['id']) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(`Use-case(get-org): Getting org ${orgId} for user ${userId}`)
@@ -33,13 +34,13 @@ export function getOrg() {
         return yield* _(Effect.fail(new OrgNotFoundError()));
       }
 
-      const org = yield* _(Org.dbRecordToDomain(orgRecord));
+      const org = yield* _(Org.fromRecord(orgRecord));
 
       return org;
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),
-        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        OrgParseError: () => Effect.fail(new InternalServerError()),
       })
     );
   }

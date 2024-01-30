@@ -1,5 +1,7 @@
+import type {ParseError} from '@effect/schema/ParseResult';
 import * as Schema from '@effect/schema/Schema';
-import * as Effect from 'effect/Effect';
+import {Data, Effect} from 'effect';
+import {compose} from 'effect/Function';
 
 export const OWNER = 'OWNER' as const;
 export const ADMIN = 'ADMIN' as const;
@@ -14,13 +16,13 @@ export const membershipRoleSchema = Schema.literal(OWNER, ADMIN, MEMBER).pipe(
 
 export type MembershipRole = Schema.Schema.To<typeof membershipRoleSchema>;
 
-export class ParseMembershipRoleError {
-  readonly _tag = 'ParseMembershipRoleError';
-}
+class MembershipRoleParseError extends Data.TaggedError(
+  'MembershipRoleParseError'
+)<{
+  cause: ParseError;
+}> {}
 
-export function parse(value: unknown) {
-  return Effect.try({
-    try: () => Schema.parseSync(membershipRoleSchema)(value),
-    catch: () => new ParseMembershipRoleError(),
-  });
-}
+export const parseMembershipRole = compose(
+  Schema.decodeUnknown(membershipRoleSchema),
+  Effect.mapError((cause) => new MembershipRoleParseError({cause}))
+);

@@ -1,25 +1,27 @@
+import type {ParseError} from '@effect/schema/ParseResult';
 import * as Schema from '@effect/schema/Schema';
 import baseSlugify from '@sindresorhus/slugify';
-import * as Effect from 'effect/Effect';
+import {Data, Effect} from 'effect';
+import {compose} from 'effect/Function';
+import type {orgs} from 'zapatos/schema';
 
-import {DbRecordParseError} from '../lib/errors.server.ts';
-import * as DateString from './date.server.ts';
-import * as Uuid from './uuid.server.ts';
+import {db} from '../db/db.server.ts';
+import {uuidSchema} from './uuid.server.ts';
 
 const OrgBrand = Symbol.for('OrgBrand');
 const OrgIdBrand = Symbol.for('OrgIdBrand');
 
-class ParseOrgError {
-  readonly _tag = 'ParseOrgError';
-}
+class OrgIdParseError extends Data.TaggedError('OrgIdParseError')<{
+  cause: ParseError;
+}> {}
 
-class ParseOrgSlugError {
-  readonly _tag = 'ParseOrgSlugError';
-}
+class OrgParseError extends Data.TaggedError('OrgParseError')<{
+  cause: ParseError;
+}> {}
 
-class ParseOrgIdError {
-  readonly _tag = 'ParseOrgIdError';
-}
+class OrgSlugParseError extends Data.TaggedError('OrgSlugParseError')<{
+  cause: ParseError;
+}> {}
 
 export const orgNameSchema = Schema.Trim.pipe(
   Schema.minLength(2, {
@@ -30,56 +32,60 @@ export const orgNameSchema = Schema.Trim.pipe(
   })
 );
 
-export const orgIdSchema = Uuid.uuidSchema.pipe(Schema.brand(OrgIdBrand));
+export const orgIdSchema = uuidSchema.pipe(Schema.brand(OrgIdBrand));
 export const orgSlugSchema = Schema.string.pipe(Schema.minLength(2));
 
 export const orgSchema = Schema.struct({
   id: orgIdSchema,
   name: orgNameSchema,
   slug: orgSlugSchema,
-  createdAt: DateString.dateSchema,
-  updatedAt: DateString.dateSchema,
+  createdAt: Schema.Date,
+  updatedAt: Schema.Date,
 }).pipe(Schema.brand(OrgBrand));
 
-export type Org = Schema.Schema.To<typeof orgSchema>;
-
-export function parse(value: unknown) {
-  return Effect.try({
-    try: () => Schema.parseSync(orgSchema)(value),
-    catch: () => new ParseOrgError(),
-  });
-}
-
-export function parseId(value: unknown) {
-  return Effect.try({
-    try: () => Schema.parseSync(orgIdSchema)(value),
-    catch: () => new ParseOrgIdError(),
-  });
-}
-
-export function parseSlug(value: unknown) {
-  return Effect.try({
-    try: () => Schema.parseSync(orgSlugSchema)(value),
-    catch: () => new ParseOrgSlugError(),
-  });
-}
-
-export function dbRecordToDomain(entity: {
-  id: string;
-  name: string;
-  created_at: string;
-  updated_at: string;
-  slug: string;
+export class Org extends Schema.Class<Org>()({
+  id: orgIdSchema,
+  name: orgNameSchema,
+  slug: orgSlugSchema,
+  createdAt: Schema.Date,
+  updatedAt: Schema.Date,
 }) {
-  return parse({
-    id: entity.id,
-    name: entity.name,
-    createdAt: entity.created_at,
-    updatedAt: entity.updated_at,
-    slug: entity.slug,
-  }).pipe(Effect.catchAll(() => Effect.fail(new DbRecordParseError())));
+  static fromUnknown = compose(
+    Schema.decodeUnknown(this),
+    Effect.mapError((cause) => new OrgParseError({cause}))
+  );
+
+  static fromRecord(record: orgs.JSONSelectable) {
+    return Org.fromUnknown({
+      id: record.id,
+      name: record.name,
+      slug: record.slug,
+      createdAt: record.created_at,
+      updatedAt: record.updated_at,
+    });
+  }
+
+  getRecord() {
+    return {
+      id: this.id,
+      name: this.name,
+      slug: this.slug,
+      updated_at: db.toString(this.updatedAt, 'timestamptz'),
+      created_at: db.toString(this.createdAt, 'timestamptz'),
+    };
+  }
+
+  static slugify(text: string) {
+    return Effect.sync(() => baseSlugify(text));
+  }
 }
 
-export function slugify(text: string) {
-  return Effect.sync(() => baseSlugify(text));
-}
+export const parseOrgId = compose(
+  Schema.decodeUnknown(orgIdSchema),
+  Effect.mapError((cause) => new OrgIdParseError({cause}))
+);
+
+export const parseOrgSlug = compose(
+  Schema.decodeUnknown(orgSlugSchema),
+  Effect.mapError((cause) => new OrgSlugParseError({cause}))
+);

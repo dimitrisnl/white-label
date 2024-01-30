@@ -10,7 +10,7 @@ const envValidationSchema = Schema.struct({
 });
 
 // Throw on-load if missing
-const config = Schema.parseSync(envValidationSchema)(process.env);
+const config = Schema.decodeUnknownSync(envValidationSchema)(process.env);
 
 const zapCfg: zg.Config = {
   db: {

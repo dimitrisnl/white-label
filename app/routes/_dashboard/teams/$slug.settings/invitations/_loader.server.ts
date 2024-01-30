@@ -25,7 +25,7 @@ export const loader = withLoader(
     return new Ok({data: {invitations}});
   }).pipe(
     Effect.catchTags({
-      ParseOrgSlugError: () =>
+      OrgSlugParseError: () =>
         Effect.fail(new BadRequest({errors: ["We couldn't find this team"]})),
       OrgNotFoundError: () =>
         Effect.fail(new BadRequest({errors: ["We couldn't find this team"]})),

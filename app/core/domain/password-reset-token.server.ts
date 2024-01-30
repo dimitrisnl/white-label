@@ -1,30 +1,31 @@
+import type {ParseError} from '@effect/schema/ParseResult';
 import * as Schema from '@effect/schema/Schema';
-import * as Effect from 'effect/Effect';
+import {Data, Effect} from 'effect';
+import {compose} from 'effect/Function';
 
-import * as DateString from './date.server.ts';
-import * as Uuid from './uuid.server.ts';
+import {uuidSchema} from './uuid.server';
 
 const PasswordResetTokenBrand = Symbol.for('PasswordResetTokenBrand');
 
 export const passwordResetTokenSchema = Schema.struct({
-  id: Uuid.uuidSchema.pipe(Schema.message(() => 'Token is in invalid format')),
-  userId: Uuid.uuidSchema,
-  expiresAt: DateString.dateSchema,
-  createdAt: DateString.dateSchema,
-  updatedAt: DateString.dateSchema,
+  id: uuidSchema.pipe(Schema.message(() => 'Token is in invalid format')),
+  userId: uuidSchema,
+  expiresAt: Schema.Date,
+  createdAt: Schema.Date,
+  updatedAt: Schema.Date,
 }).pipe(Schema.brand(PasswordResetTokenBrand));
 
 export type PasswordResetToken = Schema.Schema.To<
   typeof passwordResetTokenSchema
 >;
 
-export class ParsePasswordResetTokenError {
-  readonly _tag = 'ParsePasswordResetTokenError';
-}
+class PasswordResetTokenParseError extends Data.TaggedError(
+  'PasswordResetTokenParseError'
+)<{
+  cause: ParseError;
+}> {}
 
-export function parse(value: unknown) {
-  return Effect.try({
-    try: () => Schema.parseSync(passwordResetTokenSchema)(value),
-    catch: () => new ParsePasswordResetTokenError(),
-  });
-}
+export const parsePasswordResetToken = compose(
+  Schema.decodeUnknown(passwordResetTokenSchema),
+  Effect.mapError((cause) => new PasswordResetTokenParseError({cause}))
+);

@@ -2,8 +2,6 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
-import * as InviteStatus from '~/core/domain/invite-status.server.ts';
-import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
   InternalServerError,
@@ -11,8 +9,11 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
+import {DECLINED, PENDING} from '../domain/invite-status.server';
+import {uuidSchema} from '../domain/uuid.server';
+
 const validationSchema = Schema.struct({
-  invitationId: Uuid.uuidSchema,
+  invitationId: uuidSchema,
 });
 
 export type DeclineInvitationProps = Schema.Schema.To<typeof validationSchema>;
@@ -31,7 +32,7 @@ export function declineInvitation() {
             db
               .selectOne('membership_invitations', {
                 id: invitationId,
-                status: InviteStatus.PENDING,
+                status: PENDING,
               })
               .run(pool),
           catch: () => new DatabaseError(),
@@ -48,7 +49,7 @@ export function declineInvitation() {
             db
               .update(
                 'membership_invitations',
-                {status: InviteStatus.DECLINED},
+                {status: DECLINED},
                 {id: invitationId}
               )
               .run(pool),

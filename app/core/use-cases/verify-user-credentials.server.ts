@@ -2,9 +2,6 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
-import * as Email from '~/core/domain/email.server.ts';
-import * as Password from '~/core/domain/password.server.ts';
-import * as User from '~/core/domain/user.server.ts';
 import {
   DatabaseError,
   InternalServerError,
@@ -12,9 +9,13 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
+import {emailSchema} from '../domain/email.server';
+import {comparePasswords, passwordSchema} from '../domain/password.server';
+import {User} from '../domain/user.server';
+
 const validationSchema = Schema.struct({
-  email: Email.emailSchema,
-  password: Password.passwordSchema,
+  email: emailSchema,
+  password: passwordSchema,
 });
 
 export type VerifyUserCredentialsProps = Schema.Schema.To<
@@ -29,12 +30,11 @@ export function verifyUserCredentials() {
           `Use-case(verify-user-credentials): Verifying credentials for ${email}`
         )
       );
+
       const userRecord = yield* _(
         Effect.tryPromise({
           try: () => db.selectOne('users', {email}).run(pool),
-          catch: () => {
-            return new DatabaseError();
-          },
+          catch: () => new DatabaseError(),
         })
       );
 
@@ -43,7 +43,7 @@ export function verifyUserCredentials() {
       }
 
       const isPasswordValid = yield* _(
-        Password.compare({
+        comparePasswords({
           plainText: password,
           hashValue: userRecord.password,
         })
@@ -53,13 +53,13 @@ export function verifyUserCredentials() {
         return yield* _(Effect.fail(new InvalidCredentialsError()));
       }
 
-      const user = yield* _(User.dbRecordToDomain(userRecord));
+      const user = yield* _(User.fromRecord(userRecord));
 
       return user;
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),
-        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        UserParseError: () => Effect.fail(new InternalServerError()),
         PasswordHashError: () => Effect.fail(new InternalServerError()),
       })
     );

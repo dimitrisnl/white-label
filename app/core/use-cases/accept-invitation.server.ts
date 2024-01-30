@@ -2,9 +2,6 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
-import * as InviteStatus from '~/core/domain/invite-status.server.ts';
-import * as Org from '~/core/domain/org.server.ts';
-import type * as User from '~/core/domain/user.server.ts';
 import {uuidSchema} from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
@@ -14,6 +11,10 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
+import {PENDING} from '../domain/invite-status.server';
+import {Org} from '../domain/org.server';
+import type {User} from '../domain/user.server';
+
 const validationSchema = Schema.struct({
   invitationId: uuidSchema,
 });
@@ -21,10 +22,7 @@ const validationSchema = Schema.struct({
 export type AcceptInvitationProps = Schema.Schema.To<typeof validationSchema>;
 
 export function acceptInvitation() {
-  function execute(
-    {invitationId}: AcceptInvitationProps,
-    userId: User.User['id']
-  ) {
+  function execute({invitationId}: AcceptInvitationProps, userId: User['id']) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
@@ -37,7 +35,7 @@ export function acceptInvitation() {
           try: () =>
             db
               .deletes('membership_invitations', {
-                status: InviteStatus.PENDING,
+                status: PENDING,
                 id: invitationId,
               })
               .run(pool),
@@ -77,13 +75,13 @@ export function acceptInvitation() {
         return yield* _(Effect.fail(new OrgNotFoundError()));
       }
 
-      const org = yield* _(Org.dbRecordToDomain(orgRecord));
+      const org = yield* _(Org.fromRecord(orgRecord));
 
       return {org};
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),
-        DbRecordParseError: () => Effect.fail(new InternalServerError()),
+        OrgParseError: () => Effect.fail(new InternalServerError()),
       })
     );
   }

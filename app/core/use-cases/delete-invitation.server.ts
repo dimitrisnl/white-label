@@ -2,9 +2,6 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
-import type * as Org from '~/core/domain/org.server.ts';
-import type * as User from '~/core/domain/user.server.ts';
-import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
   InternalServerError,
@@ -13,8 +10,12 @@ import {
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 import {invitationAuthorizationService} from '~/core/services/invitation-authorization-service.server.ts';
 
+import type {Org} from '../domain/org.server';
+import type {User} from '../domain/user.server';
+import {uuidSchema} from '../domain/uuid.server';
+
 const validationSchema = Schema.struct({
-  invitationId: Uuid.uuidSchema,
+  invitationId: uuidSchema,
 });
 
 export type DeleteInvitationProps = Schema.Schema.To<typeof validationSchema>;
@@ -22,8 +23,8 @@ export type DeleteInvitationProps = Schema.Schema.To<typeof validationSchema>;
 export function deleteInvitation() {
   function execute(
     {invitationId}: DeleteInvitationProps,
-    orgId: Org.Org['id'],
-    userId: User.User['id']
+    orgId: Org['id'],
+    userId: User['id']
   ) {
     return Effect.gen(function* (_) {
       yield* _(
