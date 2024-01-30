@@ -18,22 +18,18 @@ export type VerifyPasswordResetProps = Schema.Schema.To<
   typeof validationSchema
 >;
 
-function selectPasswordResetTokenRecord(token: string) {
-  return Effect.tryPromise({
-    try: () => db.selectOne('password_reset_tokens', {id: token}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
 export function verifyPasswordReset() {
-  function execute(props: VerifyPasswordResetProps) {
-    const {token} = props;
+  function execute({token}: VerifyPasswordResetProps) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(`Use-case(verify-password-reset): Verifying token ${token}`)
       );
       const passwordResetTokenRecord = yield* _(
-        selectPasswordResetTokenRecord(token)
+        Effect.tryPromise({
+          try: () =>
+            db.selectOne('password_reset_tokens', {id: token}).run(pool),
+          catch: () => new DatabaseError(),
+        })
       );
 
       if (!passwordResetTokenRecord) {

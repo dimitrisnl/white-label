@@ -7,7 +7,6 @@ import {getUser} from '~/core/use-cases/get-user.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
-    yield* _(Effect.log('Loader(_dashboard/account/index): Init'));
     const {request} = yield* _(LoaderArgs);
     const userId = yield* _(authenticateUser(request));
     const {user} = yield* _(getUser().execute(userId));

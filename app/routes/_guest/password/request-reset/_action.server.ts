@@ -8,7 +8,6 @@ import {requestPasswordReset} from '~/core/use-cases/request-password-reset.serv
 
 export const action = withAction(
   Effect.gen(function* (_) {
-    yield* _(Effect.log('Action(_guest/password/request-reset): Init'));
     const {request} = yield* _(ActionArgs);
 
     const {validate, execute} = requestPasswordReset();

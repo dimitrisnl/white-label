@@ -19,23 +19,11 @@ const validationSchema = Schema.struct({
 
 export type ChangePasswordProps = Schema.Schema.To<typeof validationSchema>;
 
-function selectUserRecord(userId: User.User['id']) {
-  return Effect.tryPromise({
-    try: () => db.selectOne('users', {id: userId}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
-function updateUserPassword(userId: User.User['id'], password: string) {
-  return Effect.tryPromise({
-    try: () => db.update('users', {password}, {id: userId}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
 export function changePassword() {
-  function execute(props: ChangePasswordProps, userId: User.User['id']) {
-    const {newPassword, oldPassword} = props;
+  function execute(
+    {newPassword, oldPassword}: ChangePasswordProps,
+    userId: User.User['id']
+  ) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
@@ -43,7 +31,12 @@ export function changePassword() {
         )
       );
 
-      const userRecord = yield* _(selectUserRecord(userId));
+      const userRecord = yield* _(
+        Effect.tryPromise({
+          try: () => db.selectOne('users', {id: userId}).run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
       if (!userRecord) {
         return yield* _(Effect.fail(new UserNotFoundError()));
@@ -62,7 +55,19 @@ export function changePassword() {
 
       const hashedNewPassword = yield* _(Password.hash(newPassword));
 
-      yield* _(updateUserPassword(userId, hashedNewPassword));
+      const records = yield* _(
+        Effect.tryPromise({
+          try: () =>
+            db
+              .update('users', {password: hashedNewPassword}, {id: userId})
+              .run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
+
+      if (records.length === 0 || !records[0]) {
+        return new DatabaseError();
+      }
 
       return null;
     }).pipe(

@@ -16,31 +16,22 @@ const validationSchema = Schema.struct({
 
 export type EditUserProps = Schema.Schema.To<typeof validationSchema>;
 
-function updateUserRecord({
-  id,
-  name,
-}: {
-  id: User.User['id'];
-  name: User.User['name'];
-}) {
-  return Effect.tryPromise({
-    try: () => db.update('users', {name}, {id}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
 export function editUser() {
-  function execute(props: EditUserProps, userId: User.User['id']) {
-    const {name} = props;
+  function execute({name}: EditUserProps, userId: User.User['id']) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
           `Use-case(edit-user): Editing user ${userId} with name ${name}`
         )
       );
-      const [userRecord] = yield* _(updateUserRecord({id: userId, name}));
+      const records = yield* _(
+        Effect.tryPromise({
+          try: () => db.update('users', {name}, {id: userId}).run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
-      if (!userRecord) {
+      if (records.length === 0 || !records[0]) {
         yield* _(
           Effect.logError(`
           Use-case(edit-user): User ${userId} not found`)
@@ -48,7 +39,7 @@ export function editUser() {
         return yield* _(Effect.fail(new UserNotFoundError()));
       }
 
-      const user = yield* _(User.dbRecordToDomain(userRecord));
+      const user = yield* _(User.dbRecordToDomain(records[0]));
       return user;
     }).pipe(
       Effect.catchTags({

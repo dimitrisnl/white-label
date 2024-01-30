@@ -7,7 +7,6 @@ import {verifyPasswordReset} from '~/core/use-cases/verify-password-reset.server
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
-    yield* _(Effect.log('Loader(_guest/password/reset-password): Init'));
     const {request} = yield* _(LoaderArgs);
 
     const url = new URL(request.url);

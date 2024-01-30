@@ -12,7 +12,6 @@ import {changePassword} from '~/core/use-cases/change-password.server';
 
 export const action = withAction(
   Effect.gen(function* (_) {
-    yield* _(Effect.log('Action(_dashboard/account/security): Init'));
     const {request} = yield* _(ActionArgs);
     const userId = yield* _(authenticateUser(request));
     const {validate, execute} = changePassword();

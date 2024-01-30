@@ -5,33 +5,6 @@ import * as Membership from '~/core/domain/membership.server.ts';
 import type * as User from '~/core/domain/user.server.ts';
 import {DatabaseError, InternalServerError} from '~/core/lib/errors.server';
 
-function selectMemberships(id: User.User['id']) {
-  return Effect.tryPromise({
-    try: () =>
-      db
-        .select(
-          'memberships',
-          {user_id: id},
-          {
-            lateral: {
-              org: db.selectExactlyOne(
-                'orgs',
-                {id: db.parent('org_id')},
-                {columns: ['name', 'slug']}
-              ),
-              user: db.selectExactlyOne(
-                'users',
-                {id: db.parent('user_id')},
-                {columns: ['name', 'email']}
-              ),
-            },
-          }
-        )
-        .run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
 export function getUserMemberships() {
   function execute(userId: User.User['id']) {
     return Effect.gen(function* (_) {
@@ -40,7 +13,32 @@ export function getUserMemberships() {
           `Use-case(get-user-memberships): Getting memberships for user ${userId}`
         )
       );
-      const membershipRecords = yield* _(selectMemberships(userId));
+      const membershipRecords = yield* _(
+        Effect.tryPromise({
+          try: () =>
+            db
+              .select(
+                'memberships',
+                {user_id: userId},
+                {
+                  lateral: {
+                    org: db.selectExactlyOne(
+                      'orgs',
+                      {id: db.parent('org_id')},
+                      {columns: ['name', 'slug']}
+                    ),
+                    user: db.selectExactlyOne(
+                      'users',
+                      {id: db.parent('user_id')},
+                      {columns: ['name', 'email']}
+                    ),
+                  },
+                }
+              )
+              .run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
       const memberships = yield* _(
         Effect.all(

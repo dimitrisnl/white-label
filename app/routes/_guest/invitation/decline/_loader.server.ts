@@ -7,7 +7,6 @@ import {declineInvitation} from '~/core/use-cases/decline-invitation.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
-    yield* _(Effect.log('Loader(_guest/invitation/decline): Init'));
     const {request} = yield* _(LoaderArgs);
 
     const url = new URL(request.url);

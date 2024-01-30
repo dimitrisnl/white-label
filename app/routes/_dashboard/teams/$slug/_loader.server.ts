@@ -14,7 +14,6 @@ import {getUserMemberships} from '~/core/use-cases/get-user-memberships.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
-    yield* _(Effect.log('Loader(_dashboard/teams/$slug/_layout): Init'));
     const {request, params} = yield* _(LoaderArgs);
 
     const userId = yield* _(authenticateUser(request));

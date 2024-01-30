@@ -3,13 +3,14 @@ import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
 import * as InviteStatus from '~/core/domain/invite-status.server.ts';
-import * as MembershipInvitation from '~/core/domain/membership-invitation.server.ts';
+import * as Org from '~/core/domain/org.server.ts';
 import type * as User from '~/core/domain/user.server.ts';
 import {uuidSchema} from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
   InternalServerError,
   InvitationNotFoundError,
+  OrgNotFoundError,
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
@@ -19,65 +20,11 @@ const validationSchema = Schema.struct({
 
 export type AcceptInvitationProps = Schema.Schema.To<typeof validationSchema>;
 
-function fetchInvitation(invitationId: string) {
-  return Effect.tryPromise({
-    try: () =>
-      db
-        .selectOne(
-          'membership_invitations',
-          {
-            id: invitationId,
-            status: InviteStatus.PENDING,
-          },
-          {
-            lateral: {
-              org: db.selectExactlyOne(
-                'orgs',
-                {id: db.parent('org_id')},
-                {columns: ['name', 'slug']}
-              ),
-            },
-          }
-        )
-        .run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
-function updateInvitation(invitationId: string) {
-  return Effect.tryPromise({
-    try: () =>
-      db
-        .update(
-          'membership_invitations',
-          {status: InviteStatus.ACCEPTED},
-          {id: invitationId}
-        )
-        .run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
-function updateMembership(
-  invitation: MembershipInvitation.MembershipInvitation,
-  userId: User.User['id']
-) {
-  return Effect.tryPromise({
-    try: () =>
-      db
-        .insert('memberships', {
-          org_id: invitation.org.id,
-          user_id: userId,
-          role: invitation.role,
-        })
-        .run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
 export function acceptInvitation() {
-  function execute(props: AcceptInvitationProps, userId: User.User['id']) {
-    const {invitationId} = props;
+  function execute(
+    {invitationId}: AcceptInvitationProps,
+    userId: User.User['id']
+  ) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
@@ -85,24 +32,54 @@ export function acceptInvitation() {
         )
       );
 
-      const invitationRecord = yield* _(fetchInvitation(invitationId));
-
-      if (!invitationRecord) {
-        return yield* _(Effect.fail(new InvitationNotFoundError()));
-      }
-
-      const membershipInvitation = yield* _(
-        MembershipInvitation.dbRecordToDomain(invitationRecord, {
-          slug: invitationRecord.org.slug,
-          name: invitationRecord.org.name,
-          id: invitationRecord.org_id,
+      const records = yield* _(
+        Effect.tryPromise({
+          try: () =>
+            db
+              .deletes('membership_invitations', {
+                status: InviteStatus.PENDING,
+                id: invitationId,
+              })
+              .run(pool),
+          catch: () => new DatabaseError(),
         })
       );
 
-      yield* _(updateInvitation(invitationId));
-      yield* _(updateMembership(membershipInvitation, userId));
+      if (records.length === 0 || !records[0]) {
+        return yield* _(Effect.fail(new InvitationNotFoundError()));
+      }
 
-      return membershipInvitation;
+      const {org_id, role} = records[0];
+
+      const membershipRecord = yield* _(
+        Effect.tryPromise({
+          try: () =>
+            db
+              .insert('memberships', {org_id, user_id: userId, role: role})
+              .run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
+
+      const orgRecord = yield* _(
+        Effect.tryPromise({
+          try: () =>
+            db.selectOne('orgs', {id: membershipRecord.org_id}).run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
+
+      if (!orgRecord) {
+        yield* _(
+          Effect.logError(`
+          Use-case(accept-invitation): Org ${org_id} not found`)
+        );
+        return yield* _(Effect.fail(new OrgNotFoundError()));
+      }
+
+      const org = yield* _(Org.dbRecordToDomain(orgRecord));
+
+      return {org};
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),

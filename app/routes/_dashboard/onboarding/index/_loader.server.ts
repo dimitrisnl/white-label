@@ -7,7 +7,6 @@ import {getUserMemberships} from '~/core/use-cases/get-user-memberships.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
-    yield* _(Effect.log('Loader(_dashboard/onboarding/index): Init'));
     const {request} = yield* _(LoaderArgs);
     const userId = yield* _(authenticateUser(request));
     const {memberships} = yield* _(getUserMemberships().execute(userId));

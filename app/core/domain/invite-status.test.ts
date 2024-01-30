@@ -9,10 +9,6 @@ describe('domain/invite-status', () => {
       const result = Effect.runSyncExit(InviteStatus.parse('PENDING'));
       expect(result._tag).toBe('Success');
     });
-    it('parses a `ACCEPTED` status', () => {
-      const result = Effect.runSyncExit(InviteStatus.parse('ACCEPTED'));
-      expect(result._tag).toBe('Success');
-    });
     it('parses a `DECLINED` status', () => {
       const result = Effect.runSyncExit(InviteStatus.parse('DECLINED'));
       expect(result._tag).toBe('Success');

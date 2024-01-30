@@ -7,7 +7,6 @@ import {getUserInvitations} from '~/core/use-cases/get-user-invitations.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
-    yield* _(Effect.log('Loader(_dashboard/account/invitations): Init'));
     const {request} = yield* _(LoaderArgs);
     const userId = yield* _(authenticateUser(request));
 

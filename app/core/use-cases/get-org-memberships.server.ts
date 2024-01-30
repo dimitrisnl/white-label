@@ -11,31 +11,6 @@ import {
 } from '~/core/lib/errors.server';
 import {orgAuthorizationService} from '~/core/services/org-authorization-service.server';
 
-function selectOrgRecord(id: Org.Org['id']) {
-  return Effect.tryPromise({
-    try: () => db.selectOne('orgs', {id}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
-function selectMembershipRecords(orgId: Org.Org['id']) {
-  return Effect.tryPromise({
-    try: () =>
-      db
-        .select(
-          'memberships',
-          {org_id: orgId},
-          {
-            lateral: {
-              user: db.selectExactlyOne('users', {id: db.parent('user_id')}),
-            },
-          }
-        )
-        .run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
 export function getOrgMemberships() {
   function execute(orgId: Org.Org['id'], userId: User.User['id']) {
     return Effect.gen(function* (_) {
@@ -44,16 +19,45 @@ export function getOrgMemberships() {
           `Use-case(get-org-memberships): Getting memberships for org ${orgId} for user ${userId}`
         )
       );
+
       yield* _(orgAuthorizationService.canView(userId, orgId));
-      const orgRecord = yield* _(selectOrgRecord(orgId));
+
+      const orgRecord = yield* _(
+        Effect.tryPromise({
+          try: () => db.selectOne('orgs', {id: orgId}).run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
       if (!orgRecord) {
+        yield* _(
+          Effect.logError(`
+          Use-case(get-org-memberships): Org ${orgId} not found`)
+        );
         return yield* _(Effect.fail(new OrgNotFoundError()));
       }
 
       const org = yield* _(Org.dbRecordToDomain(orgRecord));
 
-      const membershipRecords = yield* _(selectMembershipRecords(orgId));
+      const membershipRecords = yield* _(
+        Effect.tryPromise({
+          try: () =>
+            db
+              .select(
+                'memberships',
+                {org_id: orgId},
+                {
+                  lateral: {
+                    user: db.selectExactlyOne('users', {
+                      id: db.parent('user_id'),
+                    }),
+                  },
+                }
+              )
+              .run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
       const memberships = yield* _(
         Effect.all(

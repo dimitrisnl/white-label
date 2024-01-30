@@ -8,18 +8,16 @@ import {
   UserNotFoundError,
 } from '~/core/lib/errors.server';
 
-function selectUserRecord(id: User.User['id']) {
-  return Effect.tryPromise({
-    try: () => db.selectOne('users', {id}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
 export function getUser() {
   function execute(userId: User.User['id']) {
     return Effect.gen(function* (_) {
       yield* _(Effect.log(`Use-case(get-user): Getting user ${userId}`));
-      const userRecord = yield* _(selectUserRecord(userId));
+      const userRecord = yield* _(
+        Effect.tryPromise({
+          try: () => db.selectOne('users', {id: userId}).run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
       if (!userRecord) {
         return yield* _(Effect.fail(new UserNotFoundError()));

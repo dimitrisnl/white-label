@@ -21,25 +21,22 @@ export type VerifyUserCredentialsProps = Schema.Schema.To<
   typeof validationSchema
 >;
 
-function selectUserRecord(email: User.User['email']) {
-  return Effect.tryPromise({
-    try: () => db.selectOne('users', {email}).run(pool),
-    catch: () => {
-      return new DatabaseError();
-    },
-  });
-}
-
 export function verifyUserCredentials() {
-  function execute(props: VerifyUserCredentialsProps) {
-    const {email, password} = props;
+  function execute({email, password}: VerifyUserCredentialsProps) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
           `Use-case(verify-user-credentials): Verifying credentials for ${email}`
         )
       );
-      const userRecord = yield* _(selectUserRecord(email));
+      const userRecord = yield* _(
+        Effect.tryPromise({
+          try: () => db.selectOne('users', {email}).run(pool),
+          catch: () => {
+            return new DatabaseError();
+          },
+        })
+      );
 
       if (!userRecord) {
         return yield* _(Effect.fail(new InvalidCredentialsError()));

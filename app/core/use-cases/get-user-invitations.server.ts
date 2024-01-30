@@ -9,38 +9,6 @@ import {
   UserNotFoundError,
 } from '~/core/lib/errors.server';
 
-function selectUserRecord(id: User.User['id']) {
-  return Effect.tryPromise({
-    try: () => db.selectOne('users', {id}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
-function getInvitationRecords(email: User.User['email']) {
-  return Effect.tryPromise({
-    try: () =>
-      db
-        .select(
-          'membership_invitations',
-          {
-            email: email.toLowerCase(),
-            status: 'PENDING',
-          },
-          {
-            lateral: {
-              org: db.selectExactlyOne(
-                'orgs',
-                {id: db.parent('org_id')},
-                {columns: ['name', 'slug']}
-              ),
-            },
-          }
-        )
-        .run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
 export function getUserInvitations() {
   function execute(userId: User.User['id']) {
     return Effect.gen(function* (_) {
@@ -49,7 +17,12 @@ export function getUserInvitations() {
           `Use-case(get-user-invitations): Getting invitations for user ${userId}`
         )
       );
-      const userRecord = yield* _(selectUserRecord(userId));
+      const userRecord = yield* _(
+        Effect.tryPromise({
+          try: () => db.selectOne('users', {id: userId}).run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
       if (!userRecord) {
         return yield* _(Effect.fail(new UserNotFoundError()));
@@ -57,7 +30,27 @@ export function getUserInvitations() {
 
       const user = yield* _(User.dbRecordToDomain(userRecord));
 
-      const invitationRecords = yield* _(getInvitationRecords(user.email));
+      const invitationRecords = yield* _(
+        Effect.tryPromise({
+          try: () =>
+            db
+              .select(
+                'membership_invitations',
+                {email: user.email.toLowerCase(), status: 'PENDING'},
+                {
+                  lateral: {
+                    org: db.selectExactlyOne(
+                      'orgs',
+                      {id: db.parent('org_id')},
+                      {columns: ['name', 'slug']}
+                    ),
+                  },
+                }
+              )
+              .run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
       const invitations = yield* _(
         Effect.all(

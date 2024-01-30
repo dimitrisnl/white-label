@@ -2,19 +2,16 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 export const PENDING = 'PENDING' as const;
-export const ACCEPTED = 'ACCEPTED' as const;
 export const DECLINED = 'DECLINED' as const;
 export const EXPIRED = 'EXPIRED' as const;
 
 export const inviteStatusSchema = Schema.literal(
   PENDING,
-  ACCEPTED,
   DECLINED,
   EXPIRED
 ).pipe(
   Schema.message(
-    () =>
-      "Invitation status must be one of 'PENDING', 'ACCEPTED', 'DECLINED' or 'EXPIRED'"
+    () => "Invitation status must be one of 'PENDING', 'DECLINED' or 'EXPIRED'"
   )
 );
 

@@ -13,8 +13,6 @@ export function sendPasswordResetEmail({
   passwordResetTokenId: string;
 }) {
   return Effect.gen(function* (_) {
-    yield* _(Effect.log('Mailer(password-reset-email): Preparing email'));
-
     const html = `
     You requested a password reset\n
     Change your password here: ${config.DASHBOARD_URL}/password/reset-password?token=${passwordResetTokenId}
@@ -27,7 +25,6 @@ export function sendPasswordResetEmail({
     };
 
     yield* _(addEmailJob('password-reset-email', payload));
-    yield* _(Effect.log('Mailer(password-reset-email): Sending email'));
   }).pipe(
     Effect.catchAll((error) =>
       pipe(

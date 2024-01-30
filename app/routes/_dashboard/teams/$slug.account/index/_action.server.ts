@@ -12,7 +12,6 @@ import {editUser} from '~/core/use-cases/edit-user.server';
 
 export const action = withAction(
   Effect.gen(function* (_) {
-    yield* _(Effect.log('Action(_dashboard/account/index): Init'));
     const {request} = yield* _(ActionArgs);
     const userId = yield* _(authenticateUser(request));
 

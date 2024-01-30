@@ -8,7 +8,7 @@ import {Outlet, useParams} from '@remix-run/react';
 import {BaseErrorBoundary} from '~/components/error-boundary.tsx';
 import {SubMenu, SubMenuLink} from '~/components/sub-menu';
 
-function SettingsNav() {
+function Nav() {
   const {slug} = useParams();
 
   return (
@@ -26,10 +26,10 @@ function SettingsNav() {
   );
 }
 
-export default function OrgLayout() {
+export default function Layout() {
   return (
     <div>
-      <SettingsNav />
+      <Nav />
       <Outlet />
     </div>
   );

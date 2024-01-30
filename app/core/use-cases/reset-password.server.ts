@@ -19,59 +19,18 @@ const validationSchema = Schema.struct({
 
 export type ResetPasswordProps = Schema.Schema.To<typeof validationSchema>;
 
-function selectPasswordResetTokenRecord(token: string) {
-  return Effect.tryPromise({
-    try: () =>
-      db
-        .selectOne('password_reset_tokens', {
-          id: token,
-        })
-        .run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
-function selectUserRecord(userId: string) {
-  return Effect.tryPromise({
-    try: () =>
-      db
-        .selectOne('users', {
-          id: userId,
-        })
-        .run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
-function updateUserRecord({
-  id,
-  passwordHash,
-}: {
-  id: string;
-  passwordHash: Password.Password;
-}) {
-  return Effect.tryPromise({
-    try: () => db.update('users', {password: passwordHash}, {id}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
-function deletePasswordResetTokenRecord(token: string) {
-  return Effect.tryPromise({
-    try: () => db.deletes('password_reset_tokens', {id: token}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
 export function resetPassword() {
-  function execute(props: ResetPasswordProps) {
-    const {token, password} = props;
+  function execute({token, password}: ResetPasswordProps) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(`Use-case(reset-password): Resetting password for ${token}`)
       );
       const passwordResetTokenRecord = yield* _(
-        selectPasswordResetTokenRecord(token)
+        Effect.tryPromise({
+          try: () =>
+            db.selectOne('password_reset_tokens', {id: token}).run(pool),
+          catch: () => new DatabaseError(),
+        })
       );
 
       if (!passwordResetTokenRecord) {
@@ -79,7 +38,13 @@ export function resetPassword() {
       }
 
       const userRecord = yield* _(
-        selectUserRecord(passwordResetTokenRecord.user_id)
+        Effect.tryPromise({
+          try: () =>
+            db
+              .selectOne('users', {id: passwordResetTokenRecord.user_id})
+              .run(pool),
+          catch: () => new DatabaseError(),
+        })
       );
 
       if (!userRecord) {
@@ -87,8 +52,26 @@ export function resetPassword() {
       }
 
       const passwordHash = yield* _(Password.hash(password));
-      yield* _(updateUserRecord({id: userRecord.id, passwordHash}));
-      yield* _(deletePasswordResetTokenRecord(token));
+      const records = yield* _(
+        Effect.tryPromise({
+          try: () =>
+            db
+              .update('users', {password: passwordHash}, {id: userRecord.id})
+              .run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
+
+      if (records.length === 0 || !records[0]) {
+        return new DatabaseError();
+      }
+
+      yield* _(
+        Effect.tryPromise({
+          try: () => db.deletes('password_reset_tokens', {id: token}).run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
       return null;
     }).pipe(

@@ -17,34 +17,6 @@ const validationSchema = Schema.struct({
 
 export type VerifyEmailProps = Schema.Schema.To<typeof validationSchema>;
 
-function selectVerifyEmailTokenRecord(token: string) {
-  return Effect.tryPromise({
-    try: () => db.selectOne('verify_email_tokens', {id: token}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
-function selectUserRecord(id: string) {
-  return Effect.tryPromise({
-    try: () => db.selectOne('users', {id}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
-function updateUserRecord({
-  id,
-  emailVerified,
-}: {
-  id: string;
-  emailVerified: boolean;
-}) {
-  return Effect.tryPromise({
-    try: () =>
-      db.update('users', {email_verified: emailVerified}, {id}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
 function deleteVerifyEmailTokenRecord(token: string) {
   return Effect.tryPromise({
     try: () => db.deletes('verify_email_tokens', {id: token}).run(pool),
@@ -53,14 +25,17 @@ function deleteVerifyEmailTokenRecord(token: string) {
 }
 
 export function verifyEmailToken() {
-  function execute(props: VerifyEmailProps) {
-    const {token} = props;
+  function execute({token}: VerifyEmailProps) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(`Use-case(verify-email-token): Verifying token ${token}`)
       );
+
       const verifyEmailTokenRecord = yield* _(
-        selectVerifyEmailTokenRecord(token)
+        Effect.tryPromise({
+          try: () => db.selectOne('verify_email_tokens', {id: token}).run(pool),
+          catch: () => new DatabaseError(),
+        })
       );
 
       if (!verifyEmailTokenRecord) {
@@ -68,19 +43,32 @@ export function verifyEmailToken() {
       }
 
       const userRecord = yield* _(
-        selectUserRecord(verifyEmailTokenRecord.user_id)
+        Effect.tryPromise({
+          try: () =>
+            db
+              .selectOne('users', {id: verifyEmailTokenRecord.user_id})
+              .run(pool),
+          catch: () => new DatabaseError(),
+        })
       );
 
       if (!userRecord) {
         return yield* _(Effect.fail(new UserNotFoundError()));
       }
 
-      yield* _(
-        updateUserRecord({
-          id: verifyEmailTokenRecord.user_id,
-          emailVerified: true,
+      const records = yield* _(
+        Effect.tryPromise({
+          try: () =>
+            db
+              .update('users', {email_verified: true}, {id: userRecord.id})
+              .run(pool),
+          catch: () => new DatabaseError(),
         })
       );
+
+      if (records.length === 0 || !records[0]) {
+        return new DatabaseError();
+      }
 
       yield* _(deleteVerifyEmailTokenRecord(token));
 

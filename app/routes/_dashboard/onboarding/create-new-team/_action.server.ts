@@ -7,7 +7,6 @@ import {createOrg} from '~/core/use-cases/create-org.server';
 
 export const action = withAction(
   Effect.gen(function* (_) {
-    yield* _(Effect.log('Action(_dashboard/onboarding/create-new-team): Init'));
     const {request} = yield* _(ActionArgs);
     const userId = yield* _(authenticateUser(request));
 

@@ -9,8 +9,6 @@ import {createUser} from '~/core/use-cases/create-user.server';
 
 export const action = withAction(
   Effect.gen(function* (_) {
-    yield* _(Effect.log('Action(_guest/_auth/register): Init'));
-
     const {request} = yield* _(ActionArgs);
 
     const {validate, execute} = createUser();

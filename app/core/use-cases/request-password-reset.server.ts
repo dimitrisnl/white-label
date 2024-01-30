@@ -3,7 +3,6 @@ import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
 import * as Email from '~/core/domain/email.server.ts';
-import * as User from '~/core/domain/user.server.ts';
 import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
@@ -20,56 +19,44 @@ export type RequestPasswordResetProps = Schema.Schema.To<
   typeof validationSchema
 >;
 
-function selectUserRecord(email: User.User['email']) {
-  return Effect.tryPromise({
-    try: () =>
-      db
-        .selectOne('users', {
-          email,
-        })
-        .run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
-function createPasswordResetToken(tokenId: Uuid.Uuid, userId: User.User['id']) {
-  return Effect.tryPromise({
-    try: () =>
-      db
-        .insert('password_reset_tokens', {
-          id: tokenId,
-          user_id: userId,
-        })
-        .run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
 export function requestPasswordReset() {
-  function execute(props: RequestPasswordResetProps) {
-    const {email} = props;
+  function execute({email}: RequestPasswordResetProps) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
           `Use-case(request-password-reset): Requesting password reset for ${email}`
         )
       );
-      const userRecord = yield* _(selectUserRecord(email));
+      const userRecord = yield* _(
+        Effect.tryPromise({
+          try: () => db.selectOne('users', {email}).run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
       if (!userRecord) {
         return yield* _(Effect.fail(new UserNotFoundError()));
       }
 
-      const user = yield* _(User.dbRecordToDomain(userRecord));
-
       const passwordResetTokenId = yield* _(Uuid.generate());
-      yield* _(createPasswordResetToken(passwordResetTokenId, user.id));
 
-      return {email: user.email, passwordResetTokenId};
+      yield* _(
+        Effect.tryPromise({
+          try: () =>
+            db
+              .insert('password_reset_tokens', {
+                id: passwordResetTokenId,
+                user_id: userRecord.id,
+              })
+              .run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
+
+      return {email: userRecord.email, passwordResetTokenId};
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),
-        DbRecordParseError: () => Effect.fail(new InternalServerError()),
         UUIDGenerationError: () => Effect.fail(new InternalServerError()),
       })
     );

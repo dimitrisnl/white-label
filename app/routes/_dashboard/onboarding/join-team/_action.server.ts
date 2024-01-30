@@ -7,7 +7,6 @@ import {acceptInvitation} from '~/core/use-cases/accept-invitation.server';
 
 export const action = withAction(
   Effect.gen(function* (_) {
-    yield* _(Effect.log('Action(_dashboard/onboarding/join-team): Init'));
     const {request} = yield* _(ActionArgs);
     const userId = yield* _(authenticateUser(request));
 
@@ -16,15 +15,17 @@ export const action = withAction(
     const {validate, execute} = acceptInvitation();
 
     const props = yield* _(validate({invitationId: data.invitationId}));
-    const invitation = yield* _(execute(props, userId));
+    const {org} = yield* _(execute(props, userId));
 
     return new Redirect({
-      to: `/teams/${invitation.org.slug}`,
+      to: `/teams/${org.slug}`,
       init: request,
     });
   }).pipe(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError({})),
+      OrgNotFoundError: () =>
+        Effect.fail(new BadRequest({errors: ['Organization not found']})),
       InvitationNotFoundError: () =>
         Effect.fail(new BadRequest({errors: ['Invitation not found']})),
       ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),

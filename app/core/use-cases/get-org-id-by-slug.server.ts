@@ -8,18 +8,17 @@ import {
   OrgNotFoundError,
 } from '~/core/lib/errors.server';
 
-function selectOrgRecord(slug: Org.Org['slug']) {
-  return Effect.tryPromise({
-    try: () => db.selectOne('orgs', {slug}, {columns: ['id']}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
 export function getOrgIdBySlug() {
   function execute(slug: Org.Org['slug']) {
     return Effect.gen(function* (_) {
       yield* _(Effect.log(`Use-case(get-org-id-by-slug): Getting org ${slug}`));
-      const orgRecord = yield* _(selectOrgRecord(slug));
+
+      const orgRecord = yield* _(
+        Effect.tryPromise({
+          try: () => db.selectOne('orgs', {slug}, {columns: ['id']}).run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
       if (!orgRecord) {
         return yield* _(Effect.fail(new OrgNotFoundError()));

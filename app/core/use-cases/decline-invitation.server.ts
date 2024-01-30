@@ -3,7 +3,6 @@ import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
 import * as InviteStatus from '~/core/domain/invite-status.server.ts';
-import type * as MembershipInvitation from '~/core/domain/membership-invitation.server.ts';
 import * as Uuid from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
@@ -17,55 +16,49 @@ const validationSchema = Schema.struct({
 });
 
 export type DeclineInvitationProps = Schema.Schema.To<typeof validationSchema>;
-function selectInvitationRecord(
-  invitationId: MembershipInvitation.MembershipInvitation['id']
-) {
-  return Effect.tryPromise({
-    try: () =>
-      db
-        .selectOne('membership_invitations', {
-          id: invitationId,
-          status: InviteStatus.PENDING,
-        })
-        .run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
-function updateMembershipInvitationRecord({
-  id,
-  status,
-}: {
-  id: MembershipInvitation.MembershipInvitation['id'];
-  status: MembershipInvitation.MembershipInvitation['status'];
-}) {
-  return Effect.tryPromise({
-    try: () => db.update('membership_invitations', {status}, {id}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
 
 export function declineInvitation() {
-  function execute(props: DeclineInvitationProps) {
-    const {invitationId} = props;
+  function execute({invitationId}: DeclineInvitationProps) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
           `Use-case(decline-invitation): Declining invitation ${invitationId}`
         )
       );
-      const invitationRecord = yield* _(selectInvitationRecord(invitationId));
+      const invitationRecord = yield* _(
+        Effect.tryPromise({
+          try: () =>
+            db
+              .selectOne('membership_invitations', {
+                id: invitationId,
+                status: InviteStatus.PENDING,
+              })
+              .run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
       if (!invitationRecord) {
         return yield* _(Effect.fail(new InvitationNotFoundError()));
       }
 
-      yield* _(
-        updateMembershipInvitationRecord({
-          id: invitationId,
-          status: InviteStatus.DECLINED,
+      const records = yield* _(
+        Effect.tryPromise({
+          try: () =>
+            db
+              .update(
+                'membership_invitations',
+                {status: InviteStatus.DECLINED},
+                {id: invitationId}
+              )
+              .run(pool),
+          catch: () => new DatabaseError(),
         })
       );
+
+      if (records.length === 0 || !records[0]) {
+        return new DatabaseError();
+      }
 
       return null;
     }).pipe(

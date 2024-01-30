@@ -7,30 +7,6 @@ import type * as User from '~/core/domain/user.server.ts';
 import {DatabaseError, InternalServerError} from '~/core/lib/errors.server';
 import {invitationAuthorizationService} from '~/core/services/invitation-authorization-service.server';
 
-function getInvitationRecords(orgId: Org.Org['id']) {
-  return Effect.tryPromise({
-    try: () =>
-      db
-        .select(
-          'membership_invitations',
-          {
-            org_id: orgId,
-          },
-          {
-            lateral: {
-              org: db.selectExactlyOne(
-                'orgs',
-                {id: orgId},
-                {columns: ['name', 'slug']}
-              ),
-            },
-          }
-        )
-        .run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
 export function getOrgInvitations() {
   function execute(orgId: Org.Org['id'], userId: User.User['id']) {
     return Effect.gen(function* (_) {
@@ -39,8 +15,30 @@ export function getOrgInvitations() {
           `Use-case(get-org-invitations): Getting invitations for org ${orgId} for user ${userId}`
         )
       );
+
       yield* _(invitationAuthorizationService.canView(userId, orgId));
-      const invitationRecords = yield* _(getInvitationRecords(orgId));
+
+      const invitationRecords = yield* _(
+        Effect.tryPromise({
+          try: () =>
+            db
+              .select(
+                'membership_invitations',
+                {org_id: orgId},
+                {
+                  lateral: {
+                    org: db.selectExactlyOne(
+                      'orgs',
+                      {id: orgId},
+                      {columns: ['name', 'slug']}
+                    ),
+                  },
+                }
+              )
+              .run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
       const invitations = yield* _(
         Effect.all(

@@ -17,7 +17,6 @@ import {editOrg} from '~/core/use-cases/edit-org.server';
 
 export const action = withAction(
   Effect.gen(function* (_) {
-    yield* _(Effect.log('Action(_dashboard/teams/$slug/settings/index): Init'));
     const {request, params} = yield* _(ActionArgs);
 
     const userId = yield* _(authenticateUser(request));

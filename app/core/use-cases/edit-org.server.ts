@@ -18,35 +18,26 @@ const validationSchema = Schema.struct({
 
 export type EditOrgProps = Schema.Schema.To<typeof validationSchema>;
 
-function updateOrgRecord({
-  name,
-  orgId,
-}: {
-  name: Org.Org['name'];
-  orgId: Org.Org['id'];
-}) {
-  return Effect.tryPromise({
-    try: () => db.update('orgs', {name}, {id: orgId}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
 export function editOrg() {
   function execute(
-    props: EditOrgProps,
+    {name}: EditOrgProps,
     orgId: Org.Org['id'],
     userId: User.User['id']
   ) {
-    const {name} = props;
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(`Use-case(edit-org): Editing org ${orgId} with name ${name}`)
       );
       yield* _(orgAuthorizationService.canUpdate(userId, orgId));
 
-      const [orgRecord] = yield* _(updateOrgRecord({name, orgId}));
+      const records = yield* _(
+        Effect.tryPromise({
+          try: () => db.update('orgs', {name}, {id: orgId}).run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
-      if (!orgRecord) {
+      if (records.length === 0 || !records[0]) {
         yield* _(
           Effect.logError(`
           Use-case(edit-org): Org ${orgId} not found`)
@@ -54,7 +45,7 @@ export function editOrg() {
         return yield* _(Effect.fail(new OrgNotFoundError()));
       }
 
-      const org = yield* _(Org.dbRecordToDomain(orgRecord));
+      const org = yield* _(Org.dbRecordToDomain(records[0]));
       return org;
     }).pipe(
       Effect.catchTags({

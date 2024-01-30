@@ -2,7 +2,6 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
-import type * as MembershipInvitation from '~/core/domain/membership-invitation.server.ts';
 import type * as Org from '~/core/domain/org.server.ts';
 import type * as User from '~/core/domain/user.server.ts';
 import * as Uuid from '~/core/domain/uuid.server.ts';
@@ -20,27 +19,12 @@ const validationSchema = Schema.struct({
 
 export type DeleteInvitationProps = Schema.Schema.To<typeof validationSchema>;
 
-function deleteInvitationRecord(
-  invitationId: MembershipInvitation.MembershipInvitation['id']
-) {
-  return Effect.tryPromise({
-    try: () =>
-      db
-        .deletes('membership_invitations', {
-          id: invitationId,
-        })
-        .run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
 export function deleteInvitation() {
   function execute(
-    props: DeleteInvitationProps,
+    {invitationId}: DeleteInvitationProps,
     orgId: Org.Org['id'],
     userId: User.User['id']
   ) {
-    const {invitationId} = props;
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
@@ -49,7 +33,13 @@ export function deleteInvitation() {
       );
       yield* _(invitationAuthorizationService.canDelete(userId, orgId));
 
-      const invitationRecord = yield* _(deleteInvitationRecord(invitationId));
+      const invitationRecord = yield* _(
+        Effect.tryPromise({
+          try: () =>
+            db.deletes('membership_invitations', {id: invitationId}).run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
       if (invitationRecord.length === 0) {
         return yield* _(Effect.fail(new InvitationNotFoundError()));

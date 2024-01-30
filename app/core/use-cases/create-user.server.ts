@@ -1,8 +1,8 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
+import {isDatabaseError} from 'zapatos/db';
 
 import {db, pool} from '~/core/db/db.server.ts';
-import {UNIQUE_CONSTRAINT} from '~/core/db/pg-error.ts';
 import * as Email from '~/core/domain/email.server';
 import * as Password from '~/core/domain/password.server.ts';
 import * as User from '~/core/domain/user.server.ts';
@@ -22,67 +22,57 @@ const validationSchema = Schema.struct({
 
 export type CreateUserProps = Schema.Schema.To<typeof validationSchema>;
 
-function createUserRecord({
-  email,
-  name,
-  passwordHash,
-  id,
-}: {
-  email: User.User['email'];
-  name: User.User['name'];
-  passwordHash: Password.Password;
-  id: Uuid.Uuid;
-}) {
-  return Effect.tryPromise({
-    try: () =>
-      db
-        .insert('users', {
-          id,
-          email: email.toLowerCase(),
-          email_verified: false,
-          password: passwordHash,
-          name,
-        })
-        .run(pool),
-    catch: (error) => {
-      // todo: fix
-      // @ts-expect-error
-      if (error && error.code == UNIQUE_CONSTRAINT) {
-        return new AccountAlreadyExistsError();
-      }
-
-      return new DatabaseError();
-    },
-  });
-}
-
-function createVerifyEmailToken(tokenId: Uuid.Uuid, userId: User.User['id']) {
-  return Effect.tryPromise({
-    try: () =>
-      db
-        .insert('verify_email_tokens', {
-          id: tokenId,
-          user_id: userId,
-        })
-        .run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
 export function createUser() {
-  function execute(props: CreateUserProps) {
-    const {email, name, password} = props;
+  function execute({email, name, password}: CreateUserProps) {
     return Effect.gen(function* (_) {
       yield* _(Effect.log(`Use-case(create-user): Creating user ${email}`));
+
       const passwordHash = yield* _(Password.hash(password));
       const userId = yield* _(Uuid.generate());
-      const userRecord = yield* _(
-        createUserRecord({email, name, passwordHash, id: userId})
-      );
-      const user = yield* _(User.dbRecordToDomain(userRecord));
 
+      const userRecord = yield* _(
+        Effect.tryPromise({
+          try: () =>
+            db
+              .insert('users', {
+                id: userId,
+                email: email.toLowerCase(),
+                email_verified: false,
+                password: passwordHash,
+                name,
+              })
+              .run(pool),
+          catch: (error) => {
+            if (
+              isDatabaseError(
+                // @ts-expect-error
+                error,
+                'IntegrityConstraintViolation_UniqueViolation'
+              )
+            ) {
+              return new AccountAlreadyExistsError();
+            }
+
+            return new DatabaseError();
+          },
+        })
+      );
+
+      const user = yield* _(User.dbRecordToDomain(userRecord));
       const verifyEmailTokenId = yield* _(Uuid.generate());
-      yield* _(createVerifyEmailToken(verifyEmailTokenId, user.id));
+
+      yield* _(
+        Effect.tryPromise({
+          try: () =>
+            db
+              .insert('verify_email_tokens', {
+                id: verifyEmailTokenId,
+                user_id: userId,
+              })
+              .run(pool),
+          catch: () => new DatabaseError(),
+        })
+      );
 
       return {user, verifyEmailTokenId};
     }).pipe(

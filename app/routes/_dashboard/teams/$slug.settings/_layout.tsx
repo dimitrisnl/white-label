@@ -7,7 +7,7 @@ import {Outlet, useParams} from '@remix-run/react';
 
 import {SubMenu, SubMenuLink} from '~/components/sub-menu';
 
-function SettingsNav() {
+function Nav() {
   const {slug} = useParams();
 
   return (
@@ -29,10 +29,10 @@ function SettingsNav() {
   );
 }
 
-export default function SettingsLayout() {
+export default function Layout() {
   return (
     <div>
-      <SettingsNav />
+      <Nav />
       <Outlet />
     </div>
   );
