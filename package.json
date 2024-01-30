@@ -9,7 +9,7 @@
     "build-storybook": "storybook build",
     "dev": "vite dev",
     "format": "prettier --write .",
-    "generate-schema": "ts-node --files -r dotenv/config ./app/core/db/generate-schema.ts ",
+    "generate-schema": "node --loader ts-node/esm -r dotenv/config ./app/core/db/generate-schema.ts",
     "preinstall": "npx only-allow pnpm",
     "lint": "eslint --ext .ts,.tsx .",
     "lint-fix": "eslint --ext .ts,.tsx . --fix",
