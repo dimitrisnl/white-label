@@ -9,7 +9,7 @@ export const action = withAction(
   Effect.gen(function* (_) {
     yield* _(Effect.log('Action(_dashboard/teams/create-new-team): Init'));
     const {request} = yield* _(ActionArgs);
-    const {id: userId} = yield* _(authenticateUser(request));
+    const userId = yield* _(authenticateUser(request));
 
     const {validate, execute} = createOrg();
     const data = yield* _(parseFormData(request));

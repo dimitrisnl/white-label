@@ -24,7 +24,7 @@ export function ErrorPage({
   return (
     <GuestLayout>
       <div className="flex h-full flex-col items-center justify-center text-center">
-        <Card className="max-w-[420px]">
+        <Card className="min-w-[420px]">
           <CardHeader>
             <CardDescription>{statusCode}</CardDescription>
             <CardTitle>Something went wrong</CardTitle>

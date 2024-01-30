@@ -41,7 +41,7 @@ function StyledLink({
       to={item.href}
       className={({isActive}) =>
         cn(
-          'group flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold',
+          'group flex items-center gap-x-3 rounded-md p-2 text-sm font-medium',
           {
             'active bg-gray-200 text-gray-900': isActive,
             'text-gray-600 hover:bg-white hover:text-gray-900 hover:shadow':

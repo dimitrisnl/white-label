@@ -14,8 +14,7 @@ export const action = withAction(
   Effect.gen(function* (_) {
     yield* _(Effect.log('Action(_dashboard/account/security): Init'));
     const {request} = yield* _(ActionArgs);
-    const {id: userId} = yield* _(authenticateUser(request));
-
+    const userId = yield* _(authenticateUser(request));
     const {validate, execute} = changePassword();
     const data = yield* _(parseFormData(request));
     const props = yield* _(validate(data));

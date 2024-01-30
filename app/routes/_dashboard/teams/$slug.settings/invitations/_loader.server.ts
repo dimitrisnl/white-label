@@ -17,7 +17,7 @@ export const loader = withLoader(
     );
     const {request, params} = yield* _(LoaderArgs);
 
-    const {id: userId} = yield* _(authenticateUser(request));
+    const userId = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
 
     const allInvitations = yield* _(getOrgInvitations().execute(orgId, userId));

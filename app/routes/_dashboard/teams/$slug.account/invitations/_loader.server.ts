@@ -9,7 +9,7 @@ export const loader = withLoader(
   Effect.gen(function* (_) {
     yield* _(Effect.log('Loader(_dashboard/account/invitations): Init'));
     const {request} = yield* _(LoaderArgs);
-    const {id: userId} = yield* _(authenticateUser(request));
+    const userId = yield* _(authenticateUser(request));
 
     const invitations = yield* _(getUserInvitations().execute(userId));
 

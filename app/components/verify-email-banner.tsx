@@ -7,7 +7,7 @@ export function VerifyEmailBanner() {
     <div className="space-y-2 rounded-xl bg-orange-200 p-2">
       <div className="px-2">
         <div className="flex space-x-4">
-          <ExclamationTriangleIcon className="h-12 w-12 fill-orange-300 stroke-1" />
+          <ExclamationTriangleIcon className="h-12 w-12 fill-orange-300 stroke-gray-800" />
           <div className="space-y-1 text-xs">
             <p className="text-balance font-medium text-gray-900">
               You haven't verified your email address
@@ -18,7 +18,7 @@ export function VerifyEmailBanner() {
           </div>
         </div>
       </div>
-      <Button size="sm" className="w-full" variant="secondary">
+      <Button size="sm" className="w-full" variant="outline">
         Resend verification email
       </Button>
     </div>

@@ -10,7 +10,7 @@ export const loader = withLoader(
   Effect.gen(function* (_) {
     yield* _(Effect.log('Loader(_dashboard/index): Init'));
     const {request} = yield* _(LoaderArgs);
-    const {id: userId} = yield* _(authenticateUser(request));
+    const userId = yield* _(authenticateUser(request));
 
     // todo: replace with query that gets the last accessed team
     const {memberships} = yield* _(getUserMemberships().execute(userId));

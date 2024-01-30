@@ -15,7 +15,7 @@ function Sidebar({
   teamSelector: React.ReactNode;
 }) {
   return (
-    <div className="flex h-full min-h-screen w-72 flex-col gap-y-4 overflow-y-auto px-6 pb-4">
+    <div className="flex h-full min-h-screen w-72 flex-col gap-y-4 overflow-y-auto px-4 pb-4">
       <Link
         className="flex h-16 shrink-0 items-center space-x-2 pt-4 text-2xl font-bold leading-none text-gray-700"
         to="/"

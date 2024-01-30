@@ -9,6 +9,7 @@ import {
 } from '~/core/lib/responses.server';
 import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
 import {getOrg} from '~/core/use-cases/get-org.server';
+import {getUser} from '~/core/use-cases/get-user.server';
 import {getUserMemberships} from '~/core/use-cases/get-user-memberships.server';
 
 export const loader = withLoader(
@@ -16,7 +17,8 @@ export const loader = withLoader(
     yield* _(Effect.log('Loader(_dashboard/teams/$slug/_layout): Init'));
     const {request, params} = yield* _(LoaderArgs);
 
-    const user = yield* _(authenticateUser(request));
+    const userId = yield* _(authenticateUser(request));
+    const {user} = yield* _(getUser().execute(userId));
     const orgId = yield* _(identifyOrgByParams(params));
     const org = yield* _(getOrg().execute(orgId, user.id));
     const {memberships} = yield* _(getUserMemberships().execute(user.id));
@@ -32,6 +34,12 @@ export const loader = withLoader(
         Effect.fail(new BadRequest({errors: ["We couldn't find this team"]})),
       InternalServerError: () => Effect.fail(new ServerError({})),
       SessionNotFoundError: () =>
+        LoaderArgs.pipe(
+          Effect.flatMap(({request}) =>
+            Effect.fail(new Redirect({to: '/login', init: request}))
+          )
+        ),
+      UserNotFoundError: () =>
         LoaderArgs.pipe(
           Effect.flatMap(({request}) =>
             Effect.fail(new Redirect({to: '/login', init: request}))

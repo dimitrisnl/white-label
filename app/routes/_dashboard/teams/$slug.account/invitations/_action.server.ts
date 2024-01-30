@@ -9,8 +9,8 @@ export const action = withAction(
   Effect.gen(function* (_) {
     yield* _(Effect.log('Action(_dashboard/account/invitations): Init'));
     const {request} = yield* _(ActionArgs);
-    const {id: userId} = yield* _(authenticateUser(request));
 
+    const userId = yield* _(authenticateUser(request));
     const data = yield* _(parseFormData(request));
 
     const {validate, execute} = acceptInvitation();

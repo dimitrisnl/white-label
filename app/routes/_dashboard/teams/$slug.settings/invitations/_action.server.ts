@@ -69,7 +69,7 @@ export const action = withAction(
     );
     const {request, params} = yield* _(ActionArgs);
 
-    const {id: userId} = yield* _(authenticateUser(request));
+    const userId = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
     const data = yield* _(parseFormData(request));
 

@@ -9,7 +9,7 @@ export const loader = withLoader(
   Effect.gen(function* (_) {
     yield* _(Effect.log('Loader(_dashboard/onboarding/index): Init'));
     const {request} = yield* _(LoaderArgs);
-    const {id: userId} = yield* _(authenticateUser(request));
+    const userId = yield* _(authenticateUser(request));
     const {memberships} = yield* _(getUserMemberships().execute(userId));
 
     if (memberships.length > 0 && memberships[0]?.org) {
