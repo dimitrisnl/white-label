@@ -50,7 +50,7 @@ export class Announcement extends Schema.Class<Announcement>()({
   content: announcementContentSchema,
   publishedAt: Schema.Date,
   createdAt: Schema.Date,
-  updatedAt: Schema.union(Schema.Date, Schema.null),
+  updatedAt: Schema.nullable(Schema.Date),
 }) {
   static fromUnknown = compose(
     Schema.decodeUnknown(this),
@@ -77,6 +77,7 @@ export class Announcement extends Schema.Class<Announcement>()({
       org_id: this.orgId,
       published_at: db.toString(this.publishedAt, 'timestamptz'),
       created_at: db.toString(this.createdAt, 'timestamptz'),
+      // @ts-expect-error
       updated_at: this.updatedAt
         ? db.toString(this.updatedAt, 'timestamptz')
         : null,
