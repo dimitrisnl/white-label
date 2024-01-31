@@ -49,7 +49,7 @@ export function declineInvitation() {
             db
               .update(
                 'membership_invitations',
-                {status: DECLINED},
+                {status: DECLINED, updated_at: db.sql`now()`},
                 {id: invitationId}
               )
               .run(pool),

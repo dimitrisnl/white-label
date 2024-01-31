@@ -54,7 +54,11 @@ export function verifyEmailToken() {
         Effect.tryPromise({
           try: () =>
             db
-              .update('users', {email_verified: true}, {id: userRecord.id})
+              .update(
+                'users',
+                {email_verified: true, updated_at: db.sql`now()`},
+                {id: userRecord.id}
+              )
               .run(pool),
           catch: () => new DatabaseError(),
         })

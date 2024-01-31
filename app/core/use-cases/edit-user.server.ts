@@ -27,7 +27,10 @@ export function editUser() {
       );
       const records = yield* _(
         Effect.tryPromise({
-          try: () => db.update('users', {name}, {id: userId}).run(pool),
+          try: () =>
+            db
+              .update('users', {name, updated_at: db.sql`now()`}, {id: userId})
+              .run(pool),
           catch: () => new DatabaseError(),
         })
       );

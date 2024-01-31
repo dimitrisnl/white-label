@@ -29,7 +29,10 @@ export function editOrg() {
 
       const records = yield* _(
         Effect.tryPromise({
-          try: () => db.update('orgs', {name}, {id: orgId}).run(pool),
+          try: () =>
+            db
+              .update('orgs', {name, updated_at: db.sql`now()`}, {id: orgId})
+              .run(pool),
           catch: () => new DatabaseError(),
         })
       );

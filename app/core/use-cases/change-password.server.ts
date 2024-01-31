@@ -64,7 +64,11 @@ export function changePassword() {
         Effect.tryPromise({
           try: () =>
             db
-              .update('users', {password: hashedNewPassword}, {id: userId})
+              .update(
+                'users',
+                {password: hashedNewPassword, updated_at: db.sql`now()`},
+                {id: userId}
+              )
               .run(pool),
           catch: () => new DatabaseError(),
         })
