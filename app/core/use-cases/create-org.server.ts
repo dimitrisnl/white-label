@@ -33,7 +33,7 @@ export function createOrg() {
           catch: () => new DatabaseError(),
         })
       );
-      console.log(userRecord);
+
       if (!userRecord) {
         return yield* _(Effect.fail(new UserNotFoundError()));
       }

@@ -19,6 +19,10 @@ declare module 'zapatos/schema' {
 
   /* --- enums --- */
 
+  export type announcement_status = 'DRAFT' | 'PUBLISHED';
+  export namespace every {
+    export type announcement_status = ['DRAFT', 'PUBLISHED'];
+  }
   export type membership_invite_status = 'ACCEPTED' | 'DECLINED' | 'EXPIRED' | 'PENDING';
   export namespace every {
     export type membership_invite_status = ['ACCEPTED', 'DECLINED', 'EXPIRED', 'PENDING'];
@@ -57,10 +61,28 @@ declare module 'zapatos/schema' {
       title: string;
       /**
       * **announcements.content**
-      * - `varchar` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
       content: string;
+      /**
+      * **announcements.status**
+      * - `announcement_status` in database
+      * - `NOT NULL`, default: `'DRAFT'::announcement_status`
+      */
+      status: announcement_status;
+      /**
+      * **announcements.created_by_user_id**
+      * - `uuid` in database
+      * - Nullable, no default
+      */
+      created_by_user_id: string | null;
+      /**
+      * **announcements.published_by_user_id**
+      * - `uuid` in database
+      * - Nullable, no default
+      */
+      published_by_user_id: string | null;
       /**
       * **announcements.created_at**
       * - `timestamptz` in database
@@ -101,10 +123,28 @@ declare module 'zapatos/schema' {
       title: string;
       /**
       * **announcements.content**
-      * - `varchar` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
       content: string;
+      /**
+      * **announcements.status**
+      * - `announcement_status` in database
+      * - `NOT NULL`, default: `'DRAFT'::announcement_status`
+      */
+      status: announcement_status;
+      /**
+      * **announcements.created_by_user_id**
+      * - `uuid` in database
+      * - Nullable, no default
+      */
+      created_by_user_id: string | null;
+      /**
+      * **announcements.published_by_user_id**
+      * - `uuid` in database
+      * - Nullable, no default
+      */
+      published_by_user_id: string | null;
       /**
       * **announcements.created_at**
       * - `timestamptz` in database
@@ -145,10 +185,28 @@ declare module 'zapatos/schema' {
       title?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **announcements.content**
-      * - `varchar` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
       content?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **announcements.status**
+      * - `announcement_status` in database
+      * - `NOT NULL`, default: `'DRAFT'::announcement_status`
+      */
+      status?: announcement_status | db.Parameter<announcement_status> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, announcement_status | db.Parameter<announcement_status> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **announcements.created_by_user_id**
+      * - `uuid` in database
+      * - Nullable, no default
+      */
+      created_by_user_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **announcements.published_by_user_id**
+      * - `uuid` in database
+      * - Nullable, no default
+      */
+      published_by_user_id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **announcements.created_at**
       * - `timestamptz` in database
@@ -189,10 +247,28 @@ declare module 'zapatos/schema' {
       title: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **announcements.content**
-      * - `varchar` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
       content: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **announcements.status**
+      * - `announcement_status` in database
+      * - `NOT NULL`, default: `'DRAFT'::announcement_status`
+      */
+      status?: announcement_status | db.Parameter<announcement_status> | db.DefaultType | db.SQLFragment;
+      /**
+      * **announcements.created_by_user_id**
+      * - `uuid` in database
+      * - Nullable, no default
+      */
+      created_by_user_id?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **announcements.published_by_user_id**
+      * - `uuid` in database
+      * - Nullable, no default
+      */
+      published_by_user_id?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **announcements.created_at**
       * - `timestamptz` in database
@@ -233,10 +309,28 @@ declare module 'zapatos/schema' {
       title?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **announcements.content**
-      * - `varchar` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
       content?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **announcements.status**
+      * - `announcement_status` in database
+      * - `NOT NULL`, default: `'DRAFT'::announcement_status`
+      */
+      status?: announcement_status | db.Parameter<announcement_status> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, announcement_status | db.Parameter<announcement_status> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **announcements.created_by_user_id**
+      * - `uuid` in database
+      * - Nullable, no default
+      */
+      created_by_user_id?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **announcements.published_by_user_id**
+      * - `uuid` in database
+      * - Nullable, no default
+      */
+      published_by_user_id?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **announcements.created_at**
       * - `timestamptz` in database

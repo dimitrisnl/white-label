@@ -6,7 +6,6 @@ import {DatabaseError, InternalServerError} from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
 import {
-  Announcement,
   announcementContentSchema,
   announcementTitleSchema,
 } from '../domain/announcement.server';
@@ -36,7 +35,7 @@ export function createAnnouncement() {
 
       const announcementId = yield* _(generateUUID());
 
-      const announcementRecord = yield* _(
+      yield* _(
         Effect.tryPromise({
           try: () =>
             db
@@ -45,6 +44,7 @@ export function createAnnouncement() {
                 title,
                 content,
                 org_id: orgId,
+                created_by_user_id: userId,
               })
               .run(pool),
           catch: () => {
@@ -53,15 +53,10 @@ export function createAnnouncement() {
         })
       );
 
-      const announcement = yield* _(
-        Announcement.fromRecord(announcementRecord)
-      );
-
-      return announcement;
+      return null;
     }).pipe(
       Effect.catchTags({
         DatabaseError: () => Effect.fail(new InternalServerError()),
-        AnnouncementParseError: () => Effect.fail(new InternalServerError()),
         UUIDGenerationError: () => Effect.fail(new InternalServerError()),
       })
     );

@@ -2,10 +2,12 @@ import type {ParseError} from '@effect/schema/ParseResult';
 import * as Schema from '@effect/schema/Schema';
 import {Data, Effect} from 'effect';
 import {compose} from 'effect/Function';
-import type {announcements} from 'zapatos/schema';
+import type {announcements, users} from 'zapatos/schema';
 
 import {db} from '../db/db.server.ts';
+import {announcementStatusSchema} from './announcement-status.server.ts';
 import {orgIdSchema} from './org.server.ts';
+import {userIdSchema, userNameSchema} from './user.server.ts';
 import {uuidSchema} from './uuid.server.ts';
 
 class AnnouncementIdParseError extends Data.TaggedError(
@@ -32,9 +34,6 @@ export const announcementTitleSchema = Schema.Trim.pipe(
 export const announcementContentSchema = Schema.Trim.pipe(
   Schema.minLength(2, {
     message: () => 'Content must be at least 2 characters',
-  }),
-  Schema.maxLength(100, {
-    message: () => 'Content cannot be more than 100 characters',
   })
 );
 
@@ -48,21 +47,43 @@ export class Announcement extends Schema.Class<Announcement>()({
   orgId: orgIdSchema,
   title: announcementTitleSchema,
   content: announcementContentSchema,
-  publishedAt: Schema.Date,
+  status: announcementStatusSchema,
+  createdByUser: Schema.nullable(
+    Schema.struct({name: userNameSchema, id: userIdSchema})
+  ),
+  publishedByUser: Schema.nullable(
+    Schema.struct({name: userNameSchema, id: userIdSchema})
+  ),
+  updatedAt: Schema.Date,
   createdAt: Schema.Date,
-  updatedAt: Schema.nullable(Schema.Date),
+  publishedAt: Schema.nullable(Schema.Date),
 }) {
   static fromUnknown = compose(
     Schema.decodeUnknown(this),
     Effect.mapError((cause) => new AnnouncementParseError({cause}))
   );
 
-  static fromRecord(record: announcements.JSONSelectable) {
+  static fromRecord({
+    record,
+    createdByUser,
+    publishedByUser,
+  }: {
+    record: announcements.JSONSelectable;
+    createdByUser: Pick<users.JSONSelectable, 'id' | 'name'> | null;
+    publishedByUser: Pick<users.JSONSelectable, 'id' | 'name'> | null;
+  }) {
     return Announcement.fromUnknown({
       id: record.id,
       title: record.title,
       orgId: record.org_id,
       content: record.content,
+      status: record.status,
+      createdByUser: createdByUser
+        ? {id: createdByUser.id, name: createdByUser.name}
+        : null,
+      publishedByUser: publishedByUser
+        ? {id: publishedByUser.id, name: publishedByUser.name}
+        : null,
       publishedAt: record.published_at,
       createdAt: record.created_at,
       updatedAt: record.updated_at,
@@ -75,11 +96,13 @@ export class Announcement extends Schema.Class<Announcement>()({
       content: this.content,
       title: this.title,
       org_id: this.orgId,
-      published_at: db.toString(this.publishedAt, 'timestamptz'),
+      created_by_user_id: this.createdByUser?.id ?? null,
+      published_by_user_id: this.publishedByUser?.id ?? null,
+      status: this.status,
       created_at: db.toString(this.createdAt, 'timestamptz'),
-      // @ts-expect-error
-      updated_at: this.updatedAt
-        ? db.toString(this.updatedAt, 'timestamptz')
+      updated_at: db.toString(this.updatedAt, 'timestamptz'),
+      published_at: this.publishedAt
+        ? db.toString(this.publishedAt, 'timestamptz')
         : null,
     };
   }

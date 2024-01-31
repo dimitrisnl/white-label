@@ -21,7 +21,27 @@ export function getOrgAnnouncements() {
 
       const announcementRecords = yield* _(
         Effect.tryPromise({
-          try: () => db.select('announcements', {org_id: orgId}).run(pool),
+          try: () =>
+            db
+              .select(
+                'announcements',
+                {org_id: orgId},
+                {
+                  lateral: {
+                    created_by_user: db.selectOne(
+                      'users',
+                      {id: db.parent('created_by_user_id')},
+                      {columns: ['id', 'name']}
+                    ),
+                    published_by_user: db.selectOne(
+                      'users',
+                      {id: db.parent('published_by_user_id')},
+                      {columns: ['id', 'name']}
+                    ),
+                  },
+                }
+              )
+              .run(pool),
           catch: () => new DatabaseError(),
         })
       );
@@ -29,7 +49,12 @@ export function getOrgAnnouncements() {
       const announcements = yield* _(
         Effect.all(
           announcementRecords.map(
-            (announcementRecord) => Announcement.fromRecord(announcementRecord),
+            (announcementRecord) =>
+              Announcement.fromRecord({
+                record: announcementRecord,
+                createdByUser: announcementRecord.created_by_user,
+                publishedByUser: announcementRecord.published_by_user,
+              }),
             {concurrency: 'unbounded'}
           )
         )
