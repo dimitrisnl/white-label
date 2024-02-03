@@ -21,8 +21,10 @@ export function SubMenuLink({
           cn(
             'flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium',
             {
-              'bg-gray-100 text-gray-900': isActive,
-              'text-gray-400 hover:text-gray-700': !isActive,
+              'bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-300':
+                isActive,
+              'text-gray-400 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100':
+                !isActive,
             }
           )
         }

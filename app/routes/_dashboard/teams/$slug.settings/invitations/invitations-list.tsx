@@ -26,10 +26,10 @@ export function InvitationsList({
     <div className="space-y-6">
       <div className="grid grid-cols-3 gap-12">
         <div>
-          <h2 className="text-lg font-medium leading-10 text-gray-700">
+          <h2 className="text-lg font-medium leading-10 text-gray-700 dark:text-gray-100">
             Invitations
           </h2>
-          <p className="w-80 text-sm text-gray-500">
+          <p className="w-80 text-sm text-gray-500 dark:text-gray-300">
             Delete or revoke your sent invitations
           </p>
         </div>

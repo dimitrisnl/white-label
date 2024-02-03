@@ -11,13 +11,13 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
   # Test database, no persistance
-  db-test:
-    image: postgres
-    environment:
-      - POSTGRES_USER=test-postgres
-      - POSTGRES_PASSWORD=test-postgres
-    ports:
-      - ${POSTGRES_TEST_PORT}:5432
+  # db-test:
+  #   image: postgres
+  #   environment:
+  #     - POSTGRES_USER=test-postgres
+  #     - POSTGRES_PASSWORD=test-postgres
+  #   ports:
+  #     - ${POSTGRES_TEST_PORT}:5432
   cache:
     image: redis:6.2-alpine
     restart: always

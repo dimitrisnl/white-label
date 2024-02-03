@@ -1,3 +1,4 @@
+import {ArrowLongRightIcon} from '@heroicons/react/24/solid';
 import {Link} from '@remix-run/react';
 
 import {buttonVariants} from '~/components/ui/button';
@@ -23,8 +24,9 @@ export function NoInvitations() {
         <div>
           Please request an invite from your team. They can do this under:
         </div>
-        <div className="inline-block rounded-sm bg-blue-50 px-2 py-1 font-medium">
-          Team Settings &gt; Invitations
+        <div className="inline-flex items-center justify-center space-x-2 rounded-sm bg-blue-50 px-2 py-1 font-medium dark:bg-blue-900">
+          <div>Team Settings</div> <ArrowLongRightIcon className="h-4 w-4" />{' '}
+          <div>Invitations</div>
         </div>
       </CardContent>
       <CardFooter>

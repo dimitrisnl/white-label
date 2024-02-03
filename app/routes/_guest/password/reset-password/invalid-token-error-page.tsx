@@ -21,10 +21,10 @@ export function InvalidTokenErrorPage() {
           <CardDescription>The process could not be completed</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center gap-4 text-center text-gray-700">
-          <p>
+          <div>
             Your password reset link is <strong>invalid</strong> or has{' '}
             <strong>expired</strong>.
-          </p>
+          </div>
           <XCircleIcon className="h-12 w-12 stroke-red-600" />
 
           <Link

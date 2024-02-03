@@ -33,10 +33,10 @@ export function CreateInvitationForm() {
   return (
     <div className="grid grid-cols-3 gap-12">
       <div>
-        <h2 className="text-lg font-medium leading-10 text-gray-700">
+        <h2 className="text-lg font-medium leading-10 text-gray-700 dark:text-gray-100">
           Add a team member
         </h2>
-        <p className="w-80 text-sm text-gray-500">
+        <p className="w-80 text-sm text-gray-500 dark:text-gray-300">
           Provide the email address of the person you would like to invite to
           this team.
         </p>

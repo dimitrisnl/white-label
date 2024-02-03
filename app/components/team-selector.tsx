@@ -22,7 +22,7 @@ export function TeamSelector({memberships}: {memberships: Array<Membership>}) {
         navigate(`/teams/${slug}`);
       }}
     >
-      <SelectTrigger className="bg-white">
+      <SelectTrigger>
         <SelectValue placeholder="Select a team" />
       </SelectTrigger>
       <SelectContent>

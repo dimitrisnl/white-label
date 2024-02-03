@@ -21,10 +21,10 @@ export function InvalidInvitationErrorMessage() {
           <CardDescription>The process could not be completed</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center gap-4 text-center text-gray-700">
-          <p>
+          <div>
             Your invitation link is either <strong>invalid</strong> or has{' '}
             <strong>expired</strong>.
-          </p>
+          </div>
           <XCircleIcon className="h-12 w-12 stroke-red-600" />
         </CardContent>
 

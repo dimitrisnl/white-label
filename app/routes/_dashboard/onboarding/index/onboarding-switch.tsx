@@ -23,7 +23,7 @@ export function OnboardingSwitch() {
             </div>
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center text-left text-gray-700">
+        <CardContent className="flex flex-col items-center justify-center text-left text-gray-700 dark:text-gray-300">
           <ul className="w-80 max-w-sm list-inside list-disc text-sm">
             <li>You will be the owner of the team</li>
             <li>You can invite others to collaborate with you</li>
@@ -47,9 +47,9 @@ export function OnboardingSwitch() {
             </div>
           </CardDescription>
         </CardHeader>
-        <CardContent className="text-sm text-gray-700">
-          <p>Are you joining an existing team?</p>
-          <p>Let's look for your invitations..</p>
+        <CardContent className="text-sm text-gray-700 dark:text-gray-300">
+          <div>Are you joining an existing team?</div>
+          <div>Let's look for your invitations..</div>
         </CardContent>
         <CardFooter className="flex justify-center">
           <Link
