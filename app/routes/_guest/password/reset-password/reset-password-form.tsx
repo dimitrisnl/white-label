@@ -24,7 +24,7 @@ export function ResetPasswordForm({token}: {token: string}) {
 
   return (
     <Form method="post">
-      <Card className="w-[480px]">
+      <Card className="w-[420px]">
         <CardHeader className="text-center">
           <CardTitle>Create a new password</CardTitle>
           <CardDescription>

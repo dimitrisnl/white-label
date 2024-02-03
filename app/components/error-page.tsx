@@ -29,7 +29,9 @@ export function ErrorPage({
             <CardDescription>{statusCode}</CardDescription>
             <CardTitle>Something went wrong</CardTitle>
           </CardHeader>
-          <CardContent className="text-md text-balance">{messages}</CardContent>
+          <CardContent className="text-md text-balance text-muted-foreground">
+            {messages}
+          </CardContent>
           <CardFooter className="justify-center">
             <Link to="/" className={buttonVariants({variant: 'default'})}>
               Back to Home

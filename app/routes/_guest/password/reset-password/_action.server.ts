@@ -15,10 +15,7 @@ export const action = withAction(
 
     yield* _(execute(props));
 
-    return new Redirect({
-      to: '/login?resetPassword=true',
-      init: request,
-    });
+    return new Redirect({to: '/login?resetPassword=true'});
   }).pipe(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError({})),

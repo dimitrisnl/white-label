@@ -19,10 +19,8 @@ export function InvitationDeclineSuccessMessage() {
           <CardTitle>Invitation declined</CardTitle>
           <CardDescription>Nothing else needed</CardDescription>
         </CardHeader>
-        <CardContent>
-          <p className="text-gray-700">
-            You have declined this invitation. You can leave this page.
-          </p>
+        <CardContent className="text-muted-foreground">
+          You have declined this invitation. You can leave this page.
         </CardContent>
         <CardFooter>
           <Link to="/login" className={buttonVariants({variant: 'link'})}>

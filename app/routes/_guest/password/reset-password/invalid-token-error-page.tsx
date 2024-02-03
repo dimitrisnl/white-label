@@ -16,17 +16,15 @@ export function InvalidTokenErrorPage() {
   return (
     <GuestLayout>
       <Card className="w-[420px] text-center">
-        <CardHeader>
+        <CardHeader className="flex flex-col items-center justify-center">
+          <XCircleIcon className="mb-4 h-10 w-10 stroke-red-600" />
           <CardTitle>Cannot reset password</CardTitle>
-          <CardDescription>The process could not be completed</CardDescription>
+          <CardDescription>
+            Your password reset link is either <strong>invalid</strong> or has{' '}
+            <strong>expired</strong>
+          </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center gap-4 text-center text-gray-700">
-          <div>
-            Your password reset link is <strong>invalid</strong> or has{' '}
-            <strong>expired</strong>.
-          </div>
-          <XCircleIcon className="h-12 w-12 stroke-red-600" />
-
           <Link
             to="/password/request-reset"
             className={buttonVariants({variant: 'default'})}

@@ -7,7 +7,7 @@ export class Ok<T> extends Data.TaggedClass('Ok')<{
 
 export class Redirect extends Data.TaggedClass('Redirect')<{
   readonly to: string;
-  readonly init: ResponseInit;
+  readonly init?: ResponseInit;
 }> {}
 
 export class Forbidden extends Data.TaggedClass('Forbidden')<{

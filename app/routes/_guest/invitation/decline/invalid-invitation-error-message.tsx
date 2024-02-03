@@ -20,7 +20,7 @@ export function InvalidInvitationErrorMessage() {
           <CardTitle>Invitation not found</CardTitle>
           <CardDescription>The process could not be completed</CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center gap-4 text-center text-gray-700">
+        <CardContent className="flex flex-col items-center justify-center gap-4 text-center text-muted-foreground">
           <div>
             Your invitation link is either <strong>invalid</strong> or has{' '}
             <strong>expired</strong>.

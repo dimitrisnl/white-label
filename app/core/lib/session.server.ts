@@ -1,7 +1,6 @@
 import * as Schema from '@effect/schema/Schema';
 import {createCookieSessionStorage} from '@remix-run/node';
 import * as Effect from 'effect/Effect';
-import {createThemeSessionResolver} from 'remix-themes';
 
 import {Redirect} from '~/core/lib/responses.server';
 
@@ -24,20 +23,6 @@ export const sessionStorage = createCookieSessionStorage({
     maxAge: 0,
   },
 });
-
-const themeSessionStorage = createCookieSessionStorage({
-  cookie: {
-    name: 'theme',
-    path: '/',
-    httpOnly: true,
-    sameSite: 'lax',
-    secrets: [config.SESSION_SECRET],
-    secure: process.env.NODE_ENV === 'production', // add domain
-  },
-});
-
-export const themeSessionResolver =
-  createThemeSessionResolver(themeSessionStorage);
 
 export function getSession(request: Request) {
   const cookie = request.headers.get('Cookie');

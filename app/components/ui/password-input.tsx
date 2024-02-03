@@ -21,9 +21,9 @@ const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(
         <Input {...props} ref={ref} type={inputType} />
         <button type="button" onClick={togglePasswordVisibility}>
           {showPassword ? (
-            <EyeSlashIcon className="h-4 w-4 text-gray-500 dark:text-gray-200" />
+            <EyeSlashIcon className="h-4 w-4 text-muted-foreground" />
           ) : (
-            <EyeIcon className="h-4 w-4 text-gray-500 dark:text-gray-200" />
+            <EyeIcon className="h-4 w-4 text-muted-foreground" />
           )}
         </button>
       </div>

@@ -12,10 +12,7 @@ export const loader = withLoader(
     const {memberships} = yield* _(getUserMemberships().execute(userId));
 
     if (memberships.length > 0 && memberships[0]?.org) {
-      return new Redirect({
-        to: `/teams/${memberships[0].org.slug}`,
-        init: request,
-      });
+      return new Redirect({to: `/teams/${memberships[0].org.slug}`});
     }
 
     return new Ok({data: null});

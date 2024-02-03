@@ -24,13 +24,14 @@ export function RequestPasswordResetForm() {
   if (data?.ok === true) {
     return (
       <Card className="w-[420px]">
-        <CardHeader className="text-center">
+        <CardHeader className="flex flex-col items-center justify-center text-center">
+          <CheckCircleIcon className="mb-4 h-10 w-10 stroke-green-600" />
           <CardTitle>Email sent</CardTitle>
+          <CardDescription className="text-balance">
+            We've sent you an email with a link to reset your password.
+          </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center gap-4 text-center text-gray-700">
-          <div>We've sent you an email with a link to reset your password.</div>
-          <CheckCircleIcon className="h-12 w-12 stroke-green-600" />
-        </CardContent>
+        <CardContent />
         <CardFooter className="flex justify-center">
           <Link
             to="/login"

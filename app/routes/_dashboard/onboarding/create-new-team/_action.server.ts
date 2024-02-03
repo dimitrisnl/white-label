@@ -16,10 +16,7 @@ export const action = withAction(
 
     const org = yield* _(execute(props, userId));
 
-    return new Redirect({
-      to: `/teams/${org.slug}`,
-      init: request,
-    });
+    return new Redirect({to: `/teams/${org.slug}`});
   }).pipe(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError({})),

@@ -49,7 +49,7 @@ export function LoginForm() {
                   to="/password/request-reset"
                   className={cn(
                     buttonVariants({variant: 'link'}),
-                    'h-auto p-0 text-xs text-gray-700 dark:text-gray-300'
+                    'h-auto p-0 text-xs text-muted-foreground'
                   )}
                   tabIndex={-1}
                 >
