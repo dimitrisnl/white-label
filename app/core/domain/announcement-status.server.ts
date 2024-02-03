@@ -8,7 +8,7 @@ export const PUBLISHED = 'PUBLISHED' as const;
 
 export const announcementStatusSchema = Schema.literal(DRAFT, PUBLISHED).pipe(
   Schema.message(
-    () => "Invitation status must be one of 'DRAFT' or 'PUBLISHED'"
+    () => "Announcement status must be one of 'DRAFT' or 'PUBLISHED'"
   )
 );
 

@@ -8,7 +8,6 @@ import type {orgs} from 'zapatos/schema';
 import {db} from '../db/db.server.ts';
 import {uuidSchema} from './uuid.server.ts';
 
-const OrgBrand = Symbol.for('OrgBrand');
 const OrgIdBrand = Symbol.for('OrgIdBrand');
 
 class OrgIdParseError extends Data.TaggedError('OrgIdParseError')<{
@@ -34,14 +33,6 @@ export const orgNameSchema = Schema.Trim.pipe(
 
 export const orgIdSchema = uuidSchema.pipe(Schema.brand(OrgIdBrand));
 export const orgSlugSchema = Schema.string.pipe(Schema.minLength(2));
-
-export const orgSchema = Schema.struct({
-  id: orgIdSchema,
-  name: orgNameSchema,
-  slug: orgSlugSchema,
-  createdAt: Schema.Date,
-  updatedAt: Schema.Date,
-}).pipe(Schema.brand(OrgBrand));
 
 export class Org extends Schema.Class<Org>()({
   id: orgIdSchema,
