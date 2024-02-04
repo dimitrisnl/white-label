@@ -70,8 +70,14 @@ export function getUserInvitations() {
       return {invitations};
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        MembershipInvitationParse: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        MembershipInvitationParse: () =>
+          Effect.fail(
+            new InternalServerError({
+              reason: 'Error parsing membership invitation',
+            })
+          ),
       })
     );
   }

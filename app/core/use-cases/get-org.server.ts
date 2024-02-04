@@ -17,7 +17,7 @@ export function getOrg() {
       yield* _(
         Effect.log(`(get-org): Getting org ${orgId} for user ${userId}`)
       );
-      yield* _(orgAuthorizationService.canView(userId, orgId));
+      yield* _(orgAuthorizationService.canView({userId, orgId}));
 
       const orgRecord = yield* _(
         Effect.tryPromise({
@@ -27,10 +27,6 @@ export function getOrg() {
       );
 
       if (!orgRecord) {
-        yield* _(
-          Effect.logError(`
-          (get-org): Org ${orgId} not found`)
-        );
         return yield* _(Effect.fail(new OrgNotFoundError()));
       }
 
@@ -39,8 +35,10 @@ export function getOrg() {
       return org;
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        OrgParseError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        OrgParseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Error parsing org'})),
       })
     );
   }

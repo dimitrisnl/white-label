@@ -18,7 +18,7 @@ export const loader = withLoader(
     return new Ok({data: null});
   }).pipe(
     Effect.catchTags({
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       SessionNotFoundError: () =>
         LoaderArgs.pipe(
           Effect.flatMap(({request}) =>

@@ -27,7 +27,7 @@ export const loader = withLoader(
   }).pipe(
     Effect.catchTags({
       ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       VerifyEmailTokenNotFoundError: () =>
         Effect.fail(
           new BadRequest({errors: ['Verification email token is invalid']})

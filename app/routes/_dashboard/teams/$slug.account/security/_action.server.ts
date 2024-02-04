@@ -28,7 +28,7 @@ export const action = withAction(
         Effect.fail(
           new BadRequest({errors: ['The provided password is incorrect']})
         ),
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       UserNotFoundError: () =>
         ActionArgs.pipe(
           Effect.flatMap(({request}) =>

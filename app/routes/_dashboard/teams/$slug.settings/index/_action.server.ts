@@ -31,7 +31,7 @@ export const action = withAction(
     return new Ok({data: null});
   }).pipe(
     Effect.catchTags({
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       OrgNotFoundError: () =>
         Effect.fail(new BadRequest({errors: ["We couldn't find this team"]})),
       ForbiddenActionError: () =>

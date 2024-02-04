@@ -40,7 +40,7 @@ export function createInvitation() {
         Effect.log(`(create-invitation): Creating invitation for ${email}`)
       );
 
-      yield* _(invitationAuthorizationService.canCreate(userId, orgId));
+      yield* _(invitationAuthorizationService.canCreate({userId, orgId}));
 
       const invitationId = yield* _(generateUUID());
 
@@ -77,7 +77,16 @@ export function createInvitation() {
       );
 
       if (existingMember?.membership) {
-        return yield* _(Effect.fail(new InviteeAlreadyMemberError()));
+        return yield* _(
+          Effect.fail(
+            new InviteeAlreadyMemberError({
+              inviterId: userId,
+              orgId,
+              inviteeEmail: existingMember.email,
+              inviteeId: existingMember.id,
+            })
+          )
+        );
       }
 
       const orgRecord = yield* _(
@@ -122,9 +131,18 @@ export function createInvitation() {
       return invitation;
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        MembershipInvitationParse: () => Effect.fail(new InternalServerError()),
-        UUIDGenerationError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        MembershipInvitationParse: () =>
+          Effect.fail(
+            new InternalServerError({
+              reason: 'Membership invitation parse error',
+            })
+          ),
+        UUIDGenerationError: () =>
+          Effect.fail(
+            new InternalServerError({reason: 'UUID generation error'})
+          ),
       })
     );
   }

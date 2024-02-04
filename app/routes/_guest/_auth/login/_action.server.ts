@@ -25,7 +25,7 @@ export const action = withAction(
     );
   }).pipe(
     Effect.catchTags({
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       InvalidCredentialsError: () =>
         Effect.fail(
           new BadRequest({errors: ['The credentials you provided are wrong']})

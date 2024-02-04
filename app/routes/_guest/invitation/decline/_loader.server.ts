@@ -24,7 +24,7 @@ export const loader = withLoader(
     return new Ok({data: {}});
   }).pipe(
     Effect.catchTags({
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       InvitationNotFoundError: () =>
         Effect.fail(new BadRequest({errors: ['Invitation not found']})),
       ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),

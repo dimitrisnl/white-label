@@ -76,7 +76,8 @@ export function verifyEmailToken() {
       return null;
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
       })
     );
   }

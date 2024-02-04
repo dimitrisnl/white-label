@@ -46,7 +46,13 @@ export function editAnnouncement() {
         )
       );
 
-      yield* _(announcementAuthorizationService.canUpdate(userId, orgId));
+      yield* _(
+        announcementAuthorizationService.canUpdate({
+          userId,
+          orgId,
+          announcementId,
+        })
+      );
 
       const records = yield* _(
         Effect.tryPromise({
@@ -69,10 +75,6 @@ export function editAnnouncement() {
       );
 
       if (records.length === 0 || !records[0]) {
-        yield* _(
-          Effect.logError(`
-          (edit-announcement): Announcement ${announcementId} not found`)
-        );
         return yield* _(Effect.fail(new AnnouncementNotFoundError()));
       }
 
@@ -117,8 +119,12 @@ export function editAnnouncement() {
       return announcement;
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        AnnouncementParseError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        AnnouncementParseError: () =>
+          Effect.fail(
+            new InternalServerError({reason: 'Announcement parse error'})
+          ),
       })
     );
   }

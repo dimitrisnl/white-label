@@ -17,7 +17,7 @@ export function getOrgInvitations() {
         )
       );
 
-      yield* _(invitationAuthorizationService.canView(userId, orgId));
+      yield* _(invitationAuthorizationService.canViewAll({userId, orgId}));
 
       const invitationRecords = yield* _(
         Effect.tryPromise({
@@ -60,8 +60,14 @@ export function getOrgInvitations() {
       return invitations;
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        MembershipInvitationParse: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        MembershipInvitationParse: () =>
+          Effect.fail(
+            new InternalServerError({
+              reason: 'Error parsing membership invitation',
+            })
+          ),
       })
     );
   }

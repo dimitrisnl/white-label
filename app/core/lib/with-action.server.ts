@@ -2,8 +2,6 @@ import type {ActionFunctionArgs} from '@remix-run/node';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import {pipe} from 'effect/Function';
-import * as Logger from 'effect/Logger';
-import * as LogLevel from 'effect/LogLevel';
 import {redirect, typedjson} from 'remix-typedjson';
 
 import type {
@@ -25,7 +23,6 @@ export const withAction =
   (args: ActionFunctionArgs) => {
     const runnable = pipe(
       self,
-      Logger.withMinimumLogLevel(LogLevel.None),
       Effect.provideService(ActionArgs, args),
       Effect.match({
         onFailure: matchHttpResponseError()({
@@ -35,8 +32,8 @@ export const withAction =
           BadRequest: ({errors}) => {
             return typedjson({ok: false as const, errors}, {status: 400});
           },
-          ServerError: ({errors = ['Something went wrong']}) => {
-            return typedjson({ok: false as const, errors}, {status: 500});
+          ServerError: () => {
+            return typedjson({ok: false as const}, {status: 500});
           },
           Forbidden: ({errors}) => {
             return typedjson({ok: false as const, errors}, {status: 401});

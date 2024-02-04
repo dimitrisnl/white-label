@@ -33,7 +33,7 @@ export const loader = withLoader(
         Effect.fail(new BadRequest({errors: ["We couldn't find this team"]})),
       ForbiddenActionError: () =>
         Effect.fail(new BadRequest({errors: ["We couldn't find this team"]})),
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       SessionNotFoundError: () =>
         LoaderArgs.pipe(
           Effect.flatMap(({request}) =>

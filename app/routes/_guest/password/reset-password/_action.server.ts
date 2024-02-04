@@ -18,7 +18,7 @@ export const action = withAction(
     return new Redirect({to: '/login?resetPassword=true'});
   }).pipe(
     Effect.catchTags({
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       PasswordResetTokenNotFoundError: () =>
         Effect.fail(
           new BadRequest({errors: ['Password reset token is invalid']})

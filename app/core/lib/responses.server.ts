@@ -18,9 +18,7 @@ export class BadRequest extends Data.TaggedClass('BadRequest')<{
   readonly errors: Array<string>;
 }> {}
 
-export class ServerError extends Data.TaggedClass('ServerError')<{
-  readonly errors?: Array<string>;
-}> {}
+export class ServerError extends Data.TaggedClass('ServerError') {}
 
 export type HttpResponse<T> = Redirect | Ok<T>;
 export const matchHttpResponse = <T>() => Match.typeTags<HttpResponse<T>>();

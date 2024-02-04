@@ -28,7 +28,7 @@ export const action = withAction(
     );
   }).pipe(
     Effect.catchTags({
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       AccountAlreadyExistsError: () =>
         Effect.fail(
           new BadRequest({errors: ['The email you provided is taken']})

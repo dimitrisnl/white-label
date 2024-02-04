@@ -25,7 +25,7 @@ export const action = withAction(
   }).pipe(
     Effect.catchTags({
       ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       UserNotFoundError: () =>
         Effect.fail(new BadRequest({errors: ['Something went wrong']})),
       SessionNotFoundError: () =>

@@ -2,7 +2,6 @@ import * as Effect from 'effect/Effect';
 
 import type {Org} from '~/core/domain/org.server';
 import type {User} from '~/core/domain/user.server';
-import {InvalidIntent} from '~/core/lib/errors.server';
 import {
   authenticateUser,
   identifyOrgByParams,
@@ -55,11 +54,15 @@ export const action = withAction(
       return new Ok({data: null});
     }
 
-    return yield* _(Effect.fail(new InvalidIntent()));
+    return yield* _(
+      Effect.fail(
+        new BadRequest({errors: ['We could not process your request']})
+      )
+    );
   }).pipe(
     Effect.catchTags({
       ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       SessionNotFoundError: () =>
         ActionArgs.pipe(
           Effect.flatMap(({request}) =>
@@ -78,8 +81,6 @@ export const action = withAction(
         Effect.fail(new BadRequest({errors: ["We couldn't find this team"]})),
       OrgNotFoundError: () =>
         Effect.fail(new BadRequest({errors: ["We couldn't find this team"]})),
-      InvalidIntent: () =>
-        Effect.fail(new BadRequest({errors: ['Invalid Intent']})),
     })
   )
 );

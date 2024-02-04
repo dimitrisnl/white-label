@@ -33,7 +33,7 @@ export function editOrg() {
       yield* _(
         Effect.log(`(edit-org): Editing org ${orgId} with name ${name}`)
       );
-      yield* _(orgAuthorizationService.canUpdate(userId, orgId));
+      yield* _(orgAuthorizationService.canUpdate({userId, orgId}));
 
       const records = yield* _(
         Effect.tryPromise({
@@ -46,7 +46,6 @@ export function editOrg() {
       );
 
       if (records.length === 0 || !records[0]) {
-        yield* _(Effect.logError(`(edit-org): Org ${orgId} not found`));
         return yield* _(Effect.fail(new OrgNotFoundError()));
       }
 
@@ -54,8 +53,10 @@ export function editOrg() {
       return org;
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        OrgParseError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        OrgParseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Error parsing org'})),
       })
     );
   }

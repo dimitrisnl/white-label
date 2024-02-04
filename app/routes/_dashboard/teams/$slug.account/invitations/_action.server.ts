@@ -23,7 +23,7 @@ export const action = withAction(
     });
   }).pipe(
     Effect.catchTags({
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       OrgNotFoundError: () =>
         Effect.fail(new BadRequest({errors: ['Organization not found']})),
       InvitationNotFoundError: () =>

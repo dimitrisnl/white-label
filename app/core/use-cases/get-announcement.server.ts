@@ -29,7 +29,13 @@ export function getAnnouncement() {
         )
       );
 
-      yield* _(announcementAuthorizationService.canView(userId, orgId));
+      yield* _(
+        announcementAuthorizationService.canView({
+          userId,
+          orgId,
+          announcementId,
+        })
+      );
 
       const announcementRecord = yield* _(
         Effect.tryPromise({
@@ -73,8 +79,12 @@ export function getAnnouncement() {
       return announcement;
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        AnnouncementParseError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        AnnouncementParseError: () =>
+          Effect.fail(
+            new InternalServerError({reason: 'Announcement parse error'})
+          ),
       })
     );
   }

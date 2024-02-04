@@ -79,8 +79,12 @@ export function resetPassword() {
       return null;
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        PasswordHashError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        PasswordHashError: () =>
+          Effect.fail(
+            new InternalServerError({reason: 'Error hashing password'})
+          ),
       })
     );
   }

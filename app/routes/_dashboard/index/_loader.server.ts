@@ -24,7 +24,7 @@ export const loader = withLoader(
     });
   }).pipe(
     Effect.catchTags({
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       SessionNotFoundError: () =>
         LoaderArgs.pipe(
           Effect.flatMap(({request}) =>

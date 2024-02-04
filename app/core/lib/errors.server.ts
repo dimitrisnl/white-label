@@ -1,73 +1,109 @@
 import * as Data from 'effect/Data';
 
-export class ForbiddenActionError {
-  readonly _tag = 'ForbiddenActionError';
+export class ForbiddenActionError extends Data.TaggedClass(
+  'ForbiddenActionError'
+)<{
+  readonly userId: string;
+  readonly action: string;
+  readonly resource: string;
+  readonly resourceId: string;
+  readonly resourceBelongsToOrgId: string;
+  readonly reason?: string;
+}> {
+  constructor(props: {
+    userId: string;
+    action: string;
+    resource: string;
+    resourceId: string;
+    resourceBelongsToOrgId: string;
+    reason?: string;
+  }) {
+    super(props);
+    console.log('[ForbiddenAction]', props);
+  }
 }
 
-export class InviteeExistsError {
-  readonly _tag = 'InviteeExistsError';
-}
+// Already exists
+export class InviteeAlreadyMemberError extends Data.TaggedClass(
+  'InviteeAlreadyMemberError'
+)<{
+  readonly inviterId: string;
+  readonly orgId: string;
+  readonly inviteeEmail: string;
+  readonly inviteeId: string;
+}> {}
 
-export class InviteeAlreadyMemberError {
-  readonly _tag = 'InviteeAlreadyMemberError';
-}
+export class AccountAlreadyExistsError extends Data.TaggedClass(
+  'AccountAlreadyExistsError'
+)<{
+  readonly email: string;
+}> {}
 
-export class DatabaseError {
-  readonly _tag = 'DatabaseError';
-}
+export class SlugAlreadyExistsError extends Data.TaggedClass(
+  'SlugAlreadyExistsError'
+)<{
+  readonly slug: string;
+  readonly orgId: string;
+  readonly orgName: string;
+}> {}
 
-export class InvitationNotFoundError {
-  readonly _tag = 'InvitationNotFoundError';
-}
+// Not found
+export class InvitationNotFoundError extends Data.TaggedClass(
+  'InvitationNotFoundError'
+) {}
 
-export class AccountAlreadyExistsError {
-  readonly _tag = 'AccountAlreadyExistsError';
-}
+export class UserNotFoundError extends Data.TaggedClass('UserNotFoundError') {}
 
-export class UserNotFoundError {
-  readonly _tag = 'UserNotFoundError';
-}
+export class OrgNotFoundError extends Data.TaggedClass('OrgNotFoundError') {}
 
-export class OrgNotFoundError {
-  readonly _tag = 'OrgNotFoundError';
-}
+export class PasswordResetTokenNotFoundError extends Data.TaggedClass(
+  'PasswordResetTokenNotFoundError'
+) {}
 
-export class PasswordResetTokenNotFoundError {
-  readonly _tag = 'PasswordResetTokenNotFoundError';
-}
+export class IncorrectPasswordError extends Data.TaggedClass(
+  'IncorrectPasswordError'
+) {}
 
-export class IncorrectPasswordError {
-  readonly _tag = 'IncorrectPasswordError';
-}
+export class VerifyEmailTokenNotFoundError extends Data.TaggedClass(
+  'VerifyEmailTokenNotFoundError'
+) {}
 
-export class VerifyEmailTokenNotFoundError {
-  readonly _tag = 'VerifyEmailTokenNotFoundError';
-}
+export class SessionNotFoundError extends Data.TaggedClass(
+  'SessionNotFoundError'
+) {}
 
-export class InvalidCredentialsError {
-  readonly _tag = 'InvalidCredentialsError';
-}
+export class AnnouncementNotFoundError extends Data.TaggedClass(
+  'AnnouncementNotFoundError'
+) {}
 
-export class InternalServerError {
-  readonly _tag = 'InternalServerError';
-}
-
-export class SessionNotFoundError {
-  readonly _tag = 'SessionNotFoundError';
-}
-
-export class SlugAlreadyExistsError {
-  readonly _tag = 'SlugAlreadyExistsError';
+// Bad request
+export class InvalidCredentialsError extends Data.TaggedClass(
+  'InvalidCredentialsError'
+)<{
+  readonly email: string;
+  readonly reason: string;
+}> {
+  constructor(props: {email: string; reason: string}) {
+    super(props);
+    console.log('[InvalidCredentials]', props);
+  }
 }
 
 export class ValidationError extends Data.TaggedClass('ValidationError')<{
   readonly errors: Array<string>;
 }> {}
 
-export class InvalidIntent {
-  readonly _tag = 'InvalidIntent';
-}
+// Internal
+export class DatabaseError extends Data.TaggedClass('DatabaseError') {}
 
-export class AnnouncementNotFoundError {
-  readonly _tag = 'AnnouncementNotFoundError';
+export class InternalServerError extends Data.TaggedClass(
+  'InternalServerError'
+)<{
+  readonly reason?: string;
+  readonly metadata?: unknown;
+}> {
+  constructor(props: {reason?: string; metadata?: unknown}) {
+    super(props);
+    console.log('[InternalServerError]', props);
+  }
 }

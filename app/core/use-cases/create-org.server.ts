@@ -60,7 +60,11 @@ export function createOrg() {
                 'IntegrityConstraintViolation_UniqueViolation'
               )
             ) {
-              return new SlugAlreadyExistsError();
+              return new SlugAlreadyExistsError({
+                slug,
+                orgName: name,
+                orgId: orgId,
+              });
             }
 
             return new DatabaseError();
@@ -87,10 +91,20 @@ export function createOrg() {
       return org;
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        OrgParseError: () => Effect.fail(new InternalServerError()),
-        UUIDGenerationError: () => Effect.fail(new InternalServerError()),
-        SlugAlreadyExistsError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        OrgParseError: () =>
+          Effect.fail(
+            new InternalServerError({reason: 'Error parsing org record'})
+          ),
+        UUIDGenerationError: () =>
+          Effect.fail(
+            new InternalServerError({reason: 'UUID generation error'})
+          ),
+        SlugAlreadyExistsError: (metadata) =>
+          Effect.fail(
+            new InternalServerError({reason: 'Slug already exists', metadata})
+          ),
       })
     );
   }

@@ -31,8 +31,12 @@ export function getOrgIdBySlug() {
       return orgId;
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        OrgIdParseError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        OrgIdParseError: () =>
+          Effect.fail(
+            new InternalServerError({reason: 'Error parsing org id'})
+          ),
       })
     );
   }

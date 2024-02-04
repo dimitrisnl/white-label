@@ -17,7 +17,7 @@ export function getOrgAnnouncements() {
         )
       );
 
-      yield* _(announcementAuthorizationService.canView(userId, orgId));
+      yield* _(announcementAuthorizationService.canViewAll({userId, orgId}));
 
       const announcementRecords = yield* _(
         Effect.tryPromise({
@@ -63,8 +63,12 @@ export function getOrgAnnouncements() {
       return announcements;
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        AnnouncementParseError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        AnnouncementParseError: () =>
+          Effect.fail(
+            new InternalServerError({reason: 'Announcement parse error'})
+          ),
       })
     );
   }

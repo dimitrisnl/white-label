@@ -51,7 +51,7 @@ export function createUser() {
                 'IntegrityConstraintViolation_UniqueViolation'
               )
             ) {
-              return new AccountAlreadyExistsError();
+              return new AccountAlreadyExistsError({email});
             }
 
             return new DatabaseError();
@@ -78,10 +78,16 @@ export function createUser() {
       return {user, verifyEmailTokenId};
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        UserParseError: () => Effect.fail(new InternalServerError()),
-        PasswordHashError: () => Effect.fail(new InternalServerError()),
-        UUIDGenerationError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        UserParseError: () =>
+          Effect.fail(new InternalServerError({reason: 'User parse error'})),
+        PasswordHashError: () =>
+          Effect.fail(new InternalServerError({reason: 'Password hash error'})),
+        UUIDGenerationError: () =>
+          Effect.fail(
+            new InternalServerError({reason: 'UUID generation error'})
+          ),
       })
     );
   }

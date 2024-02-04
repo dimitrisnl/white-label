@@ -64,8 +64,12 @@ export function getUserMemberships() {
       return {memberships};
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        MembershipParseError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        MembershipParseError: () =>
+          Effect.fail(
+            new InternalServerError({reason: 'Error parsing membership'})
+          ),
       })
     );
   }

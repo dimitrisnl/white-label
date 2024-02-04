@@ -40,10 +40,6 @@ export function editUser() {
       );
 
       if (records.length === 0 || !records[0]) {
-        yield* _(
-          Effect.logError(`
-          (edit-user): User ${userId} not found`)
-        );
         return yield* _(Effect.fail(new UserNotFoundError()));
       }
 
@@ -51,8 +47,10 @@ export function editUser() {
       return user;
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        UserParseError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        UserParseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Error parsing user'})),
       })
     );
   }

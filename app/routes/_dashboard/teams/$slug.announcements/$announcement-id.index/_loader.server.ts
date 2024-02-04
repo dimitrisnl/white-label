@@ -40,8 +40,8 @@ export const loader = withLoader(
         Effect.fail(
           new BadRequest({errors: ["We couldn't find this announcement"]})
         ),
-      AnnouncementIdParseError: () => Effect.fail(new ServerError({})),
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      AnnouncementIdParseError: () => Effect.fail(new ServerError()),
+      InternalServerError: () => Effect.fail(new ServerError()),
       SessionNotFoundError: () =>
         LoaderArgs.pipe(
           Effect.flatMap(({request}) =>

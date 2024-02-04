@@ -63,8 +63,12 @@ export function createAnnouncement() {
       return null;
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        UUIDGenerationError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        UUIDGenerationError: () =>
+          Effect.fail(
+            new InternalServerError({reason: 'UUID generation error'})
+          ),
       })
     );
   }

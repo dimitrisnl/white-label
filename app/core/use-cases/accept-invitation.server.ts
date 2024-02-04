@@ -72,10 +72,6 @@ export function acceptInvitation() {
       );
 
       if (!orgRecord) {
-        yield* _(
-          Effect.logError(`
-          (accept-invitation): Org ${org_id} not found`)
-        );
         return yield* _(Effect.fail(new OrgNotFoundError()));
       }
 
@@ -84,8 +80,18 @@ export function acceptInvitation() {
       return {org};
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        OrgParseError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(
+            new InternalServerError({
+              reason: 'Database error',
+            })
+          ),
+        OrgParseError: () =>
+          Effect.fail(
+            new InternalServerError({
+              reason: 'Error parsing org record',
+            })
+          ),
       })
     );
   }

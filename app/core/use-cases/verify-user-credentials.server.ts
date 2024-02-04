@@ -39,7 +39,11 @@ export function verifyUserCredentials() {
       );
 
       if (!userRecord) {
-        return yield* _(Effect.fail(new InvalidCredentialsError()));
+        return yield* _(
+          Effect.fail(
+            new InvalidCredentialsError({email, reason: 'User not found'})
+          )
+        );
       }
 
       const isPasswordValid = yield* _(
@@ -50,7 +54,11 @@ export function verifyUserCredentials() {
       );
 
       if (!isPasswordValid) {
-        return yield* _(Effect.fail(new InvalidCredentialsError()));
+        return yield* _(
+          Effect.fail(
+            new InvalidCredentialsError({email, reason: 'Invalid password'})
+          )
+        );
       }
 
       const user = yield* _(User.fromRecord(userRecord));
@@ -58,9 +66,14 @@ export function verifyUserCredentials() {
       return user;
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        UserParseError: () => Effect.fail(new InternalServerError()),
-        PasswordHashError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        UserParseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Error parsing user'})),
+        PasswordHashError: () =>
+          Effect.fail(
+            new InternalServerError({reason: 'Error hashing password'})
+          ),
       })
     );
   }

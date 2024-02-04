@@ -19,7 +19,7 @@ export const action = withAction(
     return new Redirect({to: `/teams/${org.slug}`});
   }).pipe(
     Effect.catchTags({
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
       UserNotFoundError: () =>
         ActionArgs.pipe(

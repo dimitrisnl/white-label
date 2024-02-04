@@ -21,7 +21,7 @@ export function getOrgMemberships() {
         )
       );
 
-      yield* _(orgAuthorizationService.canView(userId, orgId));
+      yield* _(orgAuthorizationService.canViewAll({userId, orgId}));
 
       const orgRecord = yield* _(
         Effect.tryPromise({
@@ -31,10 +31,6 @@ export function getOrgMemberships() {
       );
 
       if (!orgRecord) {
-        yield* _(
-          Effect.logError(`
-          (get-org-memberships): Org ${orgId} not found`)
-        );
         return yield* _(Effect.fail(new OrgNotFoundError()));
       }
 
@@ -79,9 +75,16 @@ export function getOrgMemberships() {
       return {memberships};
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        MembershipParseError: () => Effect.fail(new InternalServerError()),
-        OrgParseError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        MembershipParseError: () =>
+          Effect.fail(
+            new InternalServerError({reason: 'Membership parse error'})
+          ),
+        OrgParseError: () =>
+          Effect.fail(
+            new InternalServerError({reason: 'Error parsing org record'})
+          ),
       })
     );
   }

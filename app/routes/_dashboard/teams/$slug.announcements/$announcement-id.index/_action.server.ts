@@ -41,7 +41,7 @@ export const action = withAction(
   }).pipe(
     Effect.catchTags({
       ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       SessionNotFoundError: () =>
         ActionArgs.pipe(
           Effect.flatMap(({request}) =>
@@ -56,7 +56,7 @@ export const action = withAction(
         Effect.fail(
           new BadRequest({errors: ["We couldn't find this announcement"]})
         ),
-      AnnouncementIdParseError: () => Effect.fail(new ServerError({})),
+      AnnouncementIdParseError: () => Effect.fail(new ServerError()),
       OrgSlugParseError: () =>
         Effect.fail(new BadRequest({errors: ["We couldn't find this team"]})),
       OrgNotFoundError: () =>

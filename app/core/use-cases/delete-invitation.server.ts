@@ -36,7 +36,9 @@ export function deleteInvitation() {
           `(delete-invitation): Deleting invitation ${invitationId} by user ${userId} in org ${orgId}`
         )
       );
-      yield* _(invitationAuthorizationService.canDelete(userId, orgId));
+      yield* _(
+        invitationAuthorizationService.canDelete({userId, orgId, invitationId})
+      );
 
       const invitationRecord = yield* _(
         Effect.tryPromise({
@@ -53,7 +55,8 @@ export function deleteInvitation() {
       return null;
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
       })
     );
   }

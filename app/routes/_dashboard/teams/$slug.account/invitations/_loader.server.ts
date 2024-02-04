@@ -15,7 +15,7 @@ export const loader = withLoader(
     return new Ok({data: invitations});
   }).pipe(
     Effect.catchTags({
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       UserNotFoundError: () =>
         LoaderArgs.pipe(
           Effect.flatMap(({request}) =>

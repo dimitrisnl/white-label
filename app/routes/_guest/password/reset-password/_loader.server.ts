@@ -23,7 +23,7 @@ export const loader = withLoader(
     return new Ok({data: {token}});
   }).pipe(
     Effect.catchTags({
-      InternalServerError: () => Effect.fail(new ServerError({})),
+      InternalServerError: () => Effect.fail(new ServerError()),
       PasswordResetTokenNotFoundError: () =>
         Effect.fail(
           new BadRequest({errors: ['Password reset token is invalid']})

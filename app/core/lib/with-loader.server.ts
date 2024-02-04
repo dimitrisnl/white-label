@@ -3,8 +3,6 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import {pipe} from 'effect/Function';
-import * as Logger from 'effect/Logger';
-import * as LogLevel from 'effect/LogLevel';
 import {redirect, typedjson} from 'remix-typedjson';
 
 import type {
@@ -25,11 +23,7 @@ export const withLoader =
     self: Effect.Effect<LoaderFunctionArgs, HttpResponseError, HttpResponse<T>>
   ) =>
   (args: LoaderFunctionArgs) => {
-    const runnable = pipe(
-      self,
-      Logger.withMinimumLogLevel(LogLevel.None),
-      Effect.provideService(LoaderArgs, args)
-    );
+    const runnable = pipe(self, Effect.provideService(LoaderArgs, args));
 
     return Effect.runPromiseExit(runnable).then(
       Exit.match({
@@ -45,8 +39,8 @@ export const withLoader =
                 BadRequest: ({errors}) => {
                   return typedjson({ok: false as const, errors}, {status: 400});
                 },
-                ServerError: ({errors}) => {
-                  return typedjson({ok: false as const, errors}, {status: 500});
+                ServerError: () => {
+                  return typedjson({ok: false as const}, {status: 500});
                 },
                 Forbidden: ({errors}) => {
                   return typedjson({ok: false as const, errors}, {status: 401});

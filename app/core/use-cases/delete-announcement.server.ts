@@ -36,7 +36,13 @@ export function deleteAnnouncement() {
           `(delete-announcement): Deleting announcement ${announcementId} by user ${userId} in org ${orgId}`
         )
       );
-      yield* _(announcementAuthorizationService.canDelete(userId, orgId));
+      yield* _(
+        announcementAuthorizationService.canDelete({
+          userId,
+          orgId,
+          announcementId,
+        })
+      );
 
       const announcementRecord = yield* _(
         Effect.tryPromise({
@@ -53,7 +59,8 @@ export function deleteAnnouncement() {
       return null;
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
       })
     );
   }

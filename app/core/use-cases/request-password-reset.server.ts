@@ -57,8 +57,12 @@ export function requestPasswordReset() {
       return {email: userRecord.email, passwordResetTokenId};
     }).pipe(
       Effect.catchTags({
-        DatabaseError: () => Effect.fail(new InternalServerError()),
-        UUIDGenerationError: () => Effect.fail(new InternalServerError()),
+        DatabaseError: () =>
+          Effect.fail(new InternalServerError({reason: 'Database error'})),
+        UUIDGenerationError: () =>
+          Effect.fail(
+            new InternalServerError({reason: 'Error generating UUID'})
+          ),
       })
     );
   }
