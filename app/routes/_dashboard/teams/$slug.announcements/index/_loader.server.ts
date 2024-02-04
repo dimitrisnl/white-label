@@ -12,16 +12,13 @@ import {getOrgAnnouncements} from '~/core/use-cases/get-org-announcements.server
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
-    yield* _(
-      Effect.log('Loader(_dashboard/teams/$slug/settings/announcements): Init')
-    );
     const {request, params} = yield* _(LoaderArgs);
 
     const userId = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
 
     const announcements = yield* _(
-      getOrgAnnouncements().execute(orgId, userId)
+      getOrgAnnouncements().execute({orgId, userId})
     );
 
     return new Ok({data: {announcements}});

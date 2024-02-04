@@ -2,7 +2,7 @@ import type {MetaFunction} from '@remix-run/node';
 import {isRouteErrorResponse, useRouteError} from '@remix-run/react';
 import {useTypedLoaderData} from 'remix-typedjson';
 
-import {ErrorPage} from '~/components/error-page.tsx';
+import {ErrorBox} from '~/components/error-boundary.tsx';
 import {GuestLayout} from '~/components/guest-layout.tsx';
 
 import type {ResetPasswordLoader} from './_loader.server.ts';
@@ -34,11 +34,11 @@ export function ErrorBoundary() {
 
   if (isRouteErrorResponse(error)) {
     if (error.status === 500) {
-      return <ErrorPage />;
+      return <ErrorBox />;
     }
 
     return <InvalidTokenErrorPage />;
   }
 
-  return <ErrorPage />;
+  return <ErrorBox />;
 }

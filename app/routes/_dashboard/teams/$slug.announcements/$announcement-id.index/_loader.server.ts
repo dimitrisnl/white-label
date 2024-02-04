@@ -1,5 +1,6 @@
 import * as Effect from 'effect/Effect';
 
+import {parseAnnouncementId} from '~/core/domain/announcement.server';
 import {authenticateUser, identifyOrgByParams} from '~/core/lib/helpers.server';
 import {
   BadRequest,
@@ -8,18 +9,23 @@ import {
   ServerError,
 } from '~/core/lib/responses.server';
 import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
-import {getOrgMemberships} from '~/core/use-cases/get-org-memberships.server';
+import {getAnnouncement} from '~/core/use-cases/get-announcement.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
     const {request, params} = yield* _(LoaderArgs);
 
+    const announcementId = yield* _(
+      parseAnnouncementId(params['announcement-id'])
+    );
+
     const userId = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
+    const announcement = yield* _(
+      getAnnouncement().execute({announcementId, orgId, userId})
+    );
 
-    const memberships = yield* _(getOrgMemberships().execute({orgId, userId}));
-
-    return new Ok({data: memberships});
+    return new Ok({data: {announcement}});
   }).pipe(
     Effect.catchTags({
       OrgSlugParseError: () =>
@@ -27,7 +33,14 @@ export const loader = withLoader(
       OrgNotFoundError: () =>
         Effect.fail(new BadRequest({errors: ["We couldn't find this team"]})),
       ForbiddenActionError: () =>
-        Effect.fail(new BadRequest({errors: ["We couldn't find this team"]})),
+        Effect.fail(
+          new BadRequest({errors: ["We couldn't find this announcement"]})
+        ),
+      AnnouncementNotFoundError: () =>
+        Effect.fail(
+          new BadRequest({errors: ["We couldn't find this announcement"]})
+        ),
+      AnnouncementIdParseError: () => Effect.fail(new ServerError({})),
       InternalServerError: () => Effect.fail(new ServerError({})),
       SessionNotFoundError: () =>
         LoaderArgs.pipe(
@@ -39,4 +52,4 @@ export const loader = withLoader(
   )
 );
 
-export type MembershipsLoaderData = typeof loader;
+export type AnnouncementLoaderData = typeof loader;

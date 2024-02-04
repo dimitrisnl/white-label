@@ -1,7 +1,6 @@
 import type {MetaFunction} from '@remix-run/node';
-import {isRouteErrorResponse, useRouteError} from '@remix-run/react';
 
-import {ErrorPage} from '~/components/error-page.tsx';
+import {BaseErrorBoundary} from '~/components/error-boundary.tsx';
 import {PageSkeleton} from '~/components/page-skeleton.tsx';
 
 import {useMetadata} from '../../$slug/use-metadata-data.ts';
@@ -29,19 +28,4 @@ export default function TeamPage() {
   );
 }
 
-export function ErrorBoundary() {
-  const error = useRouteError();
-
-  if (isRouteErrorResponse(error)) {
-    if (error.status === 500) {
-      return <ErrorPage />;
-    }
-
-    return (
-      // eslint-disable-next-line
-      <ErrorPage statusCode={error.status} messages={error.data?.errors} />
-    );
-  }
-
-  return <ErrorPage />;
-}
+export const ErrorBoundary = BaseErrorBoundary;

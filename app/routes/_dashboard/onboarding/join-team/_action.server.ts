@@ -15,7 +15,7 @@ export const action = withAction(
     const {validate, execute} = acceptInvitation();
 
     const props = yield* _(validate({invitationId: data.invitationId}));
-    const {org} = yield* _(execute(props, userId));
+    const {org} = yield* _(execute({props, userId}));
 
     return new Redirect({to: `/teams/${org.slug}`});
   }).pipe(

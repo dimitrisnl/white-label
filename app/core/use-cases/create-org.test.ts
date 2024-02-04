@@ -47,7 +47,12 @@ describe('use-cases/create-org', () => {
           const userProps = yield* _(createUser().validate(userObj));
           const {user: newUser} = yield* _(createUser().execute(userProps));
 
-          return yield* _(execute(props, newUser.id));
+          return yield* _(
+            execute({
+              props,
+              userId: newUser.id,
+            })
+          );
         })
       );
 

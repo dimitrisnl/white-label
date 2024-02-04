@@ -27,7 +27,7 @@ export function verifyUserCredentials() {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
-          `Use-case(verify-user-credentials): Verifying credentials for ${email}`
+          `(verify-user-credentials): Verifying credentials for ${email}`
         )
       );
 

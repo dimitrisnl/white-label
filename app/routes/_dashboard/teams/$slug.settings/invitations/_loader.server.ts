@@ -12,15 +12,12 @@ import {getOrgInvitations} from '~/core/use-cases/get-org-invitations.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
-    yield* _(
-      Effect.log('Loader(_dashboard/teams/$slug/settings/invitations): Init')
-    );
     const {request, params} = yield* _(LoaderArgs);
 
     const userId = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
 
-    const invitations = yield* _(getOrgInvitations().execute(orgId, userId));
+    const invitations = yield* _(getOrgInvitations().execute({orgId, userId}));
 
     return new Ok({data: {invitations}});
   }).pipe(

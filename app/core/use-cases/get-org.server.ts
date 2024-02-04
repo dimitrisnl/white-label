@@ -12,10 +12,10 @@ import {Org} from '../domain/org.server';
 import type {User} from '../domain/user.server';
 
 export function getOrg() {
-  function execute(orgId: Org['id'], userId: User['id']) {
+  function execute({orgId, userId}: {orgId: Org['id']; userId: User['id']}) {
     return Effect.gen(function* (_) {
       yield* _(
-        Effect.log(`Use-case(get-org): Getting org ${orgId} for user ${userId}`)
+        Effect.log(`(get-org): Getting org ${orgId} for user ${userId}`)
       );
       yield* _(orgAuthorizationService.canView(userId, orgId));
 
@@ -29,7 +29,7 @@ export function getOrg() {
       if (!orgRecord) {
         yield* _(
           Effect.logError(`
-          Use-case(get-org): Org ${orgId} not found`)
+          (get-org): Org ${orgId} not found`)
         );
         return yield* _(Effect.fail(new OrgNotFoundError()));
       }

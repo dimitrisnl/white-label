@@ -11,11 +11,11 @@ import {MembershipInvitation} from '../domain/membership-invitation.server';
 import type {User} from '../domain/user.server';
 
 export function getUserInvitations() {
-  function execute(userId: User['id']) {
+  function execute({userId}: {userId: User['id']}) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
-          `Use-case(get-user-invitations): Getting invitations for user ${userId}`
+          `(get-user-invitations): Getting invitations for user ${userId}`
         )
       );
       const userRecord = yield* _(

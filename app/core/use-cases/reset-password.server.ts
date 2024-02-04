@@ -23,9 +23,7 @@ export type ResetPasswordProps = Schema.Schema.To<typeof validationSchema>;
 export function resetPassword() {
   function execute({token, password}: ResetPasswordProps) {
     return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(`Use-case(reset-password): Resetting password for ${token}`)
-      );
+      yield* _(Effect.log(`(reset-password): Resetting password for ${token}`));
       const passwordResetTokenRecord = yield* _(
         Effect.tryPromise({
           try: () =>

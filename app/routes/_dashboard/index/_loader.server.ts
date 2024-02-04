@@ -11,7 +11,7 @@ export const loader = withLoader(
     const userId = yield* _(authenticateUser(request));
 
     // todo: replace with query that gets the last accessed team
-    const {memberships} = yield* _(getUserMemberships().execute(userId));
+    const {memberships} = yield* _(getUserMemberships().execute({userId}));
 
     if (memberships.length === 0) {
       return new Redirect({

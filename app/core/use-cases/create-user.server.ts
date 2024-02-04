@@ -26,7 +26,7 @@ export type CreateUserProps = Schema.Schema.To<typeof validationSchema>;
 export function createUser() {
   function execute({email, name, password}: CreateUserProps) {
     return Effect.gen(function* (_) {
-      yield* _(Effect.log(`Use-case(create-user): Creating user ${email}`));
+      yield* _(Effect.log(`(create-user): Creating user ${email}`));
 
       const passwordHash = yield* _(hashPassword(password));
       const userId = yield* _(generateUUID());

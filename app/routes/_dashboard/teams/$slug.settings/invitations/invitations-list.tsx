@@ -1,7 +1,18 @@
-import {ArrowUturnLeftIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {TrashIcon} from '@heroicons/react/24/solid';
 import {useEffect} from 'react';
 import {useTypedFetcher} from 'remix-typedjson';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '~/components/ui/alert-dialog';
 import {Badge} from '~/components/ui/badge';
 import {Button} from '~/components/ui/button';
 import {
@@ -16,6 +27,57 @@ import {toast} from '~/components/ui/toast';
 import type {MembershipInvitation} from '~/core/domain/membership-invitation.server.ts';
 
 import type {Action} from './_action.server.ts';
+
+function DeleteConfirmationDialog({
+  invitation,
+}: {
+  invitation: MembershipInvitation;
+}) {
+  const {Form, state, data} = useTypedFetcher<Action | undefined>();
+
+  useEffect(() => {
+    if (data?.ok === true) {
+      toast.success('Invitation deleted');
+    } else if (data?.ok === false) {
+      const message = data.errors[0] ?? 'Huh';
+      toast.error(message);
+    }
+  }, [data]);
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="destructive" size="sm">
+          <TrashIcon className="mr-2 h-4 w-4" /> Delete
+        </Button>
+      </AlertDialogTrigger>
+
+      <AlertDialogContent asChild>
+        <Form className="flex items-center" method="DELETE">
+          <input type="hidden" name="invitationId" value={invitation.id} />
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this invitation?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete this
+              invitation.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel type="button">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              type="submit"
+              name="intent"
+              value="delete"
+              disabled={state !== 'idle'}
+            >
+              Delete this invitation
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </Form>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
 
 export function InvitationsList({
   invitations,
@@ -64,7 +126,7 @@ export function InvitationsList({
                     <Badge variant="outline">{invitation.role}</Badge>
                   </TableCell>
                   <TableCell className="text-right">
-                    <InvitationActions invitation={invitation} />
+                    <DeleteConfirmationDialog invitation={invitation} />
                   </TableCell>
                 </TableRow>
               ))}
@@ -73,51 +135,5 @@ export function InvitationsList({
         </div>
       </div>
     </div>
-  );
-}
-
-function InvitationActions({invitation}: {invitation: MembershipInvitation}) {
-  const {Form, state, data} = useTypedFetcher<Action | undefined>();
-
-  useEffect(() => {
-    if (data?.ok === true) {
-      toast.success('Invitation deleted');
-    } else if (data?.ok === false) {
-      const message = data.errors[0] ?? 'Huh';
-      toast.error(message);
-    }
-  }, [data]);
-
-  return (
-    <Form className="flex items-center" method="DELETE">
-      <input type="hidden" name="invitationId" value={invitation.id} />
-      <div className="ml-auto flex items-center space-x-2">
-        {invitation.status === 'DECLINED' ? (
-          <Button
-            variant="destructive"
-            size="sm"
-            name="intent"
-            value="delete"
-            disabled={state !== 'idle'}
-          >
-            <TrashIcon className="mr-2 h-4 w-4" /> Delete
-          </Button>
-        ) : null}
-        {invitation.status === 'PENDING' ? (
-          <>
-            <Button
-              variant="destructive"
-              size="sm"
-              name="intent"
-              value="delete"
-              disabled={state !== 'idle'}
-            >
-              <ArrowUturnLeftIcon className="mr-2 h-4 w-4" />
-              Revoke
-            </Button>
-          </>
-        ) : null}
-      </div>
-    </Form>
   );
 }

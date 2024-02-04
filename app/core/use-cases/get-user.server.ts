@@ -9,9 +9,9 @@ import {
 } from '~/core/lib/errors.server';
 
 export function getUser() {
-  function execute(userId: User['id']) {
+  function execute({userId}: {userId: User['id']}) {
     return Effect.gen(function* (_) {
-      yield* _(Effect.log(`Use-case(get-user): Getting user ${userId}`));
+      yield* _(Effect.log(`(get-user): Getting user ${userId}`));
       const userRecord = yield* _(
         Effect.tryPromise({
           try: () => db.selectOne('users', {id: userId}).run(pool),

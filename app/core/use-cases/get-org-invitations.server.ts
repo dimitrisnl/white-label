@@ -9,11 +9,11 @@ import type {Org} from '../domain/org.server';
 import type {User} from '../domain/user.server';
 
 export function getOrgInvitations() {
-  function execute(orgId: Org['id'], userId: User['id']) {
+  function execute({orgId, userId}: {orgId: Org['id']; userId: User['id']}) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
-          `Use-case(get-org-invitations): Getting invitations for org ${orgId} for user ${userId}`
+          `(get-org-invitations): Getting invitations for org ${orgId} for user ${userId}`
         )
       );
 

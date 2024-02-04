@@ -25,15 +25,16 @@ const validationSchema = Schema.struct({
 export type ChangePasswordProps = Schema.Schema.To<typeof validationSchema>;
 
 export function changePassword() {
-  function execute(
-    {newPassword, oldPassword}: ChangePasswordProps,
-    userId: User['id']
-  ) {
+  function execute({
+    props: {oldPassword, newPassword},
+    userId,
+  }: {
+    props: ChangePasswordProps;
+    userId: User['id'];
+  }) {
     return Effect.gen(function* (_) {
       yield* _(
-        Effect.log(
-          `Use-case(change-password): Changing password for user ${userId}`
-        )
+        Effect.log(`(change-password): Changing password for user ${userId}`)
       );
 
       const userRecord = yield* _(

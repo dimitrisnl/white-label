@@ -22,12 +22,16 @@ const validationSchema = Schema.struct({
 export type AcceptInvitationProps = Schema.Schema.To<typeof validationSchema>;
 
 export function acceptInvitation() {
-  function execute({invitationId}: AcceptInvitationProps, userId: User['id']) {
+  function execute({
+    props: {invitationId},
+    userId,
+  }: {
+    props: AcceptInvitationProps;
+    userId: User['id'];
+  }) {
     return Effect.gen(function* (_) {
       yield* _(
-        Effect.log(
-          `Use-case(accept-invitation): Accepting invitation ${invitationId}`
-        )
+        Effect.log(`(accept-invitation): Accepting invitation ${invitationId}`)
       );
 
       const records = yield* _(
@@ -70,7 +74,7 @@ export function acceptInvitation() {
       if (!orgRecord) {
         yield* _(
           Effect.logError(`
-          Use-case(accept-invitation): Org ${org_id} not found`)
+          (accept-invitation): Org ${org_id} not found`)
         );
         return yield* _(Effect.fail(new OrgNotFoundError()));
       }

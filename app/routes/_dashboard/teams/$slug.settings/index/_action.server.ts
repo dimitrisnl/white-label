@@ -26,7 +26,7 @@ export const action = withAction(
     const {validate, execute} = editOrg();
     const props = yield* _(validate(data));
 
-    yield* _(execute(props, orgId, userId));
+    yield* _(execute({props, orgId, userId}));
 
     return new Ok({data: null});
   }).pipe(
@@ -37,7 +37,7 @@ export const action = withAction(
       ForbiddenActionError: () =>
         Effect.fail(
           new Forbidden({
-            errors: ["You don't have acess to change the team name"],
+            errors: ["You don't have access to change the team name"],
           })
         ),
       ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),

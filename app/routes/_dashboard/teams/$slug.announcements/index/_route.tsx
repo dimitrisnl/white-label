@@ -1,11 +1,14 @@
+import {PlusIcon} from '@heroicons/react/24/outline';
 import type {MetaFunction} from '@remix-run/node';
+import {Link, useNavigate, useParams} from '@remix-run/react';
 import {useTypedLoaderData} from 'remix-typedjson';
 
+import {EmptyState} from '~/components/empty-state.tsx';
 import {PageSkeleton} from '~/components/page-skeleton';
+import {buttonVariants} from '~/components/ui/button.tsx';
 
 import type {AnnouncementsLoaderData} from './_loader.server';
 import {AnnouncementsTable} from './announcements-table.tsx';
-import {CreateNewAnnouncementDialog} from './create-new-announcement-dialog.tsx';
 
 export {action} from './_action.server.ts';
 export {loader} from './_loader.server.ts';
@@ -18,6 +21,9 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Page() {
+  const navigate = useNavigate();
+  const params = useParams();
+  const slug = params.slug!;
   const {
     data: {announcements},
   } = useTypedLoaderData<AnnouncementsLoaderData>();
@@ -26,12 +32,26 @@ export default function Page() {
     <PageSkeleton
       header="Announcements"
       description="Handle all your announcements"
-      actionsSlot={<CreateNewAnnouncementDialog />}
+      actionsSlot={
+        <Link to="new" className={buttonVariants({variant: 'outline'})}>
+          <PlusIcon className="mr-2 h-4 w-4" />
+          Create new announcement
+        </Link>
+      }
     >
       {announcements.length > 0 ? (
         <AnnouncementsTable announcements={announcements} />
       ) : (
-        <div>This should be an empty-state skeleton</div>
+        <div className="pt-8">
+          <EmptyState
+            title="No announcements"
+            description="Get started by creating a new announcement"
+            cta="New Announcement"
+            onClick={() => {
+              navigate(`/teams/${slug}/announcements/new`);
+            }}
+          />
+        </div>
       )}
     </PageSkeleton>
   );

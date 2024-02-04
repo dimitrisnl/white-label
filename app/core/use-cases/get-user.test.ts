@@ -18,7 +18,7 @@ describe('use-cases/get-user', () => {
         Effect.gen(function* (_) {
           // @ts-expect-error
           const {user: newUser} = yield* _(createUser().execute(userObj));
-          return yield* _(getUser().execute(newUser.id));
+          return yield* _(getUser().execute({userId: newUser.id}));
         })
       );
 

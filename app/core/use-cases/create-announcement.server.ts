@@ -9,6 +9,7 @@ import {
   announcementContentSchema,
   announcementTitleSchema,
 } from '../domain/announcement.server';
+import {announcementStatusSchema} from '../domain/announcement-status.server';
 import type {Org} from '../domain/org.server';
 import type {User} from '../domain/user.server';
 import {generateUUID} from '../domain/uuid.server';
@@ -16,20 +17,25 @@ import {generateUUID} from '../domain/uuid.server';
 const validationSchema = Schema.struct({
   title: announcementTitleSchema,
   content: announcementContentSchema,
+  status: announcementStatusSchema,
 });
 
 export type CreateAnnouncementProps = Schema.Schema.To<typeof validationSchema>;
 
 export function createAnnouncement() {
-  function execute(
-    {content, title}: CreateAnnouncementProps,
-    orgId: Org['id'],
-    userId: User['id']
-  ) {
+  function execute({
+    props: {content, title, status},
+    orgId,
+    userId,
+  }: {
+    props: CreateAnnouncementProps;
+    orgId: Org['id'];
+    userId: User['id'];
+  }) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
-          `Use-case(create-announcement): Creating announcement for org:${orgId} by user:${userId}`
+          `(create-announcement): Creating announcement for org:${orgId} by user:${userId}`
         )
       );
 
@@ -43,6 +49,7 @@ export function createAnnouncement() {
                 id: announcementId,
                 title,
                 content,
+                status,
                 org_id: orgId,
                 created_by_user_id: userId,
               })

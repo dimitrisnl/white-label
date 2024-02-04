@@ -25,7 +25,7 @@ export function requestPasswordReset() {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
-          `Use-case(request-password-reset): Requesting password reset for ${email}`
+          `(request-password-reset): Requesting password reset for ${email}`
         )
       );
       const userRecord = yield* _(

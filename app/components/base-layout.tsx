@@ -36,7 +36,7 @@ function MainContent({children}: {children: React.ReactNode}) {
   return (
     <div className="min-h-screen flex-1 p-2">
       <div className="relative h-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow dark:border-white/5 dark:bg-gray-900/10 dark:shadow-none">
-        <main>{children}</main>
+        <main className="h-full">{children}</main>
       </div>
     </div>
   );
