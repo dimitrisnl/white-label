@@ -15,7 +15,6 @@ const themeSessionStorage = createCookieSessionStorage({
     secure: process.env.NODE_ENV === 'production', // add domain
     sameSite: 'lax',
     httpOnly: true,
-    maxAge: 0,
   },
 });
 
