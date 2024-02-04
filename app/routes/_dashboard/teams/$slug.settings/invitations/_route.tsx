@@ -29,7 +29,9 @@ export default function InvitationsPage() {
     >
       <div className="grid gap-12">
         <CreateInvitationForm />
-        <InvitationsList invitations={invitations} />
+        {invitations.length > 0 ? (
+          <InvitationsList invitations={invitations} />
+        ) : null}
       </div>
     </PageSkeleton>
   );

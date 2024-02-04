@@ -21,9 +21,7 @@ export type VerifyEmailProps = Schema.Schema.To<typeof validationSchema>;
 export function verifyEmailToken() {
   function execute({token}: VerifyEmailProps) {
     return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(`Use-case(verify-email-token): Verifying token ${token}`)
-      );
+      yield* _(Effect.log(`(verify-email-token): Verifying token ${token}`));
 
       const verifyEmailTokenRecord = yield* _(
         Effect.tryPromise({

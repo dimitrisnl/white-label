@@ -22,9 +22,7 @@ export function declineInvitation() {
   function execute({invitationId}: DeclineInvitationProps) {
     return Effect.gen(function* (_) {
       yield* _(
-        Effect.log(
-          `Use-case(decline-invitation): Declining invitation ${invitationId}`
-        )
+        Effect.log(`(decline-invitation): Declining invitation ${invitationId}`)
       );
       const invitationRecord = yield* _(
         Effect.tryPromise({

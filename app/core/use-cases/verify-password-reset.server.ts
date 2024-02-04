@@ -22,9 +22,7 @@ export type VerifyPasswordResetProps = Schema.Schema.To<
 export function verifyPasswordReset() {
   function execute({token}: VerifyPasswordResetProps) {
     return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(`Use-case(verify-password-reset): Verifying token ${token}`)
-      );
+      yield* _(Effect.log(`(verify-password-reset): Verifying token ${token}`));
       const passwordResetTokenRecord = yield* _(
         Effect.tryPromise({
           try: () =>

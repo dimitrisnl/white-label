@@ -14,7 +14,7 @@ export const action = withAction(
     const data = yield* _(parseFormData(request));
     const props = yield* _(validate(data));
 
-    const org = yield* _(execute(props, userId));
+    const org = yield* _(execute({props, userId}));
 
     return new Redirect({to: `/teams/${org.slug}`});
   }).pipe(

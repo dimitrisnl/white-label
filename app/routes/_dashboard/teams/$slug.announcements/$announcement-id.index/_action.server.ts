@@ -1,8 +1,6 @@
 import * as Effect from 'effect/Effect';
 
-import type {Org} from '~/core/domain/org.server';
-import type {User} from '~/core/domain/user.server';
-import {InvalidIntent} from '~/core/lib/errors.server';
+import {parseAnnouncementId} from '~/core/domain/announcement.server';
 import {
   authenticateUser,
   identifyOrgByParams,
@@ -15,47 +13,31 @@ import {
   ServerError,
 } from '~/core/lib/responses.server';
 import {ActionArgs, withAction} from '~/core/lib/with-action.server';
-import {deleteAnnouncement} from '~/core/use-cases/delete-announcement.server';
-
-function handleAnnouncementDeletion({
-  userId,
-  orgId,
-  data,
-}: {
-  userId: User['id'];
-  orgId: Org['id'];
-  data: Record<string, unknown>;
-}) {
-  return Effect.gen(function* (_) {
-    const {validate, execute} = deleteAnnouncement();
-    const props = yield* _(validate(data));
-
-    yield* _(execute({props, orgId, userId}));
-  });
-}
+import {editAnnouncement} from '~/core/use-cases/edit-announcement.server';
 
 export const action = withAction(
   Effect.gen(function* (_) {
     const {request, params} = yield* _(ActionArgs);
 
+    const announcementId = yield* _(
+      parseAnnouncementId(params['announcement-id'])
+    );
     const userId = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
+
+    const {validate, execute} = editAnnouncement();
     const data = yield* _(parseFormData(request));
+    const props = yield* _(validate(data));
+    yield* _(
+      execute({
+        props,
+        orgId,
+        userId,
+        announcementId,
+      })
+    );
 
-    const intent = data.intent;
-
-    if (intent === 'delete') {
-      yield* _(
-        handleAnnouncementDeletion({
-          userId,
-          orgId,
-          data,
-        })
-      );
-      return new Ok({data: null});
-    }
-
-    return yield* _(Effect.fail(new InvalidIntent()));
+    return new Ok({data: null});
   }).pipe(
     Effect.catchTags({
       ValidationError: ({errors}) => Effect.fail(new BadRequest({errors})),
@@ -74,14 +56,13 @@ export const action = withAction(
         Effect.fail(
           new BadRequest({errors: ["We couldn't find this announcement"]})
         ),
+      AnnouncementIdParseError: () => Effect.fail(new ServerError({})),
       OrgSlugParseError: () =>
         Effect.fail(new BadRequest({errors: ["We couldn't find this team"]})),
       OrgNotFoundError: () =>
         Effect.fail(new BadRequest({errors: ["We couldn't find this team"]})),
-      InvalidIntent: () =>
-        Effect.fail(new BadRequest({errors: ['Invalid Intent']})),
     })
   )
 );
 
-export type Action = typeof action;
+export type EditAnnouncementAction = typeof action;

@@ -3,51 +3,51 @@ import * as Effect from 'effect/Effect';
 
 import {db, pool} from '~/core/db/db.server.ts';
 import {
+  AnnouncementNotFoundError,
   DatabaseError,
   InternalServerError,
-  InvitationNotFoundError,
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
-import {invitationAuthorizationService} from '~/core/services/invitation-authorization-service.server.ts';
+import {announcementAuthorizationService} from '~/core/services/announcement-authorization-service.server.ts';
 
 import type {Org} from '../domain/org.server';
 import type {User} from '../domain/user.server';
 import {uuidSchema} from '../domain/uuid.server';
 
 const validationSchema = Schema.struct({
-  invitationId: uuidSchema,
+  announcementId: uuidSchema,
 });
 
-export type DeleteInvitationProps = Schema.Schema.To<typeof validationSchema>;
+export type DeleteAnnouncementProps = Schema.Schema.To<typeof validationSchema>;
 
-export function deleteInvitation() {
+export function deleteAnnouncement() {
   function execute({
-    props: {invitationId},
+    props: {announcementId},
     userId,
     orgId,
   }: {
-    props: DeleteInvitationProps;
+    props: DeleteAnnouncementProps;
     userId: User['id'];
     orgId: Org['id'];
   }) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
-          `(delete-invitation): Deleting invitation ${invitationId} by user ${userId} in org ${orgId}`
+          `(delete-announcement): Deleting announcement ${announcementId} by user ${userId} in org ${orgId}`
         )
       );
-      yield* _(invitationAuthorizationService.canDelete(userId, orgId));
+      yield* _(announcementAuthorizationService.canDelete(userId, orgId));
 
-      const invitationRecord = yield* _(
+      const announcementRecord = yield* _(
         Effect.tryPromise({
           try: () =>
-            db.deletes('membership_invitations', {id: invitationId}).run(pool),
+            db.deletes('announcements', {id: announcementId}).run(pool),
           catch: () => new DatabaseError(),
         })
       );
 
-      if (invitationRecord.length === 0) {
-        return yield* _(Effect.fail(new InvitationNotFoundError()));
+      if (announcementRecord.length === 0) {
+        return yield* _(Effect.fail(new AnnouncementNotFoundError()));
       }
 
       return null;

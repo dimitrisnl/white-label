@@ -9,7 +9,7 @@ export const loader = withLoader(
   Effect.gen(function* (_) {
     const {request} = yield* _(LoaderArgs);
     const userId = yield* _(authenticateUser(request));
-    const {memberships} = yield* _(getUserMemberships().execute(userId));
+    const {memberships} = yield* _(getUserMemberships().execute({userId}));
 
     if (memberships.length > 0 && memberships[0]?.org) {
       return new Redirect({to: `/teams/${memberships[0].org.slug}`});

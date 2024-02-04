@@ -23,9 +23,15 @@ const validationSchema = Schema.struct({
 export type CreateOrgProps = Schema.Schema.To<typeof validationSchema>;
 
 export function createOrg() {
-  function execute({name}: CreateOrgProps, userId: User['id']) {
+  function execute({
+    props: {name},
+    userId,
+  }: {
+    props: CreateOrgProps;
+    userId: User['id'];
+  }) {
     return Effect.gen(function* (_) {
-      yield* _(Effect.log(`Use-case(create-org): Creating org ${name}`));
+      yield* _(Effect.log(`(create-org): Creating org ${name}`));
 
       const userRecord = yield* _(
         Effect.tryPromise({

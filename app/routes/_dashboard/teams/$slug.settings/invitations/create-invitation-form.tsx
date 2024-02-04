@@ -1,3 +1,4 @@
+import {EnvelopeIcon} from '@heroicons/react/24/solid';
 import {useEffect, useRef} from 'react';
 import {useTypedFetcher} from 'remix-typedjson';
 
@@ -74,6 +75,7 @@ export function CreateInvitationForm() {
             </div>
             <div className="mt-auto">
               <Button name="intent" disabled={state !== 'idle'} value="create">
+                <EnvelopeIcon className="mr-2 h-4 w-4" />
                 Invite
               </Button>
             </div>

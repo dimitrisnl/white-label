@@ -18,12 +18,16 @@ const validationSchema = Schema.struct({
 export type EditUserProps = Schema.Schema.To<typeof validationSchema>;
 
 export function editUser() {
-  function execute({name}: EditUserProps, userId: User['id']) {
+  function execute({
+    props: {name},
+    userId,
+  }: {
+    props: EditUserProps;
+    userId: User['id'];
+  }) {
     return Effect.gen(function* (_) {
       yield* _(
-        Effect.log(
-          `Use-case(edit-user): Editing user ${userId} with name ${name}`
-        )
+        Effect.log(`(edit-user): Editing user ${userId} with name ${name}`)
       );
       const records = yield* _(
         Effect.tryPromise({
@@ -38,7 +42,7 @@ export function editUser() {
       if (records.length === 0 || !records[0]) {
         yield* _(
           Effect.logError(`
-          Use-case(edit-user): User ${userId} not found`)
+          (edit-user): User ${userId} not found`)
         );
         return yield* _(Effect.fail(new UserNotFoundError()));
       }

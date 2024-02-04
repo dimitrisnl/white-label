@@ -18,7 +18,8 @@ import NProgress from 'nprogress';
 import {useEffect} from 'react';
 import {PreventFlashOnWrongTheme, ThemeProvider, useTheme} from 'remix-themes';
 
-import {ErrorPage} from './components/error-page.tsx';
+import {ErrorBox} from './components/error-boundary.tsx';
+import {GuestLayout} from './components/guest-layout.tsx';
 import {Toaster} from './components/ui/toast.tsx';
 import {themeSessionResolver} from './core/lib/theme.server.ts';
 
@@ -69,5 +70,9 @@ export function App() {
 }
 
 export function ErrorBoundary() {
-  return <ErrorPage />;
+  return (
+    <GuestLayout>
+      <ErrorBox />
+    </GuestLayout>
+  );
 }

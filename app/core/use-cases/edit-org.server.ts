@@ -20,10 +20,18 @@ const validationSchema = Schema.struct({
 export type EditOrgProps = Schema.Schema.To<typeof validationSchema>;
 
 export function editOrg() {
-  function execute({name}: EditOrgProps, orgId: Org['id'], userId: User['id']) {
+  function execute({
+    props: {name},
+    orgId,
+    userId,
+  }: {
+    props: EditOrgProps;
+    orgId: Org['id'];
+    userId: User['id'];
+  }) {
     return Effect.gen(function* (_) {
       yield* _(
-        Effect.log(`Use-case(edit-org): Editing org ${orgId} with name ${name}`)
+        Effect.log(`(edit-org): Editing org ${orgId} with name ${name}`)
       );
       yield* _(orgAuthorizationService.canUpdate(userId, orgId));
 
@@ -38,10 +46,7 @@ export function editOrg() {
       );
 
       if (records.length === 0 || !records[0]) {
-        yield* _(
-          Effect.logError(`
-          Use-case(edit-org): Org ${orgId} not found`)
-        );
+        yield* _(Effect.logError(`(edit-org): Org ${orgId} not found`));
         return yield* _(Effect.fail(new OrgNotFoundError()));
       }
 

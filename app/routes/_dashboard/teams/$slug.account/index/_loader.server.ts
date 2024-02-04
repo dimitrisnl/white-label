@@ -9,7 +9,7 @@ export const loader = withLoader(
   Effect.gen(function* (_) {
     const {request} = yield* _(LoaderArgs);
     const userId = yield* _(authenticateUser(request));
-    const {user} = yield* _(getUser().execute(userId));
+    const {user} = yield* _(getUser().execute({userId}));
 
     return new Ok({data: {user}});
   }).pipe(

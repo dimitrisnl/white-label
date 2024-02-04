@@ -1,11 +1,11 @@
 import type {MetaFunction} from '@remix-run/node';
 
-import {ErrorPage} from '~/components/error-page.tsx';
+import {ErrorBox} from '~/components/error-boundary.tsx';
 
 export {loader} from './_loader.server.ts';
 
 export function ErrorBoundary() {
-  return <ErrorPage />;
+  return <ErrorBox />;
 }
 
 export const meta: MetaFunction = () => {

@@ -10,7 +10,7 @@ export const loader = withLoader(
     const {request} = yield* _(LoaderArgs);
     const userId = yield* _(authenticateUser(request));
 
-    const invitations = yield* _(getUserInvitations().execute(userId));
+    const invitations = yield* _(getUserInvitations().execute({userId}));
 
     return new Ok({data: invitations});
   }).pipe(

@@ -33,7 +33,7 @@ function handleInvitationCreation({
     const {validate, execute} = createInvitation();
     const props = yield* _(validate(data));
 
-    const invitation = yield* _(execute(props, orgId, userId));
+    const invitation = yield* _(execute({props, orgId, userId}));
 
     yield* _(
       sendInvitationEmail({
@@ -58,7 +58,7 @@ function handleInvitationDeletion({
     const {validate, execute} = deleteInvitation();
     const props = yield* _(validate(data));
 
-    yield* _(execute(props, orgId, userId));
+    yield* _(execute({props, orgId, userId}));
   });
 }
 

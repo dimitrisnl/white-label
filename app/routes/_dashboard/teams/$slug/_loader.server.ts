@@ -17,10 +17,12 @@ export const loader = withLoader(
     const {request, params} = yield* _(LoaderArgs);
 
     const userId = yield* _(authenticateUser(request));
-    const {user} = yield* _(getUser().execute(userId));
+    const {user} = yield* _(getUser().execute({userId}));
     const orgId = yield* _(identifyOrgByParams(params));
-    const org = yield* _(getOrg().execute(orgId, user.id));
-    const {memberships} = yield* _(getUserMemberships().execute(user.id));
+    const org = yield* _(getOrg().execute({orgId, userId: user.id}));
+    const {memberships} = yield* _(
+      getUserMemberships().execute({userId: user.id})
+    );
 
     return new Ok({data: {org, memberships, user}});
   }).pipe(

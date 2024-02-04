@@ -26,16 +26,18 @@ const validationSchema = Schema.struct({
 export type CreateInvitationProps = Schema.Schema.To<typeof validationSchema>;
 
 export function createInvitation() {
-  function execute(
-    {email, role}: CreateInvitationProps,
-    orgId: Org['id'],
-    userId: User['id']
-  ) {
+  function execute({
+    props: {email, role},
+    userId,
+    orgId,
+  }: {
+    props: CreateInvitationProps;
+    userId: User['id'];
+    orgId: Org['id'];
+  }) {
     return Effect.gen(function* (_) {
       yield* _(
-        Effect.log(
-          `Use-case(create-invitation): Creating invitation for ${email}`
-        )
+        Effect.log(`(create-invitation): Creating invitation for ${email}`)
       );
 
       yield* _(invitationAuthorizationService.canCreate(userId, orgId));

@@ -7,11 +7,11 @@ import {Membership} from '../domain/membership.server';
 import type {User} from '../domain/user.server';
 
 export function getUserMemberships() {
-  function execute(userId: User['id']) {
+  function execute({userId}: {userId: User['id']}) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
-          `Use-case(get-user-memberships): Getting memberships for user ${userId}`
+          `(get-user-memberships): Getting memberships for user ${userId}`
         )
       );
       const membershipRecords = yield* _(

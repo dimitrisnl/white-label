@@ -13,11 +13,11 @@ import {Org} from '../domain/org.server';
 import type {User} from '../domain/user.server';
 
 export function getOrgMemberships() {
-  function execute(orgId: Org['id'], userId: User['id']) {
+  function execute({orgId, userId}: {orgId: Org['id']; userId: User['id']}) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(
-          `Use-case(get-org-memberships): Getting memberships for org ${orgId} for user ${userId}`
+          `(get-org-memberships): Getting memberships for org ${orgId} for user ${userId}`
         )
       );
 
@@ -33,7 +33,7 @@ export function getOrgMemberships() {
       if (!orgRecord) {
         yield* _(
           Effect.logError(`
-          Use-case(get-org-memberships): Org ${orgId} not found`)
+          (get-org-memberships): Org ${orgId} not found`)
         );
         return yield* _(Effect.fail(new OrgNotFoundError()));
       }

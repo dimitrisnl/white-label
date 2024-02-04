@@ -13,7 +13,7 @@ import {parseOrgId} from '../domain/org.server';
 export function getOrgIdBySlug() {
   function execute(slug: Org['slug']) {
     return Effect.gen(function* (_) {
-      yield* _(Effect.log(`Use-case(get-org-id-by-slug): Getting org ${slug}`));
+      yield* _(Effect.log(`(get-org-id-by-slug): Getting org ${slug}`));
 
       const orgRecord = yield* _(
         Effect.tryPromise({

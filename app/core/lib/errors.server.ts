@@ -67,3 +67,7 @@ export class ValidationError extends Data.TaggedClass('ValidationError')<{
 export class InvalidIntent {
   readonly _tag = 'InvalidIntent';
 }
+
+export class AnnouncementNotFoundError {
+  readonly _tag = 'AnnouncementNotFoundError';
+}

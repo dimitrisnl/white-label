@@ -1,6 +1,6 @@
 import {isRouteErrorResponse, useRouteError} from '@remix-run/react';
 
-import {ErrorPage} from '~/components/error-page.tsx';
+import {ErrorBox} from '~/components/error-boundary.tsx';
 
 import {InvalidInvitationErrorMessage} from './invalid-invitation-error-message.tsx';
 import {InvitationDeclineSuccessMessage} from './invitation-decline-success-message.tsx';
@@ -12,13 +12,13 @@ export function ErrorBoundary() {
 
   if (isRouteErrorResponse(error)) {
     if (error.status === 500) {
-      return <ErrorPage />;
+      return <ErrorBox />;
     }
 
     return <InvalidInvitationErrorMessage />;
   }
 
-  return <ErrorPage />;
+  return <ErrorBox />;
 }
 
 export default function VerifyEmailPage() {

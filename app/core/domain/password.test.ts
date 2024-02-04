@@ -1,6 +1,11 @@
 import {Effect} from 'effect';
 
-import {comparePasswords, hashPassword, parsePassword} from './password.server';
+import {
+  comparePasswords,
+  hashPassword,
+  parsePassword,
+  type Password,
+} from './password.server';
 
 describe('domain/password', () => {
   describe('parsing', () => {
@@ -23,7 +28,7 @@ describe('domain/password', () => {
 
       const result = await Effect.runPromiseExit(
         Effect.gen(function* (_) {
-          const hash = yield* _(hashPassword(password));
+          const hash = yield* _(hashPassword(password as Password));
           expect(hash).not.toBe(password);
         })
       );
@@ -35,8 +40,8 @@ describe('domain/password', () => {
 
       const result = await Effect.runPromiseExit(
         Effect.gen(function* (_) {
-          const hash1 = yield* _(hashPassword(password));
-          const hash2 = yield* _(hashPassword(password));
+          const hash1 = yield* _(hashPassword(password as Password));
+          const hash2 = yield* _(hashPassword(password as Password));
           expect(hash1).not.toBe(hash2);
         })
       );
@@ -51,7 +56,7 @@ describe('domain/password', () => {
 
       const result = await Effect.runPromiseExit(
         Effect.gen(function* (_) {
-          const hash = yield* _(hashPassword(password));
+          const hash = yield* _(hashPassword(password as Password));
 
           const isValid = yield* _(
             comparePasswords({
@@ -72,7 +77,7 @@ describe('domain/password', () => {
 
       const result = await Effect.runPromiseExit(
         Effect.gen(function* (_) {
-          const hash = yield* _(hashPassword(password));
+          const hash = yield* _(hashPassword(password as Password));
 
           const isValid = yield* _(
             comparePasswords({
