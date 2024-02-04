@@ -1,4 +1,5 @@
 import {MoonIcon, SunIcon} from '@heroicons/react/24/outline';
+import {Theme, useTheme} from 'remix-themes';
 
 import {Button} from './ui/button';
 import {
@@ -9,7 +10,7 @@ import {
 } from './ui/dropdown-menu';
 
 export function ThemeToggle() {
-  // const [, setTheme] = useTheme();
+  const [, setTheme] = useTheme();
 
   return (
     <DropdownMenu>
@@ -23,14 +24,14 @@ export function ThemeToggle() {
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           onClick={() => {
-            // setTheme(Theme.LIGHT);
+            setTheme(Theme.LIGHT);
           }}
         >
           Light
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {
-            // setTheme(Theme.DARK);
+            setTheme(Theme.DARK);
           }}
         >
           Dark

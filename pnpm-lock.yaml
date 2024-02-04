@@ -104,6 +104,9 @@ dependencies:
   remix-flat-routes:
     specifier: ^0.6.4
     version: 0.6.4(@remix-run/dev@2.5.1)
+  remix-themes:
+    specifier: ^1.3.1
+    version: 1.3.1(@remix-run/react@2.5.1)(@remix-run/server-runtime@2.5.1)
   remix-typedjson:
     specifier: ^0.4.1
     version: 0.4.1(@remix-run/react@2.5.1)(@remix-run/server-runtime@2.5.1)(react@18.2.0)
@@ -11261,6 +11264,16 @@ packages:
       '@remix-run/v1-route-convention': 0.1.4(@remix-run/dev@2.5.1)
       fs-extra: 11.2.0
       minimatch: 5.1.6
+    dev: false
+
+  /remix-themes@1.3.1(@remix-run/react@2.5.1)(@remix-run/server-runtime@2.5.1):
+    resolution: {integrity: sha512-RNw2nMG7c8Ei6KLjr5dUwy++4ga3KFSmedzqPk+de+f3JZhPbfH+HaEWSu2nPpuIMBlNldrUoCt4GN7rC5u5uw==}
+    peerDependencies:
+      '@remix-run/react': '>= 1'
+      '@remix-run/server-runtime': '>= 1'
+    dependencies:
+      '@remix-run/react': 2.5.1(react-dom@18.2.0)(react@18.2.0)(typescript@5.3.3)
+      '@remix-run/server-runtime': 2.5.1(typescript@5.3.3)
     dev: false
 
   /remix-typedjson@0.4.1(@remix-run/react@2.5.1)(@remix-run/server-runtime@2.5.1)(react@18.2.0):
