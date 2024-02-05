@@ -1,29 +1,36 @@
 version: '3.8'
 services:
+  # Main DB
   db:
+    env_file: .env
     image: postgres:14.1-alpine
     restart: always
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
-      - '5432:5432'
+      - ${DB_PORT}:5432
     volumes:
       - db:/var/lib/postgresql/data
   # Test database, no persistance
-  # db-test:
-  #   image: postgres
-  #   environment:
-  #     - POSTGRES_USER=test-postgres
-  #     - POSTGRES_PASSWORD=test-postgres
-  #   ports:
-  #     - ${POSTGRES_TEST_PORT}:5432
+  db-test:
+    env_file: .env
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${TEST_DB_NAME}
+    ports:
+      - ${TEST_DB_PORT}:5432
+  # Main Redis cache
   cache:
+    env_file: .env
     image: redis:6.2-alpine
     restart: always
     ports:
-      - '6379:6379'
-    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+      - '${REDIS_PORT}:${REDIS_PORT}'
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
     volumes:
       - cache:/data
 volumes:
