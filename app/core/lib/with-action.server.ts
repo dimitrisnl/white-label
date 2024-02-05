@@ -33,7 +33,10 @@ export const withAction =
             return typedjson({ok: false as const, errors}, {status: 400});
           },
           ServerError: () => {
-            return typedjson({ok: false as const}, {status: 500});
+            return typedjson(
+              {ok: false as const, errors: ['Something went wrong']},
+              {status: 500}
+            );
           },
           Forbidden: ({errors}) => {
             return typedjson({ok: false as const, errors}, {status: 401});

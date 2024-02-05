@@ -1,7 +1,7 @@
 import {json} from '@remix-run/node';
 import {Link} from '@remix-run/react';
 
-import {GuestLayout} from '~/components/guest-layout.tsx';
+import {GenericLayout} from '~/components/guest-layout.tsx';
 import {buttonVariants} from '~/components/ui/button';
 import {
   Card,
@@ -15,7 +15,7 @@ import {cn} from '~/utils/classname-utils';
 
 export default function FourOhFour() {
   return (
-    <GuestLayout>
+    <GenericLayout>
       <div className="flex h-full flex-col items-center justify-center">
         <Card className="w-[400px]">
           <CardHeader className="text-center">
@@ -36,7 +36,7 @@ export default function FourOhFour() {
           </CardFooter>
         </Card>
       </div>
-    </GuestLayout>
+    </GenericLayout>
   );
 }
 

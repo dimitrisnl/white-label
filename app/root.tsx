@@ -19,7 +19,7 @@ import {useEffect} from 'react';
 import {PreventFlashOnWrongTheme, ThemeProvider, useTheme} from 'remix-themes';
 
 import {ErrorBox} from './components/error-boundary.tsx';
-import {GuestLayout} from './components/guest-layout.tsx';
+import {GenericLayout} from './components/guest-layout.tsx';
 import {Toaster} from './components/ui/toast.tsx';
 import {themeSessionResolver} from './core/lib/theme.server.ts';
 
@@ -33,7 +33,7 @@ export async function loader({request}: LoaderFunctionArgs) {
 export default function AppWithProviders() {
   const data = useLoaderData<typeof loader>();
   return (
-    <ThemeProvider specifiedTheme={data.theme} themeAction="/action/set-theme">
+    <ThemeProvider specifiedTheme={data.theme} themeAction="/set-theme">
       <App />
     </ThemeProvider>
   );
@@ -71,8 +71,8 @@ export function App() {
 
 export function ErrorBoundary() {
   return (
-    <GuestLayout>
+    <GenericLayout>
       <ErrorBox />
-    </GuestLayout>
+    </GenericLayout>
   );
 }

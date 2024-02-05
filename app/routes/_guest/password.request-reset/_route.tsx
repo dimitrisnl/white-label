@@ -1,6 +1,6 @@
 import type {MetaFunction} from '@remix-run/node';
 
-import {GuestLayout} from '~/components/guest-layout.tsx';
+import {GenericLayout} from '~/components/guest-layout.tsx';
 
 import {RequestPasswordResetForm} from './request-password-reset-form.tsx';
 
@@ -15,8 +15,8 @@ export const meta: MetaFunction = () => {
 
 export default function RequestPasswordReset() {
   return (
-    <GuestLayout>
+    <GenericLayout>
       <RequestPasswordResetForm />
-    </GuestLayout>
+    </GenericLayout>
   );
 }

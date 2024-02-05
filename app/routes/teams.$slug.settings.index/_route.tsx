@@ -3,7 +3,7 @@ import type {MetaFunction} from '@remix-run/node';
 import {BaseErrorBoundary} from '~/components/error-boundary.tsx';
 import {PageSkeleton} from '~/components/page-skeleton.tsx';
 
-import {useMetadata} from '../../teams.$slug/use-metadata-data.ts';
+import {useMetadata} from '../teams.$slug/use-metadata-data.ts';
 import {TeamInfo} from './team-info.tsx';
 
 export {action} from './_action.server.ts';

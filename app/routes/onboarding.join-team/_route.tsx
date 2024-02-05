@@ -1,4 +1,4 @@
-import {GuestLayout} from '~/components/guest-layout.tsx';
+import {GenericLayout} from '~/components/guest-layout.tsx';
 
 import {InvitationsList} from './invitations-list.tsx';
 
@@ -7,8 +7,8 @@ export {loader} from './_loader.server.ts';
 
 export default function JoinTeamPage() {
   return (
-    <GuestLayout>
+    <GenericLayout>
       <InvitationsList />
-    </GuestLayout>
+    </GenericLayout>
   );
 }

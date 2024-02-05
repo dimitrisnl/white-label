@@ -1,7 +1,7 @@
 import {CubeIcon} from '@heroicons/react/24/outline';
 import React from 'react';
 
-export function GuestLayout({children}: {children: React.ReactNode}) {
+export function GenericLayout({children}: {children: React.ReactNode}) {
   return (
     <div className="flex min-h-screen flex-col items-center gap-10 bg-gray-100 pt-16 dark:bg-gray-950">
       <div className="flex flex-col items-center space-y-4 leading-none">

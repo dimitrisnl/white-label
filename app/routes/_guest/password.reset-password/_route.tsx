@@ -3,7 +3,7 @@ import {isRouteErrorResponse, useRouteError} from '@remix-run/react';
 import {useTypedLoaderData} from 'remix-typedjson';
 
 import {ErrorBox} from '~/components/error-boundary.tsx';
-import {GuestLayout} from '~/components/guest-layout.tsx';
+import {GenericLayout} from '~/components/guest-layout.tsx';
 
 import type {ResetPasswordLoader} from './_loader.server.ts';
 import {InvalidTokenErrorPage} from './invalid-token-error-page.tsx';
@@ -23,9 +23,9 @@ export default function ResetPasswordPage() {
   const loaderData = useTypedLoaderData<ResetPasswordLoader>();
 
   return (
-    <GuestLayout>
+    <GenericLayout>
       <ResetPasswordForm token={loaderData.data.token} />
-    </GuestLayout>
+    </GenericLayout>
   );
 }
 

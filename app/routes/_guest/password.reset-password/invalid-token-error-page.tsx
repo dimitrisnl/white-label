@@ -1,7 +1,7 @@
 import {XCircleIcon} from '@heroicons/react/24/outline';
 import {Link} from '@remix-run/react';
 
-import {GuestLayout} from '~/components/guest-layout.tsx';
+import {GenericLayout} from '~/components/guest-layout.tsx';
 import {buttonVariants} from '~/components/ui/button';
 import {
   Card,
@@ -14,7 +14,7 @@ import {
 
 export function InvalidTokenErrorPage() {
   return (
-    <GuestLayout>
+    <GenericLayout>
       <Card className="w-[420px] text-center">
         <CardHeader className="flex flex-col items-center justify-center">
           <XCircleIcon className="mb-4 h-10 w-10 stroke-red-600" />
@@ -38,6 +38,6 @@ export function InvalidTokenErrorPage() {
           </Link>
         </CardFooter>
       </Card>
-    </GuestLayout>
+    </GenericLayout>
   );
 }

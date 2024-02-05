@@ -36,8 +36,11 @@ export const withLoader =
                 Redirect: ({to, init}) => {
                   return redirect(to, init);
                 },
-                BadRequest: ({errors}) => {
-                  return typedjson({ok: false as const, errors}, {status: 400});
+                BadRequest: () => {
+                  return typedjson(
+                    {ok: false as const, errors: ['Something went wrong']},
+                    {status: 400}
+                  );
                 },
                 ServerError: () => {
                   return typedjson({ok: false as const}, {status: 500});

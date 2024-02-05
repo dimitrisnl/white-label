@@ -2,7 +2,7 @@ import {XCircleIcon} from '@heroicons/react/24/outline';
 import {ChatBubbleBottomCenterIcon} from '@heroicons/react/24/solid';
 import {Link} from '@remix-run/react';
 
-import {GuestLayout} from '~/components/guest-layout.tsx';
+import {GenericLayout} from '~/components/guest-layout.tsx';
 import {Button, buttonVariants} from '~/components/ui/button';
 import {
   Card,
@@ -15,7 +15,7 @@ import {
 
 export function InvalidTokenErrorMessage() {
   return (
-    <GuestLayout>
+    <GenericLayout>
       <Card className="w-[400px] text-center">
         <CardHeader>
           <CardTitle>Failure</CardTitle>
@@ -38,6 +38,6 @@ export function InvalidTokenErrorMessage() {
           </Link>
         </CardFooter>
       </Card>
-    </GuestLayout>
+    </GenericLayout>
   );
 }

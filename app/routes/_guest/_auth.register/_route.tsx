@@ -1,6 +1,6 @@
 import type {MetaFunction} from '@remix-run/node';
 
-import {GuestLayout} from '~/components/guest-layout.tsx';
+import {GenericLayout} from '~/components/guest-layout.tsx';
 
 import {RegisterForm} from './register-form.tsx';
 
@@ -15,8 +15,8 @@ export const meta: MetaFunction = () => {
 
 export default function RegisterPage() {
   return (
-    <GuestLayout>
+    <GenericLayout>
       <RegisterForm />
-    </GuestLayout>
+    </GenericLayout>
   );
 }

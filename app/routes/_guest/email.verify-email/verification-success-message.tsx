@@ -1,7 +1,7 @@
 import {CheckCircleIcon} from '@heroicons/react/24/outline';
 import {Link} from '@remix-run/react';
 
-import {GuestLayout} from '~/components/guest-layout.tsx';
+import {GenericLayout} from '~/components/guest-layout.tsx';
 import {buttonVariants} from '~/components/ui/button';
 import {
   Card,
@@ -14,7 +14,7 @@ import {
 
 export function VerificationSuccessMessage() {
   return (
-    <GuestLayout>
+    <GenericLayout>
       <Card className="w-[400px] text-center">
         <CardHeader>
           <CardTitle>Success</CardTitle>
@@ -30,6 +30,6 @@ export function VerificationSuccessMessage() {
           </Link>
         </CardFooter>
       </Card>
-    </GuestLayout>
+    </GenericLayout>
   );
 }

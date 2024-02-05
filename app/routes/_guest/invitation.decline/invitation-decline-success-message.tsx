@@ -1,6 +1,6 @@
 import {Link} from '@remix-run/react';
 
-import {GuestLayout} from '~/components/guest-layout.tsx';
+import {GenericLayout} from '~/components/guest-layout.tsx';
 import {buttonVariants} from '~/components/ui/button';
 import {
   Card,
@@ -13,7 +13,7 @@ import {
 
 export function InvitationDeclineSuccessMessage() {
   return (
-    <GuestLayout>
+    <GenericLayout>
       <Card className="text-center">
         <CardHeader>
           <CardTitle>Invitation declined</CardTitle>
@@ -28,6 +28,6 @@ export function InvitationDeclineSuccessMessage() {
           </Link>
         </CardFooter>
       </Card>
-    </GuestLayout>
+    </GenericLayout>
   );
 }

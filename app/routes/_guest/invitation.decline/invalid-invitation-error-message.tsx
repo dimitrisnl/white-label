@@ -1,7 +1,7 @@
 import {XCircleIcon} from '@heroicons/react/24/outline';
 import {Link} from '@remix-run/react';
 
-import {GuestLayout} from '~/components/guest-layout.tsx';
+import {GenericLayout} from '~/components/guest-layout.tsx';
 import {buttonVariants} from '~/components/ui/button';
 import {
   Card,
@@ -14,7 +14,7 @@ import {
 
 export function InvalidInvitationErrorMessage() {
   return (
-    <GuestLayout>
+    <GenericLayout>
       <Card className="text-center">
         <CardHeader>
           <CardTitle>Invitation not found</CardTitle>
@@ -34,6 +34,6 @@ export function InvalidInvitationErrorMessage() {
           </Link>
         </CardFooter>
       </Card>
-    </GuestLayout>
+    </GenericLayout>
   );
 }

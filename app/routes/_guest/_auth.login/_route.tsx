@@ -1,6 +1,6 @@
 import type {MetaFunction} from '@remix-run/node';
 
-import {GuestLayout} from '~/components/guest-layout.tsx';
+import {GenericLayout} from '~/components/guest-layout.tsx';
 
 import {LoginForm} from './login-form.tsx';
 import {PasswordResetBanner} from './password-reset-banner.tsx';
@@ -16,9 +16,9 @@ export const meta: MetaFunction = () => {
 
 export default function LoginPage() {
   return (
-    <GuestLayout>
+    <GenericLayout>
       <PasswordResetBanner />
       <LoginForm />
-    </GuestLayout>
+    </GenericLayout>
   );
 }

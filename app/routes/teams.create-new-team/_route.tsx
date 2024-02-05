@@ -1,4 +1,4 @@
-import {GuestLayout} from '~/components/guest-layout.tsx';
+import {GenericLayout} from '~/components/guest-layout.tsx';
 
 import {TeamInfo} from './team-info.tsx';
 
@@ -7,8 +7,8 @@ export {loader} from './_loader.server.ts';
 
 export default function CreateNewTeam() {
   return (
-    <GuestLayout>
+    <GenericLayout>
       <TeamInfo />
-    </GuestLayout>
+    </GenericLayout>
   );
 }
