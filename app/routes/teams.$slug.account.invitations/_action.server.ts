@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {authenticateUser, parseFormData} from '~/core/lib/helpers.server';
 import {BadRequest, Redirect, ServerError} from '~/core/lib/responses.server';
 import {ActionArgs, withAction} from '~/core/lib/with-action.server';
@@ -12,7 +14,7 @@ export const action = withAction(
     const userId = yield* _(authenticateUser(request));
     const data = yield* _(parseFormData(request));
 
-    const {validate, execute} = acceptInvitation();
+    const {validate, execute} = acceptInvitation({db, pool});
 
     const props = yield* _(validate({invitationId: data.invitationId}));
     const {org} = yield* _(execute({props, userId}));

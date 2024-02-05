@@ -1,14 +1,13 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server';
+import type {DB, PgPool} from '~/core/db/types';
+import {Announcement} from '~/core/domain/announcement.server';
+import type {Org} from '~/core/domain/org.server';
+import type {User} from '~/core/domain/user.server';
 import {DatabaseError, InternalServerError} from '~/core/lib/errors.server';
+import {announcementAuthorizationService} from '~/core/services/announcement-authorization-service.server';
 
-import {Announcement} from '../domain/announcement.server';
-import type {Org} from '../domain/org.server';
-import type {User} from '../domain/user.server';
-import {announcementAuthorizationService} from '../services/announcement-authorization-service.server';
-
-export function getOrgAnnouncements() {
+export function getOrgAnnouncements({pool, db}: {pool: PgPool; db: DB}) {
   function execute({orgId, userId}: {orgId: Org['id']; userId: User['id']}) {
     return Effect.gen(function* (_) {
       yield* _(
@@ -17,7 +16,12 @@ export function getOrgAnnouncements() {
         )
       );
 
-      yield* _(announcementAuthorizationService.canViewAll({userId, orgId}));
+      yield* _(
+        announcementAuthorizationService({
+          pool,
+          db,
+        }).canViewAll({userId, orgId})
+      );
 
       const announcementRecords = yield* _(
         Effect.tryPromise({

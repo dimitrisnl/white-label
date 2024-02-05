@@ -4,7 +4,7 @@ import {Data, Effect} from 'effect';
 import {compose} from 'effect/Function';
 import type {membership_invitations, orgs} from 'zapatos/schema';
 
-import {db} from '../db/db.server.ts';
+import {db} from '../db/schema.server.ts';
 import {emailSchema} from './email.server.ts';
 import {inviteStatusSchema} from './invite-status.server.ts';
 import {membershipRoleSchema} from './membership-role.server.ts';

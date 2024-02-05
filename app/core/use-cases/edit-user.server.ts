@@ -1,7 +1,8 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server.ts';
+import type {DB, PgPool} from '~/core/db/types';
+import {User, userNameSchema} from '~/core/domain/user.server';
 import {
   DatabaseError,
   InternalServerError,
@@ -9,15 +10,13 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
-import {User, userNameSchema} from '../domain/user.server';
-
 const validationSchema = Schema.struct({
   name: userNameSchema,
 });
 
 export type EditUserProps = Schema.Schema.To<typeof validationSchema>;
 
-export function editUser() {
+export function editUser({pool, db}: {pool: PgPool; db: DB}) {
   function execute({
     props: {name},
     userId,

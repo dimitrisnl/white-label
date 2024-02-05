@@ -34,19 +34,19 @@ describe('domain/membership-invitation', () => {
         Exit.match(result, {
           onFailure: () => fail(),
           onSuccess: (value) => {
-            expect(value).toStrictEqual({
-              org: {
-                name: 'Wolfwave',
-                id: orgId,
-                slug: 'wolfwave',
-              },
-              id: invitationId,
-              email: 'dimitrios@example.com',
-              status: 'PENDING',
-              role: 'OWNER',
-              createdAt: new Date('2012-06-01T12:34:00Z'),
-              updatedAt: new Date('2012-06-01T12:34:00Z'),
-            });
+            expect(value.org.id).toBe(orgId);
+            expect(value.org.name).toBe('Wolfwave');
+            expect(value.org.slug).toBe('wolfwave');
+            expect(value.id).toBe(invitationId);
+            expect(value.email).toBe('dimitrios@example.com');
+            expect(value.status).toBe('PENDING');
+            expect(value.role).toBe('OWNER');
+            expect(value.createdAt).toStrictEqual(
+              new Date('2012-06-01T12:34:00Z')
+            );
+            expect(value.updatedAt).toStrictEqual(
+              new Date('2012-06-01T12:34:00Z')
+            );
           },
         });
       });
@@ -134,18 +134,20 @@ describe('domain/membership-invitation', () => {
       Exit.match(result, {
         onFailure: () => fail(),
         onSuccess: (value) => {
-          expect(value).toStrictEqual({
-            id: invitationId,
-            role: 'OWNER',
-            createdAt: new Date('2012-06-01T12:34:00Z'),
-            updatedAt: new Date('2012-06-01T12:34:00Z'),
-            email: 'dimitrios@example.com',
-            status: 'DECLINED',
-            org: {
-              id: orgId,
-              name: 'Wolfwave',
-              slug: 'wolfwave',
-            },
+          expect(value.id).toBe(invitationId);
+          expect(value.role).toBe('OWNER');
+          expect(value.createdAt).toStrictEqual(
+            new Date('2012-06-01T12:34:00Z')
+          );
+          expect(value.updatedAt).toStrictEqual(
+            new Date('2012-06-01T12:34:00Z')
+          );
+          expect(value.email).toBe('dimitrios@example.com');
+          expect(value.status).toBe('DECLINED');
+          expect(value.org).toStrictEqual({
+            id: orgId,
+            name: 'Wolfwave',
+            slug: 'wolfwave',
           });
         },
       });
@@ -153,9 +155,13 @@ describe('domain/membership-invitation', () => {
 
     it('fails parsing when missing `org`', () => {
       const result = Effect.runSyncExit(
-        // @ts-expect-error
-        MembershipInvitation.fromRecord(membershipInvitationRecord, {})
+        MembershipInvitation.fromRecord({
+          record: membershipInvitationRecord,
+          // @ts-expect-error
+          org: {},
+        })
       );
+
       expect(result._tag).toBe('Failure');
     });
 

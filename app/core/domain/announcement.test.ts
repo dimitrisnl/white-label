@@ -20,7 +20,7 @@ describe('domain/announcement', () => {
         id: uuid,
         name: 'Jim',
       },
-      org_id: uuid,
+      orgId: uuid,
       publishedAt: null,
       createdAt: '2012-06-01T12:34:00Z' as const,
       updatedAt: '2012-06-01T12:34:00Z' as const,
@@ -33,26 +33,26 @@ describe('domain/announcement', () => {
         );
 
         Exit.match(result, {
-          onFailure: () => fail(),
+          onFailure: () => {
+            fail();
+          },
           onSuccess: (value) => {
-            expect(value).toStrictEqual({
-              id: uuid,
-              org_id: uuid,
-              title: 'Title',
-              content: 'Content',
-              status: 'DRAFT' as const,
-              createdByUser: {
-                id: uuid,
-                name: 'Jim',
-              },
-              publishedByUser: {
-                id: uuid,
-                name: 'Jim',
-              },
-              publishedAt: null,
-              createdAt: new Date('2012-06-01T12:34:00Z'),
-              updatedAt: new Date('2012-06-01T12:34:00Z'),
-            });
+            expect(value.id).toBe(uuid);
+            expect(value.orgId).toBe(uuid);
+            expect(value.title).toBe('Title');
+            expect(value.content).toBe('Content');
+            expect(value.status).toBe('DRAFT');
+            expect(value.createdByUser?.id).toBe(uuid);
+            expect(value.createdByUser?.name).toBe('Jim');
+            expect(value.publishedByUser?.id).toBe(uuid);
+            expect(value.publishedByUser?.name).toBe('Jim');
+            expect(value.publishedAt).toBeNull();
+            expect(value.createdAt).toStrictEqual(
+              new Date('2012-06-01T12:34:00Z')
+            );
+            expect(value.updatedAt).toStrictEqual(
+              new Date('2012-06-01T12:34:00Z')
+            );
           },
         });
       });
@@ -68,7 +68,7 @@ describe('domain/announcement', () => {
         const result = Effect.runSyncExit(
           Announcement.fromUnknown({
             ...validAnnouncementObject,
-            name: 'AB'.repeat(51),
+            title: 'AB'.repeat(51),
           })
         );
         expect(result._tag).toBe('Failure');
@@ -173,24 +173,22 @@ describe('domain/announcement', () => {
       Exit.match(result, {
         onFailure: () => fail(),
         onSuccess: (value) => {
-          expect(value).toStrictEqual({
-            id: uuid,
-            org_id: uuid,
-            title: 'Title',
-            content: 'Content',
-            status: 'DRAFT' as const,
-            createdByUser: {
-              id: uuid,
-              name: 'Jim',
-            },
-            publishedByUser: {
-              id: uuid,
-              name: 'Jim',
-            },
-            publishedAt: null,
-            createdAt: new Date('2012-06-01T12:34:00Z'),
-            updatedAt: new Date('2012-06-01T12:34:00Z'),
-          });
+          expect(value.id).toBe(uuid);
+          expect(value.orgId).toBe(uuid);
+          expect(value.title).toBe('Title');
+          expect(value.content).toBe('Content');
+          expect(value.status).toBe('DRAFT');
+          expect(value.createdByUser?.id).toBe(uuid);
+          expect(value.createdByUser?.name).toBe('Jim');
+          expect(value.publishedByUser?.id).toBe(uuid);
+          expect(value.publishedByUser?.name).toBe('Jim');
+          expect(value.publishedAt).toBeNull();
+          expect(value.createdAt).toStrictEqual(
+            new Date('2012-06-01T12:34:00Z')
+          );
+          expect(value.updatedAt).toStrictEqual(
+            new Date('2012-06-01T12:34:00Z')
+          );
         },
       });
     });
@@ -245,16 +243,24 @@ describe('domain/announcement', () => {
 
     it('fails parsing when missing `createdAt`', () => {
       const result = Effect.runSyncExit(
-        // @ts-expect-error
-        Announcement.fromRecord({...validRecord, created_at: undefined})
+        Announcement.fromRecord({
+          // @ts-expect-error
+          record: {...validRecord, created_at: undefined},
+          createdByUser,
+          publishedByUser,
+        })
       );
       expect(result._tag).toBe('Failure');
     });
 
     it('fails parsing when missing `updatedAt`', () => {
       const result = Effect.runSyncExit(
-        // @ts-expect-error
-        Announcement.fromRecord({...validRecord, updated_at: undefined})
+        Announcement.fromRecord({
+          // @ts-expect-error
+          record: {...validRecord, updated_at: undefined},
+          createdByUser,
+          publishedByUser,
+        })
       );
       expect(result._tag).toBe('Failure');
     });

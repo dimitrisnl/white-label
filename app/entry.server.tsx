@@ -1,4 +1,5 @@
-import 'dotenv/config';
+import dotenvFlow from 'dotenv-flow';
+dotenvFlow.config();
 
 /**
  * By default, Remix will handle generating the HTTP Response for you.

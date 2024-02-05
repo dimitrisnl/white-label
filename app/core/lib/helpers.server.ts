@@ -1,6 +1,9 @@
-import type {LoaderFunctionArgs} from '@remix-run/node';
+import type {ActionFunctionArgs, LoaderFunctionArgs} from '@remix-run/node';
+import {Context} from 'effect';
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {SessionNotFoundError} from '~/core/lib/errors.server';
 import {getSession, USER_SESSION_KEY} from '~/core/lib/session.server';
 import {getOrgIdBySlug} from '~/core/use-cases/get-org-id-by-slug.server';
@@ -13,7 +16,7 @@ type Params = LoaderFunctionArgs['params'];
 export function identifyOrgByParams(params: Params) {
   return Effect.gen(function* (_) {
     const slug = yield* _(parseOrgSlug(params.slug));
-    const orgId = yield* _(getOrgIdBySlug().execute(slug));
+    const orgId = yield* _(getOrgIdBySlug({db, pool}).execute(slug));
 
     return orgId;
   });
@@ -38,3 +41,6 @@ export function authenticateUser(request: Request) {
     })
   );
 }
+
+export const ActionArgs = Context.Tag<ActionFunctionArgs>('ActionArgs');
+export const LoaderArgs = Context.Tag<LoaderFunctionArgs>('LoaderArgs');

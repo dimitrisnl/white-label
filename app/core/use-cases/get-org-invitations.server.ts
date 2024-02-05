@@ -1,14 +1,13 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server';
+import type {DB, PgPool} from '~/core/db/types';
+import {MembershipInvitation} from '~/core/domain/membership-invitation.server';
+import type {Org} from '~/core/domain/org.server';
+import type {User} from '~/core/domain/user.server';
 import {DatabaseError, InternalServerError} from '~/core/lib/errors.server';
 import {invitationAuthorizationService} from '~/core/services/invitation-authorization-service.server';
 
-import {MembershipInvitation} from '../domain/membership-invitation.server';
-import type {Org} from '../domain/org.server';
-import type {User} from '../domain/user.server';
-
-export function getOrgInvitations() {
+export function getOrgInvitations({pool, db}: {pool: PgPool; db: DB}) {
   function execute({orgId, userId}: {orgId: Org['id']; userId: User['id']}) {
     return Effect.gen(function* (_) {
       yield* _(
@@ -17,7 +16,9 @@ export function getOrgInvitations() {
         )
       );
 
-      yield* _(invitationAuthorizationService.canViewAll({userId, orgId}));
+      yield* _(
+        invitationAuthorizationService({pool, db}).canViewAll({userId, orgId})
+      );
 
       const invitationRecords = yield* _(
         Effect.tryPromise({

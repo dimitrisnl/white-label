@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {authenticateUser} from '~/core/lib/helpers.server';
 import {Ok, Redirect, ServerError} from '~/core/lib/responses.server';
 import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
@@ -10,7 +12,9 @@ export const loader = withLoader(
     const {request} = yield* _(LoaderArgs);
     const userId = yield* _(authenticateUser(request));
 
-    const invitations = yield* _(getUserInvitations().execute({userId}));
+    const invitations = yield* _(
+      getUserInvitations({pool, db}).execute({userId})
+    );
 
     return new Ok({data: invitations});
   }).pipe(

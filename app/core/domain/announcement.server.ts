@@ -4,7 +4,7 @@ import {Data, Effect} from 'effect';
 import {compose} from 'effect/Function';
 import type {announcements, users} from 'zapatos/schema';
 
-import {db} from '../db/db.server.ts';
+import {db} from '../db/schema.server.ts';
 import {announcementStatusSchema} from './announcement-status.server.ts';
 import {orgIdSchema} from './org.server.ts';
 import {userIdSchema, userNameSchema} from './user.server.ts';

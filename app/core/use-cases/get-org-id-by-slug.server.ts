@@ -1,16 +1,15 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server';
+import type {DB, PgPool} from '~/core/db/types';
+import type {Org} from '~/core/domain/org.server';
+import {parseOrgId} from '~/core/domain/org.server';
 import {
   DatabaseError,
   InternalServerError,
   OrgNotFoundError,
 } from '~/core/lib/errors.server';
 
-import type {Org} from '../domain/org.server';
-import {parseOrgId} from '../domain/org.server';
-
-export function getOrgIdBySlug() {
+export function getOrgIdBySlug({pool, db}: {pool: PgPool; db: DB}) {
   function execute(slug: Org['slug']) {
     return Effect.gen(function* (_) {
       yield* _(Effect.log(`(get-org-id-by-slug): Getting org ${slug}`));

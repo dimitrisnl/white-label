@@ -5,7 +5,7 @@ import {Data, Effect} from 'effect';
 import {compose} from 'effect/Function';
 import type {orgs} from 'zapatos/schema';
 
-import {db} from '../db/db.server.ts';
+import {db} from '../db/schema.server.ts';
 import {uuidSchema} from './uuid.server.ts';
 
 const OrgIdBrand = Symbol.for('OrgIdBrand');

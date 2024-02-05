@@ -1,7 +1,9 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server.ts';
+import type {DB, PgPool} from '~/core/db/types';
+import {hashPassword, passwordSchema} from '~/core/domain/password.server';
+import {uuidSchema} from '~/core/domain/uuid.server';
 import {
   DatabaseError,
   InternalServerError,
@@ -10,9 +12,6 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server.ts';
 
-import {hashPassword, passwordSchema} from '../domain/password.server';
-import {uuidSchema} from '../domain/uuid.server';
-
 const validationSchema = Schema.struct({
   password: passwordSchema,
   token: uuidSchema,
@@ -20,7 +19,7 @@ const validationSchema = Schema.struct({
 
 export type ResetPasswordProps = Schema.Schema.To<typeof validationSchema>;
 
-export function resetPassword() {
+export function resetPassword({pool, db}: {pool: PgPool; db: DB}) {
   function execute({token, password}: ResetPasswordProps) {
     return Effect.gen(function* (_) {
       yield* _(Effect.log(`(reset-password): Resetting password for ${token}`));

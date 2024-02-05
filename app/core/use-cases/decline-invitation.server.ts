@@ -1,7 +1,9 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server.ts';
+import type {DB, PgPool} from '~/core/db/types';
+import {DECLINED, PENDING} from '~/core/domain/invite-status.server';
+import {uuidSchema} from '~/core/domain/uuid.server';
 import {
   DatabaseError,
   InternalServerError,
@@ -9,16 +11,13 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
-import {DECLINED, PENDING} from '../domain/invite-status.server';
-import {uuidSchema} from '../domain/uuid.server';
-
 const validationSchema = Schema.struct({
   invitationId: uuidSchema,
 });
 
 export type DeclineInvitationProps = Schema.Schema.To<typeof validationSchema>;
 
-export function declineInvitation() {
+export function declineInvitation({pool, db}: {pool: PgPool; db: DB}) {
   function execute({invitationId}: DeclineInvitationProps) {
     return Effect.gen(function* (_) {
       yield* _(

@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {authenticateUser} from '~/core/lib/helpers.server';
 import {Redirect, ServerError} from '~/core/lib/responses.server';
 import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
@@ -10,13 +12,12 @@ export const loader = withLoader(
     const {request} = yield* _(LoaderArgs);
     const userId = yield* _(authenticateUser(request));
 
-    // todo: replace with query that gets the last accessed team
-    const {memberships} = yield* _(getUserMemberships().execute({userId}));
+    const {memberships} = yield* _(
+      getUserMemberships({db, pool}).execute({userId})
+    );
 
     if (memberships.length === 0) {
-      return new Redirect({
-        to: `/onboarding`,
-      });
+      return new Redirect({to: `/onboarding`});
     }
 
     return new Redirect({

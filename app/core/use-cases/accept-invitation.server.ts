@@ -1,7 +1,6 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server.ts';
 import {uuidSchema} from '~/core/domain/uuid.server.ts';
 import {
   DatabaseError,
@@ -11,6 +10,7 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
+import type {DB, PgPool} from '../db/types';
 import {PENDING} from '../domain/invite-status.server';
 import {Org} from '../domain/org.server';
 import type {User} from '../domain/user.server';
@@ -21,7 +21,7 @@ const validationSchema = Schema.struct({
 
 export type AcceptInvitationProps = Schema.Schema.To<typeof validationSchema>;
 
-export function acceptInvitation() {
+export function acceptInvitation({pool, db}: {pool: PgPool; db: DB}) {
   function execute({
     props: {invitationId},
     userId,

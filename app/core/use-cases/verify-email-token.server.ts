@@ -1,7 +1,8 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server.ts';
+import type {DB, PgPool} from '~/core/db/types';
+import {uuidSchema} from '~/core/domain/uuid.server';
 import {
   DatabaseError,
   InternalServerError,
@@ -10,15 +11,13 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server.ts';
 
-import {uuidSchema} from '../domain/uuid.server';
-
 const validationSchema = Schema.struct({
   token: uuidSchema,
 });
 
 export type VerifyEmailProps = Schema.Schema.To<typeof validationSchema>;
 
-export function verifyEmailToken() {
+export function verifyEmailToken({pool, db}: {pool: PgPool; db: DB}) {
   function execute({token}: VerifyEmailProps) {
     return Effect.gen(function* (_) {
       yield* _(Effect.log(`(verify-email-token): Verifying token ${token}`));

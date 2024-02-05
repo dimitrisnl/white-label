@@ -5,7 +5,7 @@ import * as Effect from 'effect/Effect';
 import {compose} from 'effect/Function';
 import type {memberships, orgs, users} from 'zapatos/schema';
 
-import {db} from '../db/db.server.ts';
+import {db} from '../db/schema.server.ts';
 import {emailSchema} from './email.server.ts';
 import {membershipRoleSchema} from './membership-role.server.ts';
 import {orgIdSchema, orgNameSchema, orgSlugSchema} from './org.server.ts';

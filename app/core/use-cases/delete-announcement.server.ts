@@ -1,7 +1,10 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server.ts';
+import type {DB, PgPool} from '~/core/db/types';
+import type {Org} from '~/core/domain/org.server';
+import type {User} from '~/core/domain/user.server';
+import {uuidSchema} from '~/core/domain/uuid.server';
 import {
   AnnouncementNotFoundError,
   DatabaseError,
@@ -10,17 +13,13 @@ import {
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 import {announcementAuthorizationService} from '~/core/services/announcement-authorization-service.server.ts';
 
-import type {Org} from '../domain/org.server';
-import type {User} from '../domain/user.server';
-import {uuidSchema} from '../domain/uuid.server';
-
 const validationSchema = Schema.struct({
   announcementId: uuidSchema,
 });
 
 export type DeleteAnnouncementProps = Schema.Schema.To<typeof validationSchema>;
 
-export function deleteAnnouncement() {
+export function deleteAnnouncement({pool, db}: {pool: PgPool; db: DB}) {
   function execute({
     props: {announcementId},
     userId,
@@ -37,7 +36,10 @@ export function deleteAnnouncement() {
         )
       );
       yield* _(
-        announcementAuthorizationService.canDelete({
+        announcementAuthorizationService({
+          pool,
+          db,
+        }).canDelete({
           userId,
           orgId,
           announcementId,

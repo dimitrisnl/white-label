@@ -1,7 +1,6 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server.ts';
 import {
   DatabaseError,
   IncorrectPasswordError,
@@ -10,6 +9,7 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
+import type {DB, PgPool} from '../db/types';
 import {
   comparePasswords,
   hashPassword,
@@ -24,7 +24,7 @@ const validationSchema = Schema.struct({
 
 export type ChangePasswordProps = Schema.Schema.To<typeof validationSchema>;
 
-export function changePassword() {
+export function changePassword({pool, db}: {pool: PgPool; db: DB}) {
   function execute({
     props: {oldPassword, newPassword},
     userId,

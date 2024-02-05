@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {authenticateUser, identifyOrgByParams} from '~/core/lib/helpers.server';
 import {
   BadRequest,
@@ -17,11 +19,11 @@ export const loader = withLoader(
     const {request, params} = yield* _(LoaderArgs);
 
     const userId = yield* _(authenticateUser(request));
-    const {user} = yield* _(getUser().execute({userId}));
+    const {user} = yield* _(getUser({db, pool}).execute({userId}));
     const orgId = yield* _(identifyOrgByParams(params));
-    const org = yield* _(getOrg().execute({orgId, userId: user.id}));
+    const org = yield* _(getOrg({db, pool}).execute({orgId, userId: user.id}));
     const {memberships} = yield* _(
-      getUserMemberships().execute({userId: user.id})
+      getUserMemberships({db, pool}).execute({userId: user.id})
     );
 
     return new Ok({data: {org, memberships, user}});

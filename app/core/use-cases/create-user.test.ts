@@ -2,6 +2,9 @@ import {faker} from '@faker-js/faker';
 import {fail} from 'assert';
 import {Effect, Exit} from 'effect';
 
+import {db, testDbPool} from '~/test/dp-pool';
+import {truncate} from '~/test/setup';
+
 import {createUser} from './create-user.server';
 
 describe('use-cases/create-user', () => {
@@ -12,13 +15,13 @@ describe('use-cases/create-user', () => {
       password: faker.internet.password(),
     };
     test('it validates the user', async () => {
-      const {validate} = createUser();
+      const {validate} = createUser({pool: testDbPool, db: db});
 
       const result = await Effect.runPromiseExit(validate(userObj));
       expect(result._tag).toBe('Success');
     });
     test('it fails on missing `name`', async () => {
-      const {validate} = createUser();
+      const {validate} = createUser({pool: testDbPool, db: db});
 
       const result = await Effect.runPromiseExit(
         validate({...userObj, name: ''})
@@ -27,7 +30,7 @@ describe('use-cases/create-user', () => {
     });
 
     test('it fails on missing `email`', async () => {
-      const {validate} = createUser();
+      const {validate} = createUser({pool: testDbPool, db: db});
 
       const result = await Effect.runPromiseExit(
         validate({...userObj, email: ''})
@@ -35,7 +38,7 @@ describe('use-cases/create-user', () => {
       expect(result._tag).toBe('Failure');
     });
     test('it fails on missing `password`', async () => {
-      const {validate} = createUser();
+      const {validate} = createUser({pool: testDbPool, db: db});
 
       const result = await Effect.runPromiseExit(
         validate({...userObj, password: ''})
@@ -45,13 +48,16 @@ describe('use-cases/create-user', () => {
   });
 
   describe('execute', () => {
+    afterEach(async () => {
+      await truncate();
+    });
     test('it creates a new user', async () => {
       const userObj = {
         name: faker.person.fullName(),
         email: faker.internet.email(),
         password: faker.internet.password(),
       };
-      const {validate, execute} = createUser();
+      const {validate, execute} = createUser({pool: testDbPool, db: db});
 
       const result = await Effect.runPromiseExit(
         Effect.gen(function* (_) {
@@ -82,7 +88,7 @@ describe('use-cases/create-user', () => {
         email: faker.internet.email(),
         password: faker.internet.password(),
       };
-      const {validate, execute} = createUser();
+      const {validate, execute} = createUser({pool: testDbPool, db: db});
 
       const result = await Effect.runPromiseExit(
         Effect.gen(function* (_) {

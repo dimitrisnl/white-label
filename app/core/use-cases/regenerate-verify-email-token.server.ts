@@ -1,6 +1,8 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server.ts';
+import type {DB, PgPool} from '~/core/db/types';
+import type {User} from '~/core/domain/user.server';
+import {generateUUID} from '~/core/domain/uuid.server';
 import {
   DatabaseError,
   InternalServerError,
@@ -8,10 +10,7 @@ import {
   UserNotFoundError,
 } from '~/core/lib/errors.server.ts';
 
-import type {User} from '../domain/user.server';
-import {generateUUID} from '../domain/uuid.server';
-
-export function regenerateVerifyEmailToken() {
+export function regenerateVerifyEmailToken({pool, db}: {pool: PgPool; db: DB}) {
   function execute({userId}: {userId: User['id']}) {
     return Effect.gen(function* (_) {
       yield* _(

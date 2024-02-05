@@ -1,31 +1,34 @@
 /// <reference types="vitest" />
 
 import {unstable_vitePlugin as remix} from '@remix-run/dev';
+import {installGlobals} from '@remix-run/node';
 import {flatRoutes} from 'remix-flat-routes';
+import {visualizer} from 'rollup-plugin-visualizer';
 import {defineConfig} from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
+installGlobals();
+
+const isVitest = Boolean(process.env.VITEST);
+const isStorybook = Boolean(process.argv[1]?.includes('storybook'));
+
 export default defineConfig({
   plugins: [
-    remix({
-      ignoredRouteFiles: ['**/*'],
-      // eslint-disable-next-line @typescript-eslint/require-await
-      routes: async (defineRoutes) => {
-        return flatRoutes('routes', defineRoutes);
-      },
-      serverModuleFormat: 'esm',
-    }),
+    !isVitest &&
+      !isStorybook &&
+      remix({
+        ignoredRouteFiles: ['**/*'],
+        // eslint-disable-next-line @typescript-eslint/require-await
+        routes: async (defineRoutes) => {
+          return flatRoutes('routes', defineRoutes);
+        },
+      }),
     tsconfigPaths(),
+    visualizer({emitFile: true}),
   ],
   test: {
-    // allows you to use stuff like describe, it, vi without importing
+    environment: 'node',
     globals: true,
-    // disables multi-threading and runs test serially, you can change this
-    threads: false,
-    // Path to your setup script that we will go into detail below
-    // setupFiles: ["./tests/setup.integration.ts"],
-    // Up to you, I usually put my integration tests inside of integration
-    // folders
-    // include: ["./app/**/integration/*.test.ts"]
+    // todo: add setupFiles
   },
 });

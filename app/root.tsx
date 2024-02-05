@@ -5,7 +5,6 @@ import './styles/nprogress.css';
 import type {LoaderFunctionArgs} from '@remix-run/node';
 import {
   Links,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
@@ -63,7 +62,6 @@ export function App() {
         <Toaster richColors position="top-right" closeButton={true} />
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   );

@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {authenticateUser} from '~/core/lib/helpers.server';
 import {
   BadRequest,
@@ -17,7 +19,7 @@ export const action = withAction(
 
     const userId = yield* _(authenticateUser(request));
     const {email, verifyEmailTokenId} = yield* _(
-      regenerateVerifyEmailToken().execute({
+      regenerateVerifyEmailToken({db, pool}).execute({
         userId,
       })
     );

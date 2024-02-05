@@ -1,7 +1,6 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server.ts';
 import {
   DatabaseError,
   InternalServerError,
@@ -11,6 +10,7 @@ import {
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 import {invitationAuthorizationService} from '~/core/services/invitation-authorization-service.server.ts';
 
+import type {DB, PgPool} from '../db/types';
 import {emailSchema} from '../domain/email.server';
 import {MembershipInvitation} from '../domain/membership-invitation.server';
 import {membershipRoleSchema} from '../domain/membership-role.server';
@@ -25,7 +25,7 @@ const validationSchema = Schema.struct({
 
 export type CreateInvitationProps = Schema.Schema.To<typeof validationSchema>;
 
-export function createInvitation() {
+export function createInvitation({pool, db}: {pool: PgPool; db: DB}) {
   function execute({
     props: {email, role},
     userId,
@@ -40,7 +40,9 @@ export function createInvitation() {
         Effect.log(`(create-invitation): Creating invitation for ${email}`)
       );
 
-      yield* _(invitationAuthorizationService.canCreate({userId, orgId}));
+      yield* _(
+        invitationAuthorizationService({pool, db}).canCreate({userId, orgId})
+      );
 
       const invitationId = yield* _(generateUUID());
 

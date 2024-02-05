@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {PasswordResetTokenNotFoundError} from '~/core/lib/errors.server';
 import {BadRequest, Ok, ServerError} from '~/core/lib/responses.server';
 import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
@@ -16,7 +18,7 @@ export const loader = withLoader(
       return yield* _(Effect.fail(new PasswordResetTokenNotFoundError()));
     }
 
-    const {validate, execute} = verifyPasswordReset();
+    const {validate, execute} = verifyPasswordReset({db, pool});
     const props = yield* _(validate({token}));
     yield* _(execute(props));
 

@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {authenticateUser, identifyOrgByParams} from '~/core/lib/helpers.server';
 import {
   BadRequest,
@@ -17,7 +19,9 @@ export const loader = withLoader(
     const userId = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
 
-    const invitations = yield* _(getOrgInvitations().execute({orgId, userId}));
+    const invitations = yield* _(
+      getOrgInvitations({db, pool}).execute({orgId, userId})
+    );
 
     return new Ok({data: {invitations}});
   }).pipe(

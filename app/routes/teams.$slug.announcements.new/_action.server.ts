@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {
   authenticateUser,
   identifyOrgByParams,
@@ -20,7 +22,7 @@ export const action = withAction(
     const userId = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
 
-    const {validate, execute} = createAnnouncement();
+    const {validate, execute} = createAnnouncement({db, pool});
     const data = yield* _(parseFormData(request));
     const props = yield* _(validate(data));
     yield* _(execute({props, orgId, userId}));
@@ -35,6 +37,12 @@ export const action = withAction(
           Effect.flatMap(({request}) =>
             Effect.fail(new Redirect({to: '/login', init: request}))
           )
+        ),
+      ForbiddenActionError: () =>
+        Effect.fail(
+          new BadRequest({
+            errors: ["You don't have permission to create new announcements"],
+          })
         ),
       OrgSlugParseError: () =>
         Effect.fail(new BadRequest({errors: ["We couldn't find this team"]})),

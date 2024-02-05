@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {parseAnnouncementId} from '~/core/domain/announcement.server';
 import {authenticateUser, identifyOrgByParams} from '~/core/lib/helpers.server';
 import {
@@ -22,7 +24,7 @@ export const loader = withLoader(
     const userId = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
     const announcement = yield* _(
-      getAnnouncement().execute({announcementId, orgId, userId})
+      getAnnouncement({db, pool}).execute({announcementId, orgId, userId})
     );
 
     return new Ok({data: {announcement}});

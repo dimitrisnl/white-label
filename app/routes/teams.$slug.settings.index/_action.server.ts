@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {
   authenticateUser,
   identifyOrgByParams,
@@ -23,7 +25,7 @@ export const action = withAction(
     const orgId = yield* _(identifyOrgByParams(params));
     const data = yield* _(parseFormData(request));
 
-    const {validate, execute} = editOrg();
+    const {validate, execute} = editOrg({db, pool});
     const props = yield* _(validate(data));
 
     yield* _(execute({props, orgId, userId}));

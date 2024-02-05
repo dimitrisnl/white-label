@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import type {Org} from '~/core/domain/org.server';
 import type {User} from '~/core/domain/user.server';
 import {
@@ -29,7 +31,7 @@ function handleInvitationCreation({
   data: Record<string, unknown>;
 }) {
   return Effect.gen(function* (_) {
-    const {validate, execute} = createInvitation();
+    const {validate, execute} = createInvitation({db, pool});
     const props = yield* _(validate(data));
 
     const invitation = yield* _(execute({props, orgId, userId}));
@@ -54,7 +56,7 @@ function handleInvitationDeletion({
   data: Record<string, unknown>;
 }) {
   return Effect.gen(function* (_) {
-    const {validate, execute} = deleteInvitation();
+    const {validate, execute} = deleteInvitation({db, pool});
     const props = yield* _(validate(data));
 
     yield* _(execute({props, orgId, userId}));

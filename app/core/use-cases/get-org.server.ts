@@ -1,6 +1,8 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server';
+import type {DB, PgPool} from '~/core/db/types';
+import {Org} from '~/core/domain/org.server';
+import type {User} from '~/core/domain/user.server';
 import {
   DatabaseError,
   InternalServerError,
@@ -8,16 +10,13 @@ import {
 } from '~/core/lib/errors.server';
 import {orgAuthorizationService} from '~/core/services/org-authorization-service.server';
 
-import {Org} from '../domain/org.server';
-import type {User} from '../domain/user.server';
-
-export function getOrg() {
+export function getOrg({pool, db}: {pool: PgPool; db: DB}) {
   function execute({orgId, userId}: {orgId: Org['id']; userId: User['id']}) {
     return Effect.gen(function* (_) {
       yield* _(
         Effect.log(`(get-org): Getting org ${orgId} for user ${userId}`)
       );
-      yield* _(orgAuthorizationService.canView({userId, orgId}));
+      yield* _(orgAuthorizationService({db, pool}).canView({userId, orgId}));
 
       const orgRecord = yield* _(
         Effect.tryPromise({

@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {VerifyEmailTokenNotFoundError} from '~/core/lib/errors.server';
 import {
   BadRequest,
@@ -12,8 +14,6 @@ import {verifyEmailToken} from '~/core/use-cases/verify-email-token.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
-    return new Ok({data: null});
-
     const {request} = yield* _(LoaderArgs);
 
     const url = new URL(request.url);
@@ -23,7 +23,7 @@ export const loader = withLoader(
       return yield* _(Effect.fail(new VerifyEmailTokenNotFoundError()));
     }
 
-    const {validate, execute} = verifyEmailToken();
+    const {validate, execute} = verifyEmailToken({pool, db});
     const props = yield* _(validate({token}));
 
     yield* _(execute(props));

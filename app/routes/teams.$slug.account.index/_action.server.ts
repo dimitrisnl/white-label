@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {authenticateUser, parseFormData} from '~/core/lib/helpers.server';
 import {
   BadRequest,
@@ -15,7 +17,7 @@ export const action = withAction(
     const {request} = yield* _(ActionArgs);
     const userId = yield* _(authenticateUser(request));
 
-    const {validate, execute} = editUser();
+    const {validate, execute} = editUser({db, pool});
     const data = yield* _(parseFormData(request));
     const props = yield* _(validate(data));
 

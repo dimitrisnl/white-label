@@ -1,102 +1,88 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server.ts';
+import type {DB, PgPool} from '~/core/db/types';
+import type {MembershipInvitation} from '~/core/domain/membership-invitation.server';
+import {ADMIN, OWNER} from '~/core/domain/membership-role.server';
 import type {Org} from '~/core/domain/org.server.ts';
 import type {User} from '~/core/domain/user.server.ts';
 import {DatabaseError, ForbiddenActionError} from '~/core/lib/errors.server';
 
-import type {MembershipInvitation} from '../domain/membership-invitation.server';
-import {ADMIN, OWNER} from '../domain/membership-role.server';
-
-function getMembershipRecord({
-  userId,
-  orgId,
+export const invitationAuthorizationService = ({
+  pool,
+  db,
 }: {
-  userId: User['id'];
-  orgId: Org['id'];
-}) {
-  return Effect.tryPromise({
-    try: () =>
-      db.selectOne('memberships', {org_id: orgId, user_id: userId}).run(pool),
-    catch: () => new DatabaseError(),
-  });
-}
-
-export const invitationAuthorizationService = {
-  canViewAll: ({userId, orgId}: {userId: User['id']; orgId: Org['id']}) =>
-    Effect.gen(function* (_) {
-      const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
-
-      return membershipRecord
-        ? yield* _(Effect.succeed(null))
-        : yield* _(
-            Effect.fail(
-              new ForbiddenActionError({
-                userId,
-                action: 'view',
-                resource: 'invitation',
-                resourceId: 'all',
-                resourceBelongsToOrgId: orgId,
-                reason: 'User is not a member of the organization',
-              })
-            )
-          );
-    }),
-
-  canView: ({
+  pool: PgPool;
+  db: DB;
+}) => {
+  function getMembershipRecord({
     userId,
     orgId,
-    invitationId,
   }: {
     userId: User['id'];
     orgId: Org['id'];
-    invitationId: MembershipInvitation['id'];
-  }) =>
-    Effect.gen(function* (_) {
-      const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
+  }) {
+    return Effect.tryPromise({
+      try: () =>
+        db.selectOne('memberships', {org_id: orgId, user_id: userId}).run(pool),
+      catch: () => new DatabaseError(),
+    });
+  }
 
-      return membershipRecord
-        ? yield* _(Effect.succeed(null))
-        : yield* _(
-            Effect.fail(
-              new ForbiddenActionError({
-                userId,
-                action: 'view',
-                resource: 'invitation',
-                resourceId: invitationId,
-                resourceBelongsToOrgId: orgId,
-                reason: 'User is not a member of the organization',
-              })
-            )
-          );
-    }),
+  return {
+    canViewAll: ({userId, orgId}: {userId: User['id']; orgId: Org['id']}) =>
+      Effect.gen(function* (_) {
+        const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
 
-  canCreate: ({userId, orgId}: {userId: User['id']; orgId: Org['id']}) =>
-    Effect.gen(function* (_) {
-      const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
+        return membershipRecord
+          ? yield* _(Effect.succeed(null))
+          : yield* _(
+              Effect.fail(
+                new ForbiddenActionError({
+                  userId,
+                  action: 'view',
+                  resource: 'invitation',
+                  resourceId: 'all',
+                  resourceBelongsToOrgId: orgId,
+                  reason: 'User is not a member of the organization',
+                })
+              )
+            );
+      }),
 
-      if (!membershipRecord) {
-        return yield* _(
-          Effect.fail(
-            new ForbiddenActionError({
-              userId,
-              action: 'create',
-              resource: 'invitation',
-              resourceId: 'N/A',
-              resourceBelongsToOrgId: orgId,
-              reason: 'User is not a member of the organization',
-            })
-          )
-        );
-      }
+    canView: ({
+      userId,
+      orgId,
+      invitationId,
+    }: {
+      userId: User['id'];
+      orgId: Org['id'];
+      invitationId: MembershipInvitation['id'];
+    }) =>
+      Effect.gen(function* (_) {
+        const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
 
-      const isOwner = membershipRecord.role === OWNER;
-      const isAdmin = membershipRecord.role === ADMIN;
-      const hasPermission = isOwner || isAdmin;
+        return membershipRecord
+          ? yield* _(Effect.succeed(null))
+          : yield* _(
+              Effect.fail(
+                new ForbiddenActionError({
+                  userId,
+                  action: 'view',
+                  resource: 'invitation',
+                  resourceId: invitationId,
+                  resourceBelongsToOrgId: orgId,
+                  reason: 'User is not a member of the organization',
+                })
+              )
+            );
+      }),
 
-      return hasPermission
-        ? yield* _(Effect.succeed(null))
-        : yield* _(
+    canCreate: ({userId, orgId}: {userId: User['id']; orgId: Org['id']}) =>
+      Effect.gen(function* (_) {
+        const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
+
+        if (!membershipRecord) {
+          return yield* _(
             Effect.fail(
               new ForbiddenActionError({
                 userId,
@@ -104,46 +90,46 @@ export const invitationAuthorizationService = {
                 resource: 'invitation',
                 resourceId: 'N/A',
                 resourceBelongsToOrgId: orgId,
-                reason: 'User does not have permission to create invitations',
+                reason: 'User is not a member of the organization',
               })
             )
           );
-    }),
+        }
 
-  canUpdate: ({
-    userId,
-    orgId,
-    invitationId,
-  }: {
-    userId: User['id'];
-    orgId: Org['id'];
-    invitationId: MembershipInvitation['id'];
-  }) =>
-    Effect.gen(function* (_) {
-      const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
+        const isOwner = membershipRecord.role === OWNER;
+        const isAdmin = membershipRecord.role === ADMIN;
+        const hasPermission = isOwner || isAdmin;
 
-      if (!membershipRecord) {
-        return yield* _(
-          Effect.fail(
-            new ForbiddenActionError({
-              userId,
-              action: 'update',
-              resource: 'invitation',
-              resourceId: invitationId,
-              resourceBelongsToOrgId: orgId,
-              reason: 'User is not a member of the organization',
-            })
-          )
-        );
-      }
+        return hasPermission
+          ? yield* _(Effect.succeed(null))
+          : yield* _(
+              Effect.fail(
+                new ForbiddenActionError({
+                  userId,
+                  action: 'create',
+                  resource: 'invitation',
+                  resourceId: 'N/A',
+                  resourceBelongsToOrgId: orgId,
+                  reason: 'User does not have permission to create invitations',
+                })
+              )
+            );
+      }),
 
-      const isOwner = membershipRecord.role === OWNER;
-      const isAdmin = membershipRecord.role === ADMIN;
-      const hasPermission = isOwner || isAdmin;
+    canUpdate: ({
+      userId,
+      orgId,
+      invitationId,
+    }: {
+      userId: User['id'];
+      orgId: Org['id'];
+      invitationId: MembershipInvitation['id'];
+    }) =>
+      Effect.gen(function* (_) {
+        const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
 
-      return hasPermission
-        ? yield* _(Effect.succeed(null))
-        : yield* _(
+        if (!membershipRecord) {
+          return yield* _(
             Effect.fail(
               new ForbiddenActionError({
                 userId,
@@ -151,44 +137,46 @@ export const invitationAuthorizationService = {
                 resource: 'invitation',
                 resourceId: invitationId,
                 resourceBelongsToOrgId: orgId,
-                reason: 'User does not have permission to update invitations',
+                reason: 'User is not a member of the organization',
               })
             )
           );
-    }),
+        }
 
-  canDelete: ({
-    userId,
-    orgId,
-    invitationId,
-  }: {
-    userId: User['id'];
-    orgId: Org['id'];
-    invitationId: MembershipInvitation['id'];
-  }) =>
-    Effect.gen(function* (_) {
-      const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
+        const isOwner = membershipRecord.role === OWNER;
+        const isAdmin = membershipRecord.role === ADMIN;
+        const hasPermission = isOwner || isAdmin;
 
-      if (!membershipRecord) {
-        return yield* _(
-          Effect.fail(
-            new ForbiddenActionError({
-              userId,
-              action: 'delete',
-              resource: 'invitation',
-              resourceId: invitationId,
-              resourceBelongsToOrgId: orgId,
-              reason: 'User is not a member of the organization',
-            })
-          )
-        );
-      }
+        return hasPermission
+          ? yield* _(Effect.succeed(null))
+          : yield* _(
+              Effect.fail(
+                new ForbiddenActionError({
+                  userId,
+                  action: 'update',
+                  resource: 'invitation',
+                  resourceId: invitationId,
+                  resourceBelongsToOrgId: orgId,
+                  reason: 'User does not have permission to update invitations',
+                })
+              )
+            );
+      }),
 
-      const hasPermission = membershipRecord.role === OWNER;
+    canDelete: ({
+      userId,
+      orgId,
+      invitationId,
+    }: {
+      userId: User['id'];
+      orgId: Org['id'];
+      invitationId: MembershipInvitation['id'];
+    }) =>
+      Effect.gen(function* (_) {
+        const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
 
-      return hasPermission
-        ? yield* _(Effect.succeed(null))
-        : yield* _(
+        if (!membershipRecord) {
+          return yield* _(
             Effect.fail(
               new ForbiddenActionError({
                 userId,
@@ -196,9 +184,28 @@ export const invitationAuthorizationService = {
                 resource: 'invitation',
                 resourceId: invitationId,
                 resourceBelongsToOrgId: orgId,
-                reason: 'User does not have permission to delete invitations',
+                reason: 'User is not a member of the organization',
               })
             )
           );
-    }),
+        }
+
+        const hasPermission = membershipRecord.role === OWNER;
+
+        return hasPermission
+          ? yield* _(Effect.succeed(null))
+          : yield* _(
+              Effect.fail(
+                new ForbiddenActionError({
+                  userId,
+                  action: 'delete',
+                  resource: 'invitation',
+                  resourceId: invitationId,
+                  resourceBelongsToOrgId: orgId,
+                  reason: 'User does not have permission to delete invitations',
+                })
+              )
+            );
+      }),
+  };
 };

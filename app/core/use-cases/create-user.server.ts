@@ -2,7 +2,6 @@ import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 import {isDatabaseError} from 'zapatos/db';
 
-import {db, pool} from '~/core/db/db.server.ts';
 import {
   AccountAlreadyExistsError,
   DatabaseError,
@@ -10,6 +9,7 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
+import type {DB, PgPool} from '../db/types';
 import {emailSchema} from '../domain/email.server';
 import {hashPassword, passwordSchema} from '../domain/password.server';
 import {User, userNameSchema} from '../domain/user.server';
@@ -23,7 +23,7 @@ const validationSchema = Schema.struct({
 
 export type CreateUserProps = Schema.Schema.To<typeof validationSchema>;
 
-export function createUser() {
+export function createUser({pool, db}: {pool: PgPool; db: DB}) {
   function execute({email, name, password}: CreateUserProps) {
     return Effect.gen(function* (_) {
       yield* _(Effect.log(`(create-user): Creating user ${email}`));

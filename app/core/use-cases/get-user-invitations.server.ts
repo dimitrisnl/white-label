@@ -1,16 +1,15 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server';
+import type {DB, PgPool} from '~/core/db/types';
+import {MembershipInvitation} from '~/core/domain/membership-invitation.server';
+import type {User} from '~/core/domain/user.server';
 import {
   DatabaseError,
   InternalServerError,
   UserNotFoundError,
 } from '~/core/lib/errors.server';
 
-import {MembershipInvitation} from '../domain/membership-invitation.server';
-import type {User} from '../domain/user.server';
-
-export function getUserInvitations() {
+export function getUserInvitations({pool, db}: {pool: PgPool; db: DB}) {
   function execute({userId}: {userId: User['id']}) {
     return Effect.gen(function* (_) {
       yield* _(

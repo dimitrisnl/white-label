@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {parseFormData} from '~/core/lib/helpers.server';
 import {BadRequest, ServerError} from '~/core/lib/responses.server';
 import {createUserSession} from '~/core/lib/session.server';
@@ -11,7 +13,7 @@ export const action = withAction(
   Effect.gen(function* (_) {
     const {request} = yield* _(ActionArgs);
 
-    const {validate, execute} = createUser();
+    const {validate, execute} = createUser({db, pool});
     const data = yield* _(parseFormData(request));
     const props = yield* _(validate(data));
     const {user, verifyEmailTokenId} = yield* _(execute(props));

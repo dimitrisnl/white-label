@@ -34,21 +34,23 @@ describe('domain/membership', () => {
         Exit.match(result, {
           onFailure: () => fail(),
           onSuccess: (value) => {
-            expect(value).toStrictEqual({
-              org: {
-                name: 'Wolfwave',
-                id: orgId,
-                slug: 'wolfwave',
-              },
-              user: {
-                id: userId,
-                name: 'Dimitrios',
-                email: 'dimitrios@example.com',
-              },
-              role: 'OWNER',
-              createdAt: new Date('2012-06-01T12:34:00Z'),
-              updatedAt: new Date('2012-06-01T12:34:00Z'),
+            expect(value.org).toStrictEqual({
+              name: 'Wolfwave',
+              id: orgId,
+              slug: 'wolfwave',
             });
+            expect(value.user).toStrictEqual({
+              id: userId,
+              name: 'Dimitrios',
+              email: 'dimitrios@example.com',
+            });
+            expect(value.role).toBe('OWNER');
+            expect(value.createdAt).toStrictEqual(
+              new Date('2012-06-01T12:34:00Z')
+            );
+            expect(value.updatedAt).toStrictEqual(
+              new Date('2012-06-01T12:34:00Z')
+            );
           },
         });
       });
@@ -125,20 +127,22 @@ describe('domain/membership', () => {
       Exit.match(result, {
         onFailure: () => fail(),
         onSuccess: (value) => {
-          expect(value).toStrictEqual({
-            role: 'OWNER',
-            createdAt: new Date('2012-06-01T12:34:00Z'),
-            updatedAt: new Date('2012-06-01T12:34:00Z'),
-            org: {
-              id: orgId,
-              name: 'Wolfwave',
-              slug: 'wolfwave',
-            },
-            user: {
-              id: userId,
-              name: 'Dimitrios',
-              email: 'dimitrios@example.com',
-            },
+          expect(value.role).toBe('OWNER');
+          expect(value.createdAt).toStrictEqual(
+            new Date('2012-06-01T12:34:00Z')
+          );
+          expect(value.updatedAt).toStrictEqual(
+            new Date('2012-06-01T12:34:00Z')
+          );
+          expect(value.org).toStrictEqual({
+            id: orgId,
+            name: 'Wolfwave',
+            slug: 'wolfwave',
+          });
+          expect(value.user).toStrictEqual({
+            id: userId,
+            name: 'Dimitrios',
+            email: 'dimitrios@example.com',
           });
         },
       });
@@ -146,24 +150,36 @@ describe('domain/membership', () => {
 
     it('fails parsing when missing `org`', () => {
       const result = Effect.runSyncExit(
-        // @ts-expect-error
-        Membership.fromRecord(membershipRecord, {}, userRecord)
+        Membership.fromRecord({
+          record: membershipRecord,
+          // @ts-expect-error
+          org: {},
+          user: userRecord,
+        })
       );
       expect(result._tag).toBe('Failure');
     });
 
     it('fails parsing when missing `user`', () => {
       const result = Effect.runSyncExit(
-        // @ts-expect-error
-        Membership.fromRecord(membershipRecord, orgRecord, {})
+        Membership.fromRecord({
+          record: membershipRecord,
+          org: orgRecord,
+          // @ts-expect-error
+          user: {},
+        })
       );
       expect(result._tag).toBe('Failure');
     });
 
     it('fails parsing when missing `membership`', () => {
       const result = Effect.runSyncExit(
-        // @ts-expect-error
-        Membership.fromRecord({membershipRecord}, orgRecord, userRecord)
+        Membership.fromRecord({
+          // @ts-expect-error
+          record: {},
+          org: orgRecord,
+          user: userRecord,
+        })
       );
       expect(result._tag).toBe('Failure');
     });

@@ -1,18 +1,18 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server.ts';
-import {DatabaseError, InternalServerError} from '~/core/lib/errors.server.ts';
-import {schemaResolver} from '~/core/lib/validation-helper.server';
-
+import type {DB, PgPool} from '~/core/db/types';
 import {
   announcementContentSchema,
   announcementTitleSchema,
-} from '../domain/announcement.server';
-import {announcementStatusSchema} from '../domain/announcement-status.server';
-import type {Org} from '../domain/org.server';
-import type {User} from '../domain/user.server';
-import {generateUUID} from '../domain/uuid.server';
+} from '~/core/domain/announcement.server';
+import {announcementStatusSchema} from '~/core/domain/announcement-status.server';
+import type {Org} from '~/core/domain/org.server';
+import type {User} from '~/core/domain/user.server';
+import {generateUUID} from '~/core/domain/uuid.server';
+import {DatabaseError, InternalServerError} from '~/core/lib/errors.server.ts';
+import {schemaResolver} from '~/core/lib/validation-helper.server';
+import {announcementAuthorizationService} from '~/core/services/announcement-authorization-service.server';
 
 const validationSchema = Schema.struct({
   title: announcementTitleSchema,
@@ -22,7 +22,7 @@ const validationSchema = Schema.struct({
 
 export type CreateAnnouncementProps = Schema.Schema.To<typeof validationSchema>;
 
-export function createAnnouncement() {
+export function createAnnouncement({pool, db}: {pool: PgPool; db: DB}) {
   function execute({
     props: {content, title, status},
     orgId,
@@ -37,6 +37,13 @@ export function createAnnouncement() {
         Effect.log(
           `(create-announcement): Creating announcement for org:${orgId} by user:${userId}`
         )
+      );
+
+      yield* _(
+        announcementAuthorizationService({pool, db}).canCreate({
+          userId,
+          orgId,
+        })
       );
 
       const announcementId = yield* _(generateUUID());

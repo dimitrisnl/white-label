@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {authenticateUser} from '~/core/lib/helpers.server';
 import {Ok, Redirect, ServerError} from '~/core/lib/responses.server';
 import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
@@ -9,7 +11,7 @@ export const loader = withLoader(
   Effect.gen(function* (_) {
     const {request} = yield* _(LoaderArgs);
     const userId = yield* _(authenticateUser(request));
-    const {user} = yield* _(getUser().execute({userId}));
+    const {user} = yield* _(getUser({db, pool}).execute({userId}));
 
     return new Ok({data: {user}});
   }).pipe(

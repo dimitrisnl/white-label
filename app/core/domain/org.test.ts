@@ -22,13 +22,15 @@ describe('domain/org', () => {
         Exit.match(result, {
           onFailure: () => fail(),
           onSuccess: (value) => {
-            expect(value).toStrictEqual({
-              id: uuid,
-              name: 'wolfwave',
-              slug: 'wolfwave-123',
-              createdAt: new Date('2012-06-01T12:34:00Z'),
-              updatedAt: new Date('2012-06-01T12:34:00Z'),
-            });
+            expect(value.id).toBe(uuid);
+            expect(value.name).toBe('wolfwave');
+            expect(value.slug).toBe('wolfwave-123');
+            expect(value.createdAt).toStrictEqual(
+              new Date('2012-06-01T12:34:00Z')
+            );
+            expect(value.updatedAt).toStrictEqual(
+              new Date('2012-06-01T12:34:00Z')
+            );
           },
         });
       });
@@ -112,13 +114,15 @@ describe('domain/org', () => {
       Exit.match(result, {
         onFailure: () => fail(),
         onSuccess: (value) => {
-          expect(value).toStrictEqual({
-            id: uuid,
-            name: 'wolfwave',
-            slug: 'wolfwave-123',
-            createdAt: new Date('2012-06-01T12:34:00Z'),
-            updatedAt: new Date('2012-06-01T12:34:00Z'),
-          });
+          expect(value.id).toBe(uuid);
+          expect(value.name).toBe('wolfwave');
+          expect(value.slug).toBe('wolfwave-123');
+          expect(value.createdAt).toStrictEqual(
+            new Date('2012-06-01T12:34:00Z')
+          );
+          expect(value.updatedAt).toStrictEqual(
+            new Date('2012-06-01T12:34:00Z')
+          );
         },
       });
     });

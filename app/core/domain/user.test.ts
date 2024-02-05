@@ -23,14 +23,16 @@ describe('domain/user', () => {
         Exit.match(result, {
           onFailure: () => fail(),
           onSuccess: (value) => {
-            expect(value).toStrictEqual({
-              id: uuid,
-              name: 'Dimitrios',
-              email: 'dimitrios@example.com',
-              emailVerified: true,
-              createdAt: new Date('2024-01-21 16:20:01.150513+00'),
-              updatedAt: new Date('2024-01-21 16:20:01.150513+00'),
-            });
+            expect(value.id).toBe(uuid);
+            expect(value.name).toBe('Dimitrios');
+            expect(value.email).toBe('dimitrios@example.com');
+            expect(value.emailVerified).toBe(true);
+            expect(value.createdAt).toStrictEqual(
+              new Date('2024-01-21 16:20:01.150513+00')
+            );
+            expect(value.updatedAt).toStrictEqual(
+              new Date('2024-01-21 16:20:01.150513+00')
+            );
           },
         });
       });
@@ -136,14 +138,16 @@ describe('domain/user', () => {
       Exit.match(result, {
         onFailure: () => fail(),
         onSuccess: (value) => {
-          expect(value).toStrictEqual({
-            id: uuid,
-            name: 'Dimitrios',
-            email: 'dimitrios@example.com',
-            emailVerified: true,
-            createdAt: new Date('2024-01-21 16:20:01.150513+00'),
-            updatedAt: new Date('2024-01-21 16:20:01.150513+00'),
-          });
+          expect(value.id).toBe(uuid);
+          expect(value.name).toBe('Dimitrios');
+          expect(value.email).toBe('dimitrios@example.com');
+          expect(value.emailVerified).toBe(true);
+          expect(value.createdAt).toStrictEqual(
+            new Date('2012-06-01T12:34:00.000Z')
+          );
+          expect(value.updatedAt).toStrictEqual(
+            new Date('2012-06-01T12:34:00.000Z')
+          );
         },
       });
     });

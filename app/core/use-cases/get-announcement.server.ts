@@ -1,18 +1,17 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server';
+import type {DB, PgPool} from '~/core/db/types';
+import {Announcement} from '~/core/domain/announcement.server';
+import type {Org} from '~/core/domain/org.server';
+import type {User} from '~/core/domain/user.server';
 import {
   AnnouncementNotFoundError,
   DatabaseError,
   InternalServerError,
 } from '~/core/lib/errors.server';
+import {announcementAuthorizationService} from '~/core/services/announcement-authorization-service.server';
 
-import {Announcement} from '../domain/announcement.server';
-import type {Org} from '../domain/org.server';
-import type {User} from '../domain/user.server';
-import {announcementAuthorizationService} from '../services/announcement-authorization-service.server';
-
-export function getAnnouncement() {
+export function getAnnouncement({pool, db}: {pool: PgPool; db: DB}) {
   function execute({
     announcementId,
     orgId,
@@ -30,7 +29,7 @@ export function getAnnouncement() {
       );
 
       yield* _(
-        announcementAuthorizationService.canView({
+        announcementAuthorizationService({db, pool}).canView({
           userId,
           orgId,
           announcementId,

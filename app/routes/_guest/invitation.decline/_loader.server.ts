@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {InvitationNotFoundError} from '~/core/lib/errors.server';
 import {BadRequest, Ok, ServerError} from '~/core/lib/responses.server';
 import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
@@ -16,12 +18,12 @@ export const loader = withLoader(
       return yield* _(Effect.fail(new InvitationNotFoundError()));
     }
 
-    const {validate, execute} = declineInvitation();
+    const {validate, execute} = declineInvitation({db, pool});
     const props = yield* _(validate({invitationId}));
 
     yield* _(execute(props));
 
-    return new Ok({data: {}});
+    return new Ok({data: null});
   }).pipe(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError()),

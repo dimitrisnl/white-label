@@ -1,16 +1,15 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server.ts';
+import type {DB, PgPool} from '~/core/db/types';
+import {emailSchema} from '~/core/domain/email.server';
+import {generateUUID} from '~/core/domain/uuid.server';
 import {
   DatabaseError,
   InternalServerError,
   UserNotFoundError,
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
-
-import {emailSchema} from '../domain/email.server';
-import {generateUUID} from '../domain/uuid.server';
 
 const validationSchema = Schema.struct({
   email: emailSchema,
@@ -20,7 +19,7 @@ export type RequestPasswordResetProps = Schema.Schema.To<
   typeof validationSchema
 >;
 
-export function requestPasswordReset() {
+export function requestPasswordReset({pool, db}: {pool: PgPool; db: DB}) {
   function execute({email}: RequestPasswordResetProps) {
     return Effect.gen(function* (_) {
       yield* _(

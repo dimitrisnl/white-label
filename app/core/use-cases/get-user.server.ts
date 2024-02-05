@@ -1,6 +1,6 @@
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server';
+import type {DB, PgPool} from '~/core/db/types';
 import {User} from '~/core/domain/user.server.ts';
 import {
   DatabaseError,
@@ -8,7 +8,7 @@ import {
   UserNotFoundError,
 } from '~/core/lib/errors.server';
 
-export function getUser() {
+export function getUser({pool, db}: {pool: PgPool; db: DB}) {
   function execute({userId}: {userId: User['id']}) {
     return Effect.gen(function* (_) {
       yield* _(Effect.log(`(get-user): Getting user ${userId}`));

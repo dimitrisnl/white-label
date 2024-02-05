@@ -1,23 +1,22 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server.ts';
+import type {DB, PgPool} from '~/core/db/types';
+import {
+  Announcement,
+  announcementContentSchema,
+  announcementTitleSchema,
+} from '~/core/domain/announcement.server';
+import {announcementStatusSchema} from '~/core/domain/announcement-status.server';
+import type {Org} from '~/core/domain/org.server';
+import type {User} from '~/core/domain/user.server';
 import {
   AnnouncementNotFoundError,
   DatabaseError,
   InternalServerError,
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
-
-import {
-  Announcement,
-  announcementContentSchema,
-  announcementTitleSchema,
-} from '../domain/announcement.server';
-import {announcementStatusSchema} from '../domain/announcement-status.server';
-import type {Org} from '../domain/org.server';
-import type {User} from '../domain/user.server';
-import {announcementAuthorizationService} from '../services/announcement-authorization-service.server';
+import {announcementAuthorizationService} from '~/core/services/announcement-authorization-service.server';
 
 const validationSchema = Schema.struct({
   title: announcementTitleSchema,
@@ -27,7 +26,7 @@ const validationSchema = Schema.struct({
 
 export type EditAnnouncementProps = Schema.Schema.To<typeof validationSchema>;
 
-export function editAnnouncement() {
+export function editAnnouncement({pool, db}: {pool: PgPool; db: DB}) {
   function execute({
     props: {title, content, status},
     announcementId,
@@ -47,7 +46,7 @@ export function editAnnouncement() {
       );
 
       yield* _(
-        announcementAuthorizationService.canUpdate({
+        announcementAuthorizationService({pool, db}).canUpdate({
           userId,
           orgId,
           announcementId,

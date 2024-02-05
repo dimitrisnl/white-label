@@ -1,5 +1,4 @@
 import Pg from 'pg';
-import * as db from 'zapatos/db';
 
 import {config} from './config.server';
 
@@ -34,4 +33,4 @@ pool.on('error', (err) => {
   console.error(err);
 });
 
-export {db, pool};
+export {pool};

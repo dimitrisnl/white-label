@@ -74,9 +74,9 @@ dependencies:
   clsx:
     specifier: ^2.1.0
     version: 2.1.0
-  dotenv:
-    specifier: ^16.4.1
-    version: 16.4.1
+  dotenv-flow:
+    specifier: ^4.1.0
+    version: 4.1.0
   effect:
     specifier: 2.2.3
     version: 2.2.3
@@ -246,6 +246,9 @@ devDependencies:
   rimraf:
     specifier: ^5.0.5
     version: 5.0.5
+  rollup-plugin-visualizer:
+    specifier: ^5.12.0
+    version: 5.12.0
   storybook:
     specifier: ^7.6.9
     version: 7.6.10
@@ -6851,6 +6854,13 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
+  /dotenv-flow@4.1.0:
+    resolution: {integrity: sha512-0cwP9jpQBQfyHwvE0cRhraZMkdV45TQedA8AAUZMsFzvmLcQyc1HPv+oX0OOYwLFjIlvgVepQ+WuQHbqDaHJZg==}
+    engines: {node: '>= 12.0.0'}
+    dependencies:
+      dotenv: 16.4.1
+    dev: false
+
   /dotenv@16.4.1:
     resolution: {integrity: sha512-CjA3y+Dr3FyFDOAMnxZEGtnW9KBR2M0JvvUtXNW+dYJL5ROWxP9DUHCwgFqpMk0OXCc0ljhaNTr2w/kutYIcHQ==}
     engines: {node: '>=12'}
@@ -11392,6 +11402,22 @@ packages:
     hasBin: true
     dependencies:
       glob: 10.3.10
+    dev: true
+
+  /rollup-plugin-visualizer@5.12.0:
+    resolution: {integrity: sha512-8/NU9jXcHRs7Nnj07PF2o4gjxmm9lXIrZ8r175bT9dK8qoLlvKTwRMArRCMgpMGlq8CTLugRvEmyMeMXIU2pNQ==}
+    engines: {node: '>=14'}
+    hasBin: true
+    peerDependencies:
+      rollup: 2.x || 3.x || 4.x
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      open: 8.4.2
+      picomatch: 2.3.1
+      source-map: 0.7.4
+      yargs: 17.7.2
     dev: true
 
   /rollup@3.29.4:

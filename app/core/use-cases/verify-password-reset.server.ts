@@ -1,15 +1,14 @@
 import * as Schema from '@effect/schema/Schema';
 import * as Effect from 'effect/Effect';
 
-import {db, pool} from '~/core/db/db.server.ts';
+import type {DB, PgPool} from '~/core/db/types';
+import {uuidSchema} from '~/core/domain/uuid.server';
 import {
   DatabaseError,
   InternalServerError,
   PasswordResetTokenNotFoundError,
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server.ts';
-
-import {uuidSchema} from '../domain/uuid.server';
 
 const validationSchema = Schema.struct({
   token: uuidSchema,
@@ -19,7 +18,7 @@ export type VerifyPasswordResetProps = Schema.Schema.To<
   typeof validationSchema
 >;
 
-export function verifyPasswordReset() {
+export function verifyPasswordReset({pool, db}: {pool: PgPool; db: DB}) {
   function execute({token}: VerifyPasswordResetProps) {
     return Effect.gen(function* (_) {
       yield* _(Effect.log(`(verify-password-reset): Verifying token ${token}`));

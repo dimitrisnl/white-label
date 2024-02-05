@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import {pool} from '~/core/db/pool.server';
+import {db} from '~/core/db/schema.server';
 import {parseAnnouncementId} from '~/core/domain/announcement.server';
 import {
   authenticateUser,
@@ -25,7 +27,7 @@ export const action = withAction(
     const userId = yield* _(authenticateUser(request));
     const orgId = yield* _(identifyOrgByParams(params));
 
-    const {validate, execute} = editAnnouncement();
+    const {validate, execute} = editAnnouncement({db, pool});
     const data = yield* _(parseFormData(request));
     const props = yield* _(validate(data));
     yield* _(
