@@ -1,4 +1,5 @@
 import {useNavigate, useParams} from '@remix-run/react';
+import clsx from 'clsx';
 
 import {
   Select,
@@ -8,6 +9,8 @@ import {
   SelectValue,
 } from '~/components/ui/select';
 import type {Membership} from '~/core/domain/membership.server';
+
+import {buttonVariants} from './ui/button';
 
 export function TeamSelector({memberships}: {memberships: Array<Membership>}) {
   const params = useParams();
@@ -22,7 +25,12 @@ export function TeamSelector({memberships}: {memberships: Array<Membership>}) {
         navigate(`/teams/${slug}`);
       }}
     >
-      <SelectTrigger>
+      <SelectTrigger
+        className={clsx(
+          buttonVariants({variant: 'outline'}),
+          'justify-between'
+        )}
+      >
         <SelectValue placeholder="Select a team" />
       </SelectTrigger>
       <SelectContent>
