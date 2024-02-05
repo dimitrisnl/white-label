@@ -16,14 +16,12 @@ export function VerificationSuccessMessage() {
   return (
     <GenericLayout>
       <Card className="w-[400px] text-center">
-        <CardHeader>
-          <CardTitle>Success</CardTitle>
-          <CardDescription>Everything went well</CardDescription>
+        <CardHeader className="flex flex-col items-center justify-center text-center">
+          <CheckCircleIcon className="mb-4 h-10 w-10 stroke-green-600" />
+          <CardTitle>Your email has been verified</CardTitle>
+          <CardDescription>You can close this tab if you want</CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center gap-4 text-center text-gray-700">
-          <div>Your email has been verified</div>
-          <CheckCircleIcon className="h-12 w-12 stroke-green-600" />
-        </CardContent>
+        <CardContent></CardContent>
         <CardFooter className="flex justify-center">
           <Link to="/login" className={buttonVariants({variant: 'default'})}>
             Back to login

@@ -47,6 +47,12 @@ export class SlugAlreadyExistsError extends Data.TaggedClass(
   readonly orgName: string;
 }> {}
 
+export class UserEmailAlreadyVerifiedError extends Data.TaggedClass(
+  'UserEmailAlreadyVerifiedError'
+)<{
+  readonly userId: string;
+}> {}
+
 // Not found
 export class InvitationNotFoundError extends Data.TaggedClass(
   'InvitationNotFoundError'

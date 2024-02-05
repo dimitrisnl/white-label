@@ -12,8 +12,12 @@ import {verifyEmailToken} from '~/core/use-cases/verify-email-token.server';
 
 export const loader = withLoader(
   Effect.gen(function* (_) {
-    const {params} = yield* _(LoaderArgs);
-    const {token} = params;
+    return new Ok({data: null});
+
+    const {request} = yield* _(LoaderArgs);
+
+    const url = new URL(request.url);
+    const token = url.searchParams.get('token');
 
     if (!token) {
       return yield* _(Effect.fail(new VerifyEmailTokenNotFoundError()));
@@ -21,6 +25,7 @@ export const loader = withLoader(
 
     const {validate, execute} = verifyEmailToken();
     const props = yield* _(validate({token}));
+
     yield* _(execute(props));
 
     return new Ok({data: null});
