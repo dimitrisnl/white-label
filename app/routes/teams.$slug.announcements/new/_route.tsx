@@ -1,7 +1,7 @@
 import {ArrowUturnLeftIcon} from '@heroicons/react/24/solid';
-import {Link, useParams} from '@remix-run/react';
+import {Link, useNavigate, useParams} from '@remix-run/react';
 import React from 'react';
-import {useTypedFetcher, useTypedLoaderData} from 'remix-typedjson';
+import {useTypedFetcher} from 'remix-typedjson';
 import {toast} from 'sonner';
 
 import {PageSkeleton} from '~/components/page-skeleton.tsx';
@@ -17,38 +17,39 @@ import {
 } from '~/components/ui/select.tsx';
 import {Textarea} from '~/components/ui/textarea.tsx';
 
-import type {EditAnnouncementAction} from './_action.server.ts';
-import type {AnnouncementLoaderData} from './_loader.server';
+import type {CreateAnnouncementAction} from './_action.server.ts';
 export {action} from './_action.server.ts';
-export {loader} from './_loader.server.ts';
 
 export default function Page() {
-  const params = useParams();
   const formRef = React.useRef<HTMLFormElement>(null);
   const {Form, state, data} = useTypedFetcher<
-    EditAnnouncementAction | undefined
+    CreateAnnouncementAction | undefined
   >();
 
-  const {
-    data: {announcement},
-  } = useTypedLoaderData<AnnouncementLoaderData>();
+  const params = useParams();
+  const slug = params.slug!;
+
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (data?.ok === true) {
-      toast.success('Announcement edited');
+      toast.success('Announcement created');
+      formRef.current?.reset();
+
+      setTimeout(() => {
+        navigate(`/teams/${slug}/announcements/`);
+      }, 1000);
     } else if (data?.ok === false) {
       const message =
-        data.errors[0] ?? 'There was an error editing the announcement';
+        data.errors[0] ?? 'There was an error creating the announcement';
       toast.error(message);
     }
-  }, [data]);
-
-  const slug = params.slug!;
+  }, [data, navigate, slug]);
 
   return (
     <PageSkeleton
-      header="Edit announcement"
-      description="Edit the announcement"
+      header="New announcement"
+      description="Create a new announcement"
       actionsSlot={
         <Link
           to={`/teams/${slug}/announcements`}
@@ -66,7 +67,7 @@ export default function Page() {
             <Select
               name="status"
               disabled={state === 'submitting'}
-              defaultValue={announcement.status}
+              defaultValue="DRAFT"
             >
               <SelectTrigger>
                 <SelectValue placeholder="DRAFT" />
@@ -86,7 +87,6 @@ export default function Page() {
               required
               minLength={2}
               maxLength={100}
-              defaultValue={announcement.title}
             />
           </div>
           <div className="flex flex-col space-y-2">
@@ -98,14 +98,10 @@ export default function Page() {
               disabled={state === 'submitting'}
               required
               minLength={2}
-              defaultValue={announcement.content}
             />
           </div>
           <div>
-            <Button
-              type="submit"
-              // disabled={state === 'submitting'}
-            >
+            <Button type="submit" disabled={state === 'submitting'}>
               Save changes
             </Button>
           </div>

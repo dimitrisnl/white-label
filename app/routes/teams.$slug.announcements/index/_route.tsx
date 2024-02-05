@@ -7,7 +7,7 @@ import {EmptyState} from '~/components/empty-state.tsx';
 import {PageSkeleton} from '~/components/page-skeleton';
 import {buttonVariants} from '~/components/ui/button.tsx';
 
-import type {AnnouncementsLoaderData} from './_loader.server';
+import type {AnnouncementsLoaderData} from './_loader.server.ts';
 import {AnnouncementsTable} from './announcements-table.tsx';
 
 export {action} from './_action.server.ts';
