@@ -11,3 +11,5 @@ tmp
 # temp
 docker
 .gitpod.yml
+vite.config.ts.timestamp-*
+

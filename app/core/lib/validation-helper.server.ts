@@ -6,7 +6,7 @@ import * as Effect from 'effect/Effect';
 import {ValidationError} from '~/core/lib/errors.server';
 
 export const schemaResolver =
-  <I, A>(validationSchema: Schema.Schema<never, I, A>) =>
+  <I, A>(validationSchema: Schema.Schema<A, I>) =>
   (data: unknown) => {
     return pipe(
       Schema.decodeUnknown(validationSchema)(data, {

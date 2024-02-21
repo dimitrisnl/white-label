@@ -14,13 +14,13 @@ import {
   matchHttpResponseError,
 } from '~/core/lib/responses.server';
 
-export const LoaderArgs = Context.Tag<LoaderFunctionArgs>('LoaderArgs');
+export const LoaderArgs = Context.GenericTag<LoaderFunctionArgs>('LoaderArgs');
 
 // Respond with OK, Redirect
 // Throw all else, and land on a ErrorBoundary
 export const withLoader =
   <T>(
-    self: Effect.Effect<LoaderFunctionArgs, HttpResponseError, HttpResponse<T>>
+    self: Effect.Effect<HttpResponse<T>, HttpResponseError, LoaderFunctionArgs>
   ) =>
   (args: LoaderFunctionArgs) => {
     const runnable = pipe(self, Effect.provideService(LoaderArgs, args));

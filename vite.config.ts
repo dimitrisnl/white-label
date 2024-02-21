@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 
-import {unstable_vitePlugin as remix} from '@remix-run/dev';
+import {vitePlugin as remix} from '@remix-run/dev';
 import {installGlobals} from '@remix-run/node';
 import {flatRoutes} from 'remix-flat-routes';
 import {visualizer} from 'rollup-plugin-visualizer';
@@ -18,10 +18,18 @@ export default defineConfig({
       !isStorybook &&
       remix({
         ignoredRouteFiles: ['**/*'],
-        // eslint-disable-next-line @typescript-eslint/require-await
         routes: async (defineRoutes) => {
           return flatRoutes('routes', defineRoutes);
         },
+        serverBundles: ({ branch }) => {
+        const isGuestRoute = branch.some((route) =>
+          route.id.split("/").includes("_guest")
+        );
+
+        return isGuestRoute
+          ? "guest"
+          : "authenticated";
+      },
       }),
     tsconfigPaths(),
     visualizer({emitFile: true}),

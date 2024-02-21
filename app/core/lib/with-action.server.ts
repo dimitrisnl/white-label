@@ -13,12 +13,12 @@ import {
   matchHttpResponseError,
 } from '~/core/lib/responses.server';
 
-export const ActionArgs = Context.Tag<ActionFunctionArgs>('ActionArgs');
+export const ActionArgs = Context.GenericTag<ActionFunctionArgs>('ActionArgs');
 
 // Don't throw the Error requests, handle them in the normal UI. No ErrorBoundary
 export const withAction =
   <T>(
-    self: Effect.Effect<ActionFunctionArgs, HttpResponseError, HttpResponse<T>>
+    self: Effect.Effect<HttpResponse<T>, HttpResponseError, ActionFunctionArgs>
   ) =>
   (args: ActionFunctionArgs) => {
     const runnable = pipe(

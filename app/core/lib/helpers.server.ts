@@ -1,5 +1,4 @@
-import type {ActionFunctionArgs, LoaderFunctionArgs} from '@remix-run/node';
-import {Context} from 'effect';
+import type {LoaderFunctionArgs} from '@remix-run/node';
 import * as Effect from 'effect/Effect';
 
 import {pool} from '~/core/db/pool.server';
@@ -41,6 +40,3 @@ export function authenticateUser(request: Request) {
     })
   );
 }
-
-export const ActionArgs = Context.Tag<ActionFunctionArgs>('ActionArgs');
-export const LoaderArgs = Context.Tag<LoaderFunctionArgs>('LoaderArgs');

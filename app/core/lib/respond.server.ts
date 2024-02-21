@@ -1,4 +1,4 @@
-import {typedjson} from 'remix-typedjson';
+import {redirect, typedjson} from 'remix-typedjson';
 
 export const respond = {
   serverError: () => {
@@ -14,7 +14,7 @@ export const respond = {
     return typedjson({ok: false as const, errors}, {status: 401});
   },
   redirect: (to: string, init: RequestInit = {}) => {
-    return new Response(null, {status: 302, ...init, headers: {Location: to}});
+    return redirect(to, init);
   },
   ok: (data: unknown) => {
     return typedjson({ok: true as const, data});
