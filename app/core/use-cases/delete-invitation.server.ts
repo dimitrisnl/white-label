@@ -13,11 +13,11 @@ import {
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 import {invitationAuthorizationService} from '~/core/services/invitation-authorization-service.server.ts';
 
-const validationSchema = Schema.struct({
+const validationSchema = Schema.Struct({
   invitationId: uuidSchema,
 });
 
-export type DeleteInvitationProps = Schema.Schema.To<typeof validationSchema>;
+export type DeleteInvitationProps = Schema.Schema.Type<typeof validationSchema>;
 
 export function deleteInvitation({pool, db}: {pool: PgPool; db: DB}) {
   function execute({

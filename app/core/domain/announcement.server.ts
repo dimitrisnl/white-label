@@ -42,21 +42,21 @@ export const announcementIdSchema = uuidSchema.pipe(
   Schema.brand(AnnouncementIdBrand)
 );
 
-export class Announcement extends Schema.Class<Announcement>()({
+export class Announcement extends Schema.Class<Announcement>('Announcement')({
   id: uuidSchema,
   orgId: orgIdSchema,
   title: announcementTitleSchema,
   content: announcementContentSchema,
   status: announcementStatusSchema,
-  createdByUser: Schema.nullable(
-    Schema.struct({name: userNameSchema, id: userIdSchema})
+  createdByUser: Schema.NullOr(
+    Schema.Struct({name: userNameSchema, id: userIdSchema})
   ),
-  publishedByUser: Schema.nullable(
-    Schema.struct({name: userNameSchema, id: userIdSchema})
+  publishedByUser: Schema.NullOr(
+    Schema.Struct({name: userNameSchema, id: userIdSchema})
   ),
   updatedAt: Schema.Date,
   createdAt: Schema.Date,
-  publishedAt: Schema.nullable(Schema.Date),
+  publishedAt: Schema.NullOr(Schema.Date),
 }) {
   static fromUnknown = compose(
     Schema.decodeUnknown(this),

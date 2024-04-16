@@ -36,7 +36,7 @@ export function sendInvitationEmail({
         ),
         Effect.flatMap(() => Effect.log(error)),
         // suppress error
-        Effect.flatMap(() => Effect.unit)
+        Effect.flatMap(() => Effect.void)
       )
     )
   );

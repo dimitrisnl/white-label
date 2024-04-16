@@ -16,11 +16,11 @@ import {Org, orgNameSchema} from '../domain/org.server';
 import type {User} from '../domain/user.server';
 import {generateUUID} from '../domain/uuid.server';
 
-const validationSchema = Schema.struct({
+const validationSchema = Schema.Struct({
   name: orgNameSchema,
 });
 
-export type CreateOrgProps = Schema.Schema.To<typeof validationSchema>;
+export type CreateOrgProps = Schema.Schema.Type<typeof validationSchema>;
 
 export function createOrg({pool, db}: {pool: PgPool; db: DB}) {
   function execute({

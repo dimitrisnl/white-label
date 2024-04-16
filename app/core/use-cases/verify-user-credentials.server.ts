@@ -12,12 +12,12 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
-const validationSchema = Schema.struct({
+const validationSchema = Schema.Struct({
   email: emailSchema,
   password: passwordSchema,
 });
 
-export type VerifyUserCredentialsProps = Schema.Schema.To<
+export type VerifyUserCredentialsProps = Schema.Schema.Type<
   typeof validationSchema
 >;
 

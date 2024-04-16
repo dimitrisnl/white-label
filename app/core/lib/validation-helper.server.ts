@@ -1,4 +1,4 @@
-import {formatError} from '@effect/schema/ArrayFormatter';
+import {formatErrorSync} from '@effect/schema/ArrayFormatter';
 import * as Schema from '@effect/schema/Schema';
 import {pipe} from 'effect';
 import * as Effect from 'effect/Effect';
@@ -13,7 +13,7 @@ export const schemaResolver =
         errors: 'all',
       }),
       Effect.mapError((error) => {
-        const issue = formatError(error);
+        const issue = formatErrorSync(error);
         const message = issue[0]!.message;
         return new ValidationError({errors: [message]});
       })

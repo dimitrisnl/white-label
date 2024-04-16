@@ -12,11 +12,11 @@ import {
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 import {orgAuthorizationService} from '~/core/services/org-authorization-service.server.ts';
 
-const validationSchema = Schema.struct({
+const validationSchema = Schema.Struct({
   name: orgNameSchema,
 });
 
-export type EditOrgProps = Schema.Schema.To<typeof validationSchema>;
+export type EditOrgProps = Schema.Schema.Type<typeof validationSchema>;
 
 export function editOrg({pool, db}: {pool: PgPool; db: DB}) {
   function execute({

@@ -6,13 +6,13 @@ import {compose} from 'effect/Function';
 export const DRAFT = 'DRAFT' as const;
 export const PUBLISHED = 'PUBLISHED' as const;
 
-export const announcementStatusSchema = Schema.literal(DRAFT, PUBLISHED).pipe(
+export const announcementStatusSchema = Schema.Literal(DRAFT, PUBLISHED).pipe(
   Schema.message(
     () => "Announcement status must be one of 'DRAFT' or 'PUBLISHED'"
   )
 );
 
-export type AnnouncementStatus = Schema.Schema.To<
+export type AnnouncementStatus = Schema.Schema.Type<
   typeof announcementStatusSchema
 >;
 

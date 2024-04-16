@@ -1,10 +1,10 @@
 import * as Schema from '@effect/schema/Schema';
 
-const envValidationSchema = Schema.struct({
-  DB_USER: Schema.string.pipe(Schema.minLength(2)),
-  DB_HOST: Schema.string.pipe(Schema.minLength(2)),
-  DB_NAME: Schema.string.pipe(Schema.minLength(2)),
-  DB_PASSWORD: Schema.string.pipe(Schema.minLength(2)),
+const envValidationSchema = Schema.Struct({
+  DB_USER: Schema.String.pipe(Schema.minLength(2)),
+  DB_HOST: Schema.String.pipe(Schema.minLength(2)),
+  DB_NAME: Schema.String.pipe(Schema.minLength(2)),
+  DB_PASSWORD: Schema.String.pipe(Schema.minLength(2)),
   DB_PORT: Schema.NumberFromString,
 });
 

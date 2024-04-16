@@ -4,8 +4,8 @@ import * as Effect from 'effect/Effect';
 
 import {Redirect} from '~/core/lib/responses.server';
 
-const envValidationSchema = Schema.struct({
-  SESSION_SECRET: Schema.string.pipe(Schema.nonEmpty()),
+const envValidationSchema = Schema.Struct({
+  SESSION_SECRET: Schema.String.pipe(Schema.nonEmpty()),
 });
 
 // Throw on-load if missing

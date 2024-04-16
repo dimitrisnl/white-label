@@ -9,12 +9,12 @@ export const MEMBER = 'MEMBER' as const;
 
 const MembershipRoleBrand = Symbol.for('MembershipRoleBrand');
 
-export const membershipRoleSchema = Schema.literal(OWNER, ADMIN, MEMBER).pipe(
+export const membershipRoleSchema = Schema.Literal(OWNER, ADMIN, MEMBER).pipe(
   Schema.message(() => "The role must be one of 'OWNER', 'ADMIN' or 'MEMBER'"),
   Schema.brand(MembershipRoleBrand)
 );
 
-export type MembershipRole = Schema.Schema.To<typeof membershipRoleSchema>;
+export type MembershipRole = Schema.Schema.Type<typeof membershipRoleSchema>;
 
 class MembershipRoleParseError extends Data.TaggedError(
   'MembershipRoleParseError'

@@ -12,12 +12,12 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server.ts';
 
-const validationSchema = Schema.struct({
+const validationSchema = Schema.Struct({
   password: passwordSchema,
   token: uuidSchema,
 });
 
-export type ResetPasswordProps = Schema.Schema.To<typeof validationSchema>;
+export type ResetPasswordProps = Schema.Schema.Type<typeof validationSchema>;
 
 export function resetPassword({pool, db}: {pool: PgPool; db: DB}) {
   function execute({token, password}: ResetPasswordProps) {

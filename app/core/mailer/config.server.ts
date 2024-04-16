@@ -1,14 +1,14 @@
 import * as Schema from '@effect/schema/Schema';
 
-const envValidationSchema = Schema.struct({
-  SMTP_HOST: Schema.string.pipe(Schema.minLength(2)),
-  SMTP_USER: Schema.string.pipe(Schema.minLength(2)),
-  SMTP_PASSWORD: Schema.string.pipe(Schema.minLength(2)),
+const envValidationSchema = Schema.Struct({
+  SMTP_HOST: Schema.String.pipe(Schema.minLength(2)),
+  SMTP_USER: Schema.String.pipe(Schema.minLength(2)),
+  SMTP_PASSWORD: Schema.String.pipe(Schema.minLength(2)),
   SMTP_PORT: Schema.NumberFromString,
-  SMTP_SECURE: Schema.string.pipe(Schema.nonEmpty()),
+  SMTP_SECURE: Schema.String.pipe(Schema.nonEmpty()),
 
-  EMAIL_FROM: Schema.string.pipe(Schema.minLength(5), Schema.endsWith('.com')),
-  DASHBOARD_URL: Schema.string.pipe(
+  EMAIL_FROM: Schema.String.pipe(Schema.minLength(5), Schema.endsWith('.com')),
+  DASHBOARD_URL: Schema.String.pipe(
     Schema.minLength(5),
     Schema.startsWith('http')
   ),

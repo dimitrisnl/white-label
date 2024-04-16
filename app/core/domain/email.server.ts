@@ -15,7 +15,7 @@ export const emailSchema = Schema.compose(Schema.Trim, Schema.Lowercase).pipe(
   Schema.brand(EmailBrand)
 );
 
-export type Email = Schema.Schema.To<typeof emailSchema>;
+export type Email = Schema.Schema.Type<typeof emailSchema>;
 
 class EmailParseError extends Data.TaggedError('EmailParseError')<{
   cause: ParseError;

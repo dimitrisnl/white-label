@@ -11,11 +11,11 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server.ts';
 
-const validationSchema = Schema.struct({
+const validationSchema = Schema.Struct({
   token: uuidSchema,
 });
 
-export type VerifyEmailProps = Schema.Schema.To<typeof validationSchema>;
+export type VerifyEmailProps = Schema.Schema.Type<typeof validationSchema>;
 
 export function verifyEmailToken({pool, db}: {pool: PgPool; db: DB}) {
   function execute({token}: VerifyEmailProps) {

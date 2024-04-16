@@ -17,12 +17,12 @@ import {
 } from '../domain/password.server';
 import type {User} from '../domain/user.server';
 
-const validationSchema = Schema.struct({
+const validationSchema = Schema.Struct({
   oldPassword: passwordSchema,
   newPassword: passwordSchema,
 });
 
-export type ChangePasswordProps = Schema.Schema.To<typeof validationSchema>;
+export type ChangePasswordProps = Schema.Schema.Type<typeof validationSchema>;
 
 export function changePassword({pool, db}: {pool: PgPool; db: DB}) {
   function execute({

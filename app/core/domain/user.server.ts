@@ -29,11 +29,11 @@ export const userNameSchema = Schema.Trim.pipe(
 const UserIdBrand = Symbol.for('UserIdBrand');
 export const userIdSchema = uuidSchema.pipe(Schema.brand(UserIdBrand));
 
-export class User extends Schema.Class<User>()({
+export class User extends Schema.Class<User>('User')({
   id: userIdSchema,
   name: userNameSchema,
   email: emailSchema,
-  emailVerified: Schema.boolean,
+  emailVerified: Schema.Boolean,
   createdAt: Schema.Date,
   updatedAt: Schema.Date,
 }) {

@@ -7,7 +7,7 @@ export const PENDING = 'PENDING' as const;
 export const DECLINED = 'DECLINED' as const;
 export const EXPIRED = 'EXPIRED' as const;
 
-export const inviteStatusSchema = Schema.literal(
+export const inviteStatusSchema = Schema.Literal(
   PENDING,
   DECLINED,
   EXPIRED
@@ -17,7 +17,7 @@ export const inviteStatusSchema = Schema.literal(
   )
 );
 
-export type InviteStatus = Schema.Schema.To<typeof inviteStatusSchema>;
+export type InviteStatus = Schema.Schema.Type<typeof inviteStatusSchema>;
 
 class InviteStatusParseError extends Data.TaggedError(
   'InviteStatusParseError'

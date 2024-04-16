@@ -7,7 +7,7 @@ import {uuidSchema} from './uuid.server';
 
 const VerifyEmailTokenBrand = Symbol.for('VerifyEmailTokenBrand');
 
-export const verifyEmailTokenSchema = Schema.struct({
+export const verifyEmailTokenSchema = Schema.Struct({
   id: uuidSchema.pipe(Schema.message(() => 'Token is in invalid format')),
   userId: uuidSchema,
   expiresAt: Schema.Date,
@@ -15,7 +15,9 @@ export const verifyEmailTokenSchema = Schema.struct({
   updatedAt: Schema.Date,
 }).pipe(Schema.brand(VerifyEmailTokenBrand));
 
-export type VerifyEmailToken = Schema.Schema.To<typeof verifyEmailTokenSchema>;
+export type VerifyEmailToken = Schema.Schema.Type<
+  typeof verifyEmailTokenSchema
+>;
 
 class VerifyEmailTokenParseError extends Data.TaggedError(
   'VerifyEmailTokenParseError'

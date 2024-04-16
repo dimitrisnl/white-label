@@ -7,7 +7,7 @@ import {uuidSchema} from './uuid.server';
 
 const PasswordResetTokenBrand = Symbol.for('PasswordResetTokenBrand');
 
-export const passwordResetTokenSchema = Schema.struct({
+export const passwordResetTokenSchema = Schema.Struct({
   id: uuidSchema.pipe(Schema.message(() => 'Token is in invalid format')),
   userId: uuidSchema,
   expiresAt: Schema.Date,
@@ -15,7 +15,7 @@ export const passwordResetTokenSchema = Schema.struct({
   updatedAt: Schema.Date,
 }).pipe(Schema.brand(PasswordResetTokenBrand));
 
-export type PasswordResetToken = Schema.Schema.To<
+export type PasswordResetToken = Schema.Schema.Type<
   typeof passwordResetTokenSchema
 >;
 

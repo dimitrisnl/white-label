@@ -21,15 +21,13 @@ export default defineConfig({
         routes: async (defineRoutes) => {
           return flatRoutes('routes', defineRoutes);
         },
-        serverBundles: ({ branch }) => {
-        const isGuestRoute = branch.some((route) =>
-          route.id.split("/").includes("_guest")
-        );
+        serverBundles: ({branch}) => {
+          const isGuestRoute = branch.some((route) =>
+            route.id.split('/').includes('_guest')
+          );
 
-        return isGuestRoute
-          ? "guest"
-          : "authenticated";
-      },
+          return isGuestRoute ? 'guest' : 'authenticated';
+        },
       }),
     tsconfigPaths(),
     visualizer({emitFile: true}),

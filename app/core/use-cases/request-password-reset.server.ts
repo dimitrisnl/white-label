@@ -11,11 +11,11 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
-const validationSchema = Schema.struct({
+const validationSchema = Schema.Struct({
   email: emailSchema,
 });
 
-export type RequestPasswordResetProps = Schema.Schema.To<
+export type RequestPasswordResetProps = Schema.Schema.Type<
   typeof validationSchema
 >;
 

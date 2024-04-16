@@ -19,7 +19,7 @@ export const uuidSchema = Schema.UUID.pipe(
   Schema.brand(UuidBrand)
 );
 
-export type Uuid = Schema.Schema.To<typeof uuidSchema>;
+export type Uuid = Schema.Schema.Type<typeof uuidSchema>;
 
 export const parseUUID = compose(
   Schema.decodeUnknown(uuidSchema),

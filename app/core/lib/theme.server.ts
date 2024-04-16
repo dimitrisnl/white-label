@@ -2,8 +2,8 @@ import * as Schema from '@effect/schema/Schema';
 import {createCookieSessionStorage} from '@remix-run/node';
 import {createThemeSessionResolver} from 'remix-themes';
 
-const envValidationSchema = Schema.struct({
-  SESSION_SECRET: Schema.string.pipe(Schema.nonEmpty()),
+const envValidationSchema = Schema.Struct({
+  SESSION_SECRET: Schema.String.pipe(Schema.nonEmpty()),
 });
 const config = Schema.decodeUnknownSync(envValidationSchema)(process.env);
 

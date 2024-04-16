@@ -32,9 +32,9 @@ export const orgNameSchema = Schema.Trim.pipe(
 );
 
 export const orgIdSchema = uuidSchema.pipe(Schema.brand(OrgIdBrand));
-export const orgSlugSchema = Schema.string.pipe(Schema.minLength(2));
+export const orgSlugSchema = Schema.String.pipe(Schema.minLength(2));
 
-export class Org extends Schema.Class<Org>()({
+export class Org extends Schema.Class<Org>('Org')({
   id: orgIdSchema,
   name: orgNameSchema,
   slug: orgSlugSchema,

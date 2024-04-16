@@ -5,11 +5,11 @@ import * as Schema from '@effect/schema/Schema';
 import Pg from 'pg';
 import * as db from 'zapatos/db';
 
-const envValidationSchema = Schema.struct({
-  DB_USER: Schema.string.pipe(Schema.minLength(2)),
-  DB_HOST: Schema.string.pipe(Schema.minLength(2)),
-  TEST_DB_NAME: Schema.string.pipe(Schema.minLength(2)),
-  DB_PASSWORD: Schema.string.pipe(Schema.minLength(2)),
+const envValidationSchema = Schema.Struct({
+  DB_USER: Schema.String.pipe(Schema.minLength(2)),
+  DB_HOST: Schema.String.pipe(Schema.minLength(2)),
+  TEST_DB_NAME: Schema.String.pipe(Schema.minLength(2)),
+  DB_PASSWORD: Schema.String.pipe(Schema.minLength(2)),
   TEST_DB_PORT: Schema.NumberFromString,
 });
 

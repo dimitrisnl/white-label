@@ -15,13 +15,13 @@ import {hashPassword, passwordSchema} from '../domain/password.server';
 import {User, userNameSchema} from '../domain/user.server';
 import {generateUUID} from '../domain/uuid.server';
 
-const validationSchema = Schema.struct({
+const validationSchema = Schema.Struct({
   password: passwordSchema,
   email: emailSchema,
   name: userNameSchema,
 });
 
-export type CreateUserProps = Schema.Schema.To<typeof validationSchema>;
+export type CreateUserProps = Schema.Schema.Type<typeof validationSchema>;
 
 export function createUser({pool, db}: {pool: PgPool; db: DB}) {
   function execute({email, name, password}: CreateUserProps) {

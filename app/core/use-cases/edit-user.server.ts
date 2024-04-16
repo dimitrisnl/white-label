@@ -10,11 +10,11 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 
-const validationSchema = Schema.struct({
+const validationSchema = Schema.Struct({
   name: userNameSchema,
 });
 
-export type EditUserProps = Schema.Schema.To<typeof validationSchema>;
+export type EditUserProps = Schema.Schema.Type<typeof validationSchema>;
 
 export function editUser({pool, db}: {pool: PgPool; db: DB}) {
   function execute({

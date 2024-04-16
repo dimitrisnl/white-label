@@ -13,11 +13,13 @@ import {
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 import {announcementAuthorizationService} from '~/core/services/announcement-authorization-service.server.ts';
 
-const validationSchema = Schema.struct({
+const validationSchema = Schema.Struct({
   announcementId: uuidSchema,
 });
 
-export type DeleteAnnouncementProps = Schema.Schema.To<typeof validationSchema>;
+export type DeleteAnnouncementProps = Schema.Schema.Type<
+  typeof validationSchema
+>;
 
 export function deleteAnnouncement({pool, db}: {pool: PgPool; db: DB}) {
   function execute({

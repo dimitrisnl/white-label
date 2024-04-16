@@ -7,7 +7,7 @@ import {compose, pipe} from 'effect/Function';
 const SALT_ROUNDS = 10;
 const PasswordBrand = Symbol.for('PasswordBrand');
 
-export const passwordSchema = Schema.string.pipe(
+export const passwordSchema = Schema.String.pipe(
   Schema.minLength(8, {
     message: () => 'Password should be at least 8 characters long',
   }),
@@ -17,7 +17,7 @@ export const passwordSchema = Schema.string.pipe(
   Schema.brand(PasswordBrand)
 );
 
-export type Password = Schema.Schema.To<typeof passwordSchema>;
+export type Password = Schema.Schema.Type<typeof passwordSchema>;
 
 export class PasswordHashError {
   readonly _tag = 'PasswordHashError';

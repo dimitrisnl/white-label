@@ -14,13 +14,15 @@ import {DatabaseError, InternalServerError} from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 import {announcementAuthorizationService} from '~/core/services/announcement-authorization-service.server';
 
-const validationSchema = Schema.struct({
+const validationSchema = Schema.Struct({
   title: announcementTitleSchema,
   content: announcementContentSchema,
   status: announcementStatusSchema,
 });
 
-export type CreateAnnouncementProps = Schema.Schema.To<typeof validationSchema>;
+export type CreateAnnouncementProps = Schema.Schema.Type<
+  typeof validationSchema
+>;
 
 export function createAnnouncement({pool, db}: {pool: PgPool; db: DB}) {
   function execute({

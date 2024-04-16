@@ -1,11 +1,11 @@
 import * as Schema from '@effect/schema/Schema';
 
-const envValidationSchema = Schema.struct({
-  REDIS_HOST: Schema.string.pipe(Schema.minLength(2)),
-  REDIS_PASSWORD: Schema.string,
-  REDIS_USER: Schema.string,
+const envValidationSchema = Schema.Struct({
+  REDIS_HOST: Schema.String.pipe(Schema.minLength(2)),
+  REDIS_PASSWORD: Schema.String,
+  REDIS_USER: Schema.String,
   REDIS_PORT: Schema.NumberFromString,
-  REDIS_TLS: Schema.string,
+  REDIS_TLS: Schema.String,
 });
 
 // Throw on-load if missing

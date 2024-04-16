@@ -18,13 +18,13 @@ import {
 import {schemaResolver} from '~/core/lib/validation-helper.server';
 import {announcementAuthorizationService} from '~/core/services/announcement-authorization-service.server';
 
-const validationSchema = Schema.struct({
+const validationSchema = Schema.Struct({
   title: announcementTitleSchema,
   content: announcementContentSchema,
   status: announcementStatusSchema,
 });
 
-export type EditAnnouncementProps = Schema.Schema.To<typeof validationSchema>;
+export type EditAnnouncementProps = Schema.Schema.Type<typeof validationSchema>;
 
 export function editAnnouncement({pool, db}: {pool: PgPool; db: DB}) {
   function execute({

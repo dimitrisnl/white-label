@@ -17,14 +17,16 @@ class MembershipInvitationParse extends Data.TaggedError(
   cause: ParseError;
 }> {}
 
-export class MembershipInvitation extends Schema.Class<MembershipInvitation>()({
+export class MembershipInvitation extends Schema.Class<MembershipInvitation>(
+  'MembershipInvitation'
+)({
   id: uuidSchema,
   email: emailSchema,
   status: inviteStatusSchema,
   role: membershipRoleSchema,
   createdAt: Schema.Date,
   updatedAt: Schema.Date,
-  org: Schema.struct({
+  org: Schema.Struct({
     name: orgNameSchema,
     id: orgIdSchema,
     slug: orgSlugSchema,

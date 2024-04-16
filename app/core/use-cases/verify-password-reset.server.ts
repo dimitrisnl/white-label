@@ -10,11 +10,11 @@ import {
 } from '~/core/lib/errors.server.ts';
 import {schemaResolver} from '~/core/lib/validation-helper.server.ts';
 
-const validationSchema = Schema.struct({
+const validationSchema = Schema.Struct({
   token: uuidSchema,
 });
 
-export type VerifyPasswordResetProps = Schema.Schema.To<
+export type VerifyPasswordResetProps = Schema.Schema.Type<
   typeof validationSchema
 >;
 

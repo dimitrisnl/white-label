@@ -15,13 +15,13 @@ class MembershipParseError extends Data.TaggedError('MembershipParseError')<{
   cause: ParseError;
 }> {}
 
-export class Membership extends Schema.Class<Membership>()({
-  org: Schema.struct({
+export class Membership extends Schema.Class<Membership>('Membership')({
+  org: Schema.Struct({
     name: orgNameSchema,
     id: orgIdSchema,
     slug: orgSlugSchema,
   }),
-  user: Schema.struct({
+  user: Schema.Struct({
     name: userNameSchema,
     id: userIdSchema,
     email: emailSchema,

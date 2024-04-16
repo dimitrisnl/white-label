@@ -15,11 +15,11 @@ import {PENDING} from '../domain/invite-status.server';
 import {Org} from '../domain/org.server';
 import type {User} from '../domain/user.server';
 
-const validationSchema = Schema.struct({
+const validationSchema = Schema.Struct({
   invitationId: uuidSchema,
 });
 
-export type AcceptInvitationProps = Schema.Schema.To<typeof validationSchema>;
+export type AcceptInvitationProps = Schema.Schema.Type<typeof validationSchema>;
 
 export function acceptInvitation({pool, db}: {pool: PgPool; db: DB}) {
   function execute({
