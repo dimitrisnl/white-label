@@ -13,25 +13,25 @@ import {parseUserId} from '../domain/user.server';
 type Params = LoaderFunctionArgs['params'];
 
 export function identifyOrgByParams(params: Params) {
-  return Effect.gen(function* (_) {
-    const slug = yield* _(parseOrgSlug(params.slug));
-    const orgId = yield* _(getOrgIdBySlug({db, pool}).execute(slug));
+  return Effect.gen(function* () {
+    const slug = yield* parseOrgSlug(params.slug);
+    const orgId = yield* getOrgIdBySlug({db, pool}).execute(slug);
 
     return orgId;
   });
 }
 
 export function parseFormData(request: Request) {
-  return Effect.gen(function* (_) {
-    const formData = yield* _(Effect.promise(() => request.clone().formData()));
+  return Effect.gen(function* () {
+    const formData = yield* Effect.promise(() => request.clone().formData());
     return Object.fromEntries(formData);
   });
 }
 
 export function authenticateUser(request: Request) {
-  return Effect.gen(function* (_) {
-    const session = yield* _(getSession(request));
-    const userId = yield* _(parseUserId(session.get(USER_SESSION_KEY)));
+  return Effect.gen(function* () {
+    const session = yield* getSession(request);
+    const userId = yield* parseUserId(session.get(USER_SESSION_KEY));
 
     return userId;
   }).pipe(

@@ -13,15 +13,16 @@ import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
 import {getOrgMemberships} from '~/core/use-cases/get-org-memberships.server';
 
 export const loader = withLoader(
-  Effect.gen(function* (_) {
-    const {request, params} = yield* _(LoaderArgs);
+  Effect.gen(function* () {
+    const {request, params} = yield* LoaderArgs;
 
-    const userId = yield* _(authenticateUser(request));
-    const orgId = yield* _(identifyOrgByParams(params));
+    const userId = yield* authenticateUser(request);
+    const orgId = yield* identifyOrgByParams(params);
 
-    const memberships = yield* _(
-      getOrgMemberships({db, pool}).execute({orgId, userId})
-    );
+    const memberships = yield* getOrgMemberships({db, pool}).execute({
+      orgId,
+      userId,
+    });
 
     return new Ok({data: memberships});
   }).pipe(

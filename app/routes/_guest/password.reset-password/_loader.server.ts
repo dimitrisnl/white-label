@@ -8,19 +8,19 @@ import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
 import {verifyPasswordReset} from '~/core/use-cases/verify-password-reset.server';
 
 export const loader = withLoader(
-  Effect.gen(function* (_) {
-    const {request} = yield* _(LoaderArgs);
+  Effect.gen(function* () {
+    const {request} = yield* LoaderArgs;
 
     const url = new URL(request.url);
     const token = url.searchParams.get('token');
 
     if (!token) {
-      return yield* _(Effect.fail(new PasswordResetTokenNotFoundError()));
+      return yield* Effect.fail(new PasswordResetTokenNotFoundError());
     }
 
     const {validate, execute} = verifyPasswordReset({db, pool});
-    const props = yield* _(validate({token}));
-    yield* _(execute(props));
+    const props = yield* validate({token});
+    yield* execute(props);
 
     return new Ok({data: {token}});
   }).pipe(

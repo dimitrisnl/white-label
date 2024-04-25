@@ -31,33 +31,26 @@ export function deleteAnnouncement({pool, db}: {pool: PgPool; db: DB}) {
     userId: User['id'];
     orgId: Org['id'];
   }) {
-    return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(
-          `(delete-announcement): Deleting announcement ${announcementId} by user ${userId} in org ${orgId}`
-        )
+    return Effect.gen(function* () {
+      yield* Effect.log(
+        `(delete-announcement): Deleting announcement ${announcementId} by user ${userId} in org ${orgId}`
       );
-      yield* _(
-        announcementAuthorizationService({
-          pool,
-          db,
-        }).canDelete({
-          userId,
-          orgId,
-          announcementId,
-        })
-      );
+      yield* announcementAuthorizationService({
+        pool,
+        db,
+      }).canDelete({
+        userId,
+        orgId,
+        announcementId,
+      });
 
-      const announcementRecord = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db.deletes('announcements', {id: announcementId}).run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const announcementRecord = yield* Effect.tryPromise({
+        try: () => db.deletes('announcements', {id: announcementId}).run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (announcementRecord.length === 0) {
-        return yield* _(Effect.fail(new AnnouncementNotFoundError()));
+        return yield* Effect.fail(new AnnouncementNotFoundError());
       }
 
       return null;

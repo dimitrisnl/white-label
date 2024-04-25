@@ -13,61 +13,53 @@ import {orgAuthorizationService} from '~/core/services/org-authorization-service
 
 export function getOrgMemberships({pool, db}: {pool: PgPool; db: DB}) {
   function execute({orgId, userId}: {orgId: Org['id']; userId: User['id']}) {
-    return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(
-          `(get-org-memberships): Getting memberships for org ${orgId} for user ${userId}`
-        )
+    return Effect.gen(function* () {
+      yield* Effect.log(
+        `(get-org-memberships): Getting memberships for org ${orgId} for user ${userId}`
       );
 
-      yield* _(orgAuthorizationService({pool, db}).canViewAll({userId, orgId}));
+      yield* orgAuthorizationService({pool, db}).canViewAll({userId, orgId});
 
-      const orgRecord = yield* _(
-        Effect.tryPromise({
-          try: () => db.selectOne('orgs', {id: orgId}).run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const orgRecord = yield* Effect.tryPromise({
+        try: () => db.selectOne('orgs', {id: orgId}).run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (!orgRecord) {
-        return yield* _(Effect.fail(new OrgNotFoundError()));
+        return yield* Effect.fail(new OrgNotFoundError());
       }
 
-      const org = yield* _(Org.fromRecord(orgRecord));
+      const org = yield* Org.fromRecord(orgRecord);
 
-      const membershipRecords = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .select(
-                'memberships',
-                {org_id: orgId},
-                {
-                  lateral: {
-                    user: db.selectExactlyOne('users', {
-                      id: db.parent('user_id'),
-                    }),
-                  },
-                }
-              )
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const membershipRecords = yield* Effect.tryPromise({
+        try: () =>
+          db
+            .select(
+              'memberships',
+              {org_id: orgId},
+              {
+                lateral: {
+                  user: db.selectExactlyOne('users', {
+                    id: db.parent('user_id'),
+                  }),
+                },
+              }
+            )
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
-      const memberships = yield* _(
-        Effect.all(
-          membershipRecords.map((membershipRecord) =>
-            Membership.fromRecord({
-              record: membershipRecord,
-              org: {name: org.name, id: org.id, slug: org.slug},
-              user: {
-                name: membershipRecord.user.name,
-                id: membershipRecord.user.id,
-                email: membershipRecord.user.email,
-              },
-            })
-          )
+      const memberships = yield* Effect.all(
+        membershipRecords.map((membershipRecord) =>
+          Membership.fromRecord({
+            record: membershipRecord,
+            org: {name: org.name, id: org.id, slug: org.slug},
+            user: {
+              name: membershipRecord.user.name,
+              id: membershipRecord.user.id,
+              email: membershipRecord.user.email,
+            },
+          })
         )
       );
 

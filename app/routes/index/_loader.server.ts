@@ -8,13 +8,13 @@ import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
 import {getUserMemberships} from '~/core/use-cases/get-user-memberships.server.ts';
 
 export const loader = withLoader(
-  Effect.gen(function* (_) {
-    const {request} = yield* _(LoaderArgs);
-    const userId = yield* _(authenticateUser(request));
+  Effect.gen(function* () {
+    const {request} = yield* LoaderArgs;
+    const userId = yield* authenticateUser(request);
 
-    const {memberships} = yield* _(
-      getUserMemberships({db, pool}).execute({userId})
-    );
+    const {memberships} = yield* getUserMemberships({db, pool}).execute({
+      userId,
+    });
 
     if (memberships.length === 0) {
       return new Redirect({to: `/onboarding`});

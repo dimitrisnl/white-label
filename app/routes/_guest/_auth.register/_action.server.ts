@@ -10,24 +10,22 @@ import {sendVerificationEmail} from '~/core/mailer/emails/send-verification-emai
 import {createUser} from '~/core/use-cases/create-user.server';
 
 export const action = withAction(
-  Effect.gen(function* (_) {
-    const {request} = yield* _(ActionArgs);
+  Effect.gen(function* () {
+    const {request} = yield* ActionArgs;
 
     const {validate, execute} = createUser({db, pool});
-    const data = yield* _(parseFormData(request));
-    const props = yield* _(validate(data));
-    const {user, verifyEmailTokenId} = yield* _(execute(props));
+    const data = yield* parseFormData(request);
+    const props = yield* validate(data);
+    const {user, verifyEmailTokenId} = yield* execute(props);
 
-    yield* _(sendVerificationEmail({email: user.email, verifyEmailTokenId}));
+    yield* sendVerificationEmail({email: user.email, verifyEmailTokenId});
 
-    return yield* _(
-      createUserSession({
-        userId: user.id,
-        redirectToPath: '/onboarding',
-        remember: true,
-        request,
-      })
-    );
+    return yield* createUserSession({
+      userId: user.id,
+      redirectToPath: '/onboarding',
+      remember: true,
+      request,
+    });
   }).pipe(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError()),

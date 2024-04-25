@@ -5,9 +5,9 @@ import {Ok, Redirect} from '~/core/lib/responses.server';
 import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
 
 export const loader = withLoader(
-  Effect.gen(function* (_) {
-    const {request} = yield* _(LoaderArgs);
-    yield* _(authenticateUser(request));
+  Effect.gen(function* () {
+    const {request} = yield* LoaderArgs;
+    yield* authenticateUser(request);
 
     return new Ok({data: null});
   }).pipe(

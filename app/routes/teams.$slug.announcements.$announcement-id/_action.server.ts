@@ -18,26 +18,24 @@ import {ActionArgs, withAction} from '~/core/lib/with-action.server';
 import {editAnnouncement} from '~/core/use-cases/edit-announcement.server';
 
 export const action = withAction(
-  Effect.gen(function* (_) {
-    const {request, params} = yield* _(ActionArgs);
+  Effect.gen(function* () {
+    const {request, params} = yield* ActionArgs;
 
-    const announcementId = yield* _(
-      parseAnnouncementId(params['announcement-id'])
+    const announcementId = yield* parseAnnouncementId(
+      params['announcement-id']
     );
-    const userId = yield* _(authenticateUser(request));
-    const orgId = yield* _(identifyOrgByParams(params));
+    const userId = yield* authenticateUser(request);
+    const orgId = yield* identifyOrgByParams(params);
 
     const {validate, execute} = editAnnouncement({db, pool});
-    const data = yield* _(parseFormData(request));
-    const props = yield* _(validate(data));
-    yield* _(
-      execute({
-        props,
-        orgId,
-        userId,
-        announcementId,
-      })
-    );
+    const data = yield* parseFormData(request);
+    const props = yield* validate(data);
+    yield* execute({
+      props,
+      orgId,
+      userId,
+      announcementId,
+    });
 
     return new Ok({data: null});
   }).pipe(

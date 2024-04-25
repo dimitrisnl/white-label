@@ -12,24 +12,20 @@ import {orgAuthorizationService} from '~/core/services/org-authorization-service
 
 export function getOrg({pool, db}: {pool: PgPool; db: DB}) {
   function execute({orgId, userId}: {orgId: Org['id']; userId: User['id']}) {
-    return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(`(get-org): Getting org ${orgId} for user ${userId}`)
-      );
-      yield* _(orgAuthorizationService({db, pool}).canView({userId, orgId}));
+    return Effect.gen(function* () {
+      yield* Effect.log(`(get-org): Getting org ${orgId} for user ${userId}`);
+      yield* orgAuthorizationService({db, pool}).canView({userId, orgId});
 
-      const orgRecord = yield* _(
-        Effect.tryPromise({
-          try: () => db.selectOne('orgs', {id: orgId}).run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const orgRecord = yield* Effect.tryPromise({
+        try: () => db.selectOne('orgs', {id: orgId}).run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (!orgRecord) {
-        return yield* _(Effect.fail(new OrgNotFoundError()));
+        return yield* Effect.fail(new OrgNotFoundError());
       }
 
-      const org = yield* _(Org.fromRecord(orgRecord));
+      const org = yield* Org.fromRecord(orgRecord);
 
       return org;
     }).pipe(

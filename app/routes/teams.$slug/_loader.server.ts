@@ -15,16 +15,16 @@ import {getUser} from '~/core/use-cases/get-user.server';
 import {getUserMemberships} from '~/core/use-cases/get-user-memberships.server';
 
 export const loader = withLoader(
-  Effect.gen(function* (_) {
-    const {request, params} = yield* _(LoaderArgs);
+  Effect.gen(function* () {
+    const {request, params} = yield* LoaderArgs;
 
-    const userId = yield* _(authenticateUser(request));
-    const {user} = yield* _(getUser({db, pool}).execute({userId}));
-    const orgId = yield* _(identifyOrgByParams(params));
-    const org = yield* _(getOrg({db, pool}).execute({orgId, userId: user.id}));
-    const {memberships} = yield* _(
-      getUserMemberships({db, pool}).execute({userId: user.id})
-    );
+    const userId = yield* authenticateUser(request);
+    const {user} = yield* getUser({db, pool}).execute({userId});
+    const orgId = yield* identifyOrgByParams(params);
+    const org = yield* getOrg({db, pool}).execute({orgId, userId: user.id});
+    const {memberships} = yield* getUserMemberships({db, pool}).execute({
+      userId: user.id,
+    });
 
     return new Ok({data: {org, memberships, user}});
   }).pipe(

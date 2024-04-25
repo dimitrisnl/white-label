@@ -25,55 +25,51 @@ export type CreateUserProps = Schema.Schema.Type<typeof validationSchema>;
 
 export function createUser({pool, db}: {pool: PgPool; db: DB}) {
   function execute({email, name, password}: CreateUserProps) {
-    return Effect.gen(function* (_) {
-      yield* _(Effect.log(`(create-user): Creating user ${email}`));
+    return Effect.gen(function* () {
+      yield* Effect.log(`(create-user): Creating user ${email}`);
 
-      const passwordHash = yield* _(hashPassword(password));
-      const userId = yield* _(generateUUID());
+      const passwordHash = yield* hashPassword(password);
+      const userId = yield* generateUUID();
 
-      const userRecord = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .insert('users', {
-                id: userId,
-                email: email.toLowerCase(),
-                email_verified: false,
-                password: passwordHash,
-                name,
-              })
-              .run(pool),
-          catch: (error) => {
-            if (
-              isDatabaseError(
-                // @ts-expect-error
-                error,
-                'IntegrityConstraintViolation_UniqueViolation'
-              )
-            ) {
-              return new AccountAlreadyExistsError({email});
-            }
+      const userRecord = yield* Effect.tryPromise({
+        try: () =>
+          db
+            .insert('users', {
+              id: userId,
+              email: email.toLowerCase(),
+              email_verified: false,
+              password: passwordHash,
+              name,
+            })
+            .run(pool),
+        catch: (error) => {
+          if (
+            isDatabaseError(
+              // @ts-expect-error
+              error,
+              'IntegrityConstraintViolation_UniqueViolation'
+            )
+          ) {
+            return new AccountAlreadyExistsError({email});
+          }
 
-            return new DatabaseError();
-          },
-        })
-      );
+          return new DatabaseError();
+        },
+      });
 
-      const user = yield* _(User.fromRecord(userRecord));
-      const verifyEmailTokenId = yield* _(generateUUID());
+      const user = yield* User.fromRecord(userRecord);
+      const verifyEmailTokenId = yield* generateUUID();
 
-      yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .insert('verify_email_tokens', {
-                id: verifyEmailTokenId,
-                user_id: userId,
-              })
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      yield* Effect.tryPromise({
+        try: () =>
+          db
+            .insert('verify_email_tokens', {
+              id: verifyEmailTokenId,
+              user_id: userId,
+            })
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       return {user, verifyEmailTokenId};
     }).pipe(

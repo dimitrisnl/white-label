@@ -30,63 +30,57 @@ export function createOrg({pool, db}: {pool: PgPool; db: DB}) {
     props: CreateOrgProps;
     userId: User['id'];
   }) {
-    return Effect.gen(function* (_) {
-      yield* _(Effect.log(`(create-org): Creating org ${name}`));
+    return Effect.gen(function* () {
+      yield* Effect.log(`(create-org): Creating org ${name}`);
 
-      const userRecord = yield* _(
-        Effect.tryPromise({
-          try: () => db.selectOne('users', {id: userId}).run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const userRecord = yield* Effect.tryPromise({
+        try: () => db.selectOne('users', {id: userId}).run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (!userRecord) {
-        return yield* _(Effect.fail(new UserNotFoundError()));
+        return yield* Effect.fail(new UserNotFoundError());
       }
 
-      const orgId = yield* _(generateUUID());
+      const orgId = yield* generateUUID();
       const [orgIdPrefix] = orgId.split('-');
-      const baseSlug = yield* _(Org.slugify(name));
+      const baseSlug = yield* Org.slugify(name);
       const slug = `${baseSlug}-${orgIdPrefix}`;
 
-      const orgRecord = yield* _(
-        Effect.tryPromise({
-          try: () => db.insert('orgs', {id: orgId, name, slug}).run(pool),
-          catch: (error) => {
-            if (
-              isDatabaseError(
-                // @ts-expect-error
-                error,
-                'IntegrityConstraintViolation_UniqueViolation'
-              )
-            ) {
-              return new SlugAlreadyExistsError({
-                slug,
-                orgName: name,
-                orgId: orgId,
-              });
-            }
+      const orgRecord = yield* Effect.tryPromise({
+        try: () => db.insert('orgs', {id: orgId, name, slug}).run(pool),
+        catch: (error) => {
+          if (
+            isDatabaseError(
+              // @ts-expect-error
+              error,
+              'IntegrityConstraintViolation_UniqueViolation'
+            )
+          ) {
+            return new SlugAlreadyExistsError({
+              slug,
+              orgName: name,
+              orgId: orgId,
+            });
+          }
 
-            return new DatabaseError();
-          },
-        })
-      );
+          return new DatabaseError();
+        },
+      });
 
-      yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .insert('memberships', {
-                org_id: orgId,
-                user_id: userId,
-                role: OWNER,
-              })
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      yield* Effect.tryPromise({
+        try: () =>
+          db
+            .insert('memberships', {
+              org_id: orgId,
+              user_id: userId,
+              role: OWNER,
+            })
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
-      const org = yield* _(Org.fromRecord(orgRecord));
+      const org = yield* Org.fromRecord(orgRecord);
 
       return org;
     }).pipe(

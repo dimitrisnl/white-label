@@ -54,7 +54,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "dotenv-flow": "^4.1.0",
-    "effect": "3.0.0",
+    "effect": "3.0.4",
     "ioredis": "^5.3.2",
     "isbot": "^5.1.4",
     "nodemailer": "^6.9.13",

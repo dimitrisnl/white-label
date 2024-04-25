@@ -17,15 +17,15 @@ import {ActionArgs, withAction} from '~/core/lib/with-action.server';
 import {createAnnouncement} from '~/core/use-cases/create-announcement.server';
 
 export const action = withAction(
-  Effect.gen(function* (_) {
-    const {request, params} = yield* _(ActionArgs);
-    const userId = yield* _(authenticateUser(request));
-    const orgId = yield* _(identifyOrgByParams(params));
+  Effect.gen(function* () {
+    const {request, params} = yield* ActionArgs;
+    const userId = yield* authenticateUser(request);
+    const orgId = yield* identifyOrgByParams(params);
 
     const {validate, execute} = createAnnouncement({db, pool});
-    const data = yield* _(parseFormData(request));
-    const props = yield* _(validate(data));
-    yield* _(execute({props, orgId, userId}));
+    const data = yield* parseFormData(request);
+    const props = yield* validate(data);
+    yield* execute({props, orgId, userId});
 
     return new Ok({data: null});
   }).pipe(

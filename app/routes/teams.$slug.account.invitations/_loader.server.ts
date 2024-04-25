@@ -8,13 +8,11 @@ import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
 import {getUserInvitations} from '~/core/use-cases/get-user-invitations.server';
 
 export const loader = withLoader(
-  Effect.gen(function* (_) {
-    const {request} = yield* _(LoaderArgs);
-    const userId = yield* _(authenticateUser(request));
+  Effect.gen(function* () {
+    const {request} = yield* LoaderArgs;
+    const userId = yield* authenticateUser(request);
 
-    const invitations = yield* _(
-      getUserInvitations({pool, db}).execute({userId})
-    );
+    const invitations = yield* getUserInvitations({pool, db}).execute({userId});
 
     return new Ok({data: invitations});
   }).pipe(

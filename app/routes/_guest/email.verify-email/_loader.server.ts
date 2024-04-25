@@ -13,20 +13,20 @@ import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
 import {verifyEmailToken} from '~/core/use-cases/verify-email-token.server';
 
 export const loader = withLoader(
-  Effect.gen(function* (_) {
-    const {request} = yield* _(LoaderArgs);
+  Effect.gen(function* () {
+    const {request} = yield* LoaderArgs;
 
     const url = new URL(request.url);
     const token = url.searchParams.get('token');
 
     if (!token) {
-      return yield* _(Effect.fail(new VerifyEmailTokenNotFoundError()));
+      return yield* Effect.fail(new VerifyEmailTokenNotFoundError());
     }
 
     const {validate, execute} = verifyEmailToken({pool, db});
-    const props = yield* _(validate({token}));
+    const props = yield* validate({token});
 
-    yield* _(execute(props));
+    yield* execute(props);
 
     return new Ok({data: null});
   }).pipe(

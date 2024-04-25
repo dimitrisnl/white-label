@@ -30,11 +30,11 @@ export function getSession(request: Request) {
 }
 
 export function logout(request: Request) {
-  return Effect.gen(function* (_) {
-    const session = yield* _(getSession(request));
+  return Effect.gen(function* () {
+    const session = yield* getSession(request);
 
-    const cookie: string = yield* _(
-      Effect.promise(() => sessionStorage.destroySession(session))
+    const cookie: string = yield* Effect.promise(() =>
+      sessionStorage.destroySession(session)
     );
 
     return new Redirect({
@@ -59,20 +59,18 @@ export function createUserSession({
   redirectToPath: string;
   request: Request;
 }) {
-  return Effect.gen(function* (_) {
-    yield* _(Effect.log(`Session: Creating user session ${userId}`));
-    const session = yield* _(getSession(request));
+  return Effect.gen(function* () {
+    yield* Effect.log(`Session: Creating user session ${userId}`);
+    const session = yield* getSession(request);
 
     session.set(USER_SESSION_KEY, userId);
 
-    const cookie: string = yield* _(
-      Effect.promise(() =>
-        sessionStorage.commitSession(session, {
-          maxAge: remember
-            ? 60 * 60 * 24 * 7 // 7 days
-            : undefined,
-        })
-      )
+    const cookie: string = yield* Effect.promise(() =>
+      sessionStorage.commitSession(session, {
+        maxAge: remember
+          ? 60 * 60 * 24 * 7 // 7 days
+          : undefined,
+      })
     );
 
     return new Redirect({

@@ -14,17 +14,18 @@ import {sendVerificationEmail} from '~/core/mailer/emails/send-verification-emai
 import {regenerateVerifyEmailToken} from '~/core/use-cases/regenerate-verify-email-token.server';
 
 export const action = withAction(
-  Effect.gen(function* (_) {
-    const {request} = yield* _(ActionArgs);
+  Effect.gen(function* () {
+    const {request} = yield* ActionArgs;
 
-    const userId = yield* _(authenticateUser(request));
-    const {email, verifyEmailTokenId} = yield* _(
-      regenerateVerifyEmailToken({db, pool}).execute({
-        userId,
-      })
-    );
+    const userId = yield* authenticateUser(request);
+    const {email, verifyEmailTokenId} = yield* regenerateVerifyEmailToken({
+      db,
+      pool,
+    }).execute({
+      userId,
+    });
 
-    yield* _(sendVerificationEmail({email, verifyEmailTokenId}));
+    yield* sendVerificationEmail({email, verifyEmailTokenId});
 
     return new Ok({data: null});
   }).pipe(

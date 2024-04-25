@@ -9,15 +9,15 @@ import {sendPasswordResetEmail} from '~/core/mailer/emails/send-password-reset-e
 import {requestPasswordReset} from '~/core/use-cases/request-password-reset.server';
 
 export const action = withAction(
-  Effect.gen(function* (_) {
-    const {request} = yield* _(ActionArgs);
+  Effect.gen(function* () {
+    const {request} = yield* ActionArgs;
 
     const {validate, execute} = requestPasswordReset({db, pool});
-    const data = yield* _(parseFormData(request));
-    const props = yield* _(validate(data));
-    const {passwordResetTokenId, email} = yield* _(execute(props));
+    const data = yield* parseFormData(request);
+    const props = yield* validate(data);
+    const {passwordResetTokenId, email} = yield* execute(props);
 
-    yield* _(sendPasswordResetEmail({email, passwordResetTokenId}));
+    yield* sendPasswordResetEmail({email, passwordResetTokenId});
 
     return new Ok({data: null});
   }).pipe(

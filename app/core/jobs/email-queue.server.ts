@@ -17,7 +17,7 @@ const emailQueue = registerQueue<JobPayload>('email', async (job) => {
 });
 
 export const addEmailJob = (jobName: string, jobPayload: JobPayload) => {
-  return Effect.gen(function* (_) {
-    yield* _(Effect.promise(() => emailQueue.add(jobName, jobPayload)));
+  return Effect.gen(function* () {
+    yield* Effect.promise(() => emailQueue.add(jobName, jobPayload));
   });
 };

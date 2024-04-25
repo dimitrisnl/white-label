@@ -35,100 +35,89 @@ export function createInvitation({pool, db}: {pool: PgPool; db: DB}) {
     userId: User['id'];
     orgId: Org['id'];
   }) {
-    return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(`(create-invitation): Creating invitation for ${email}`)
+    return Effect.gen(function* () {
+      yield* Effect.log(
+        `(create-invitation): Creating invitation for ${email}`
       );
 
-      yield* _(
-        invitationAuthorizationService({pool, db}).canCreate({userId, orgId})
-      );
+      yield* invitationAuthorizationService({pool, db}).canCreate({
+        userId,
+        orgId,
+      });
 
-      const invitationId = yield* _(generateUUID());
+      const invitationId = yield* generateUUID();
 
       // Delete any previous invitation
-      yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .deletes('membership_invitations', {org_id: orgId, email})
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      yield* Effect.tryPromise({
+        try: () =>
+          db
+            .deletes('membership_invitations', {org_id: orgId, email})
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
-      const existingMember = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .selectOne(
-                'users',
-                {email: email},
-                {
-                  lateral: {
-                    membership: db.selectOne('memberships', {
-                      org_id: orgId,
-                      user_id: db.parent('id'),
-                    }),
-                  },
-                }
-              )
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const existingMember = yield* Effect.tryPromise({
+        try: () =>
+          db
+            .selectOne(
+              'users',
+              {email: email},
+              {
+                lateral: {
+                  membership: db.selectOne('memberships', {
+                    org_id: orgId,
+                    user_id: db.parent('id'),
+                  }),
+                },
+              }
+            )
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (existingMember?.membership) {
-        return yield* _(
-          Effect.fail(
-            new InviteeAlreadyMemberError({
-              inviterId: userId,
-              orgId,
-              inviteeEmail: existingMember.email,
-              inviteeId: existingMember.id,
-            })
-          )
+        return yield* Effect.fail(
+          new InviteeAlreadyMemberError({
+            inviterId: userId,
+            orgId,
+            inviteeEmail: existingMember.email,
+            inviteeId: existingMember.id,
+          })
         );
       }
 
-      const orgRecord = yield* _(
-        Effect.tryPromise({
-          try: () => db.selectOne('orgs', {id: orgId}).run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const orgRecord = yield* Effect.tryPromise({
+        try: () => db.selectOne('orgs', {id: orgId}).run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (!orgRecord) {
-        return yield* _(Effect.fail(new OrgNotFoundError()));
+        return yield* Effect.fail(new OrgNotFoundError());
       }
 
-      const invitationRecord = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .insert('membership_invitations', {
-                id: invitationId,
-                role: role,
-                email: email,
-                org_id: orgId,
-              })
-              .run(pool),
-          catch: () => {
-            return new DatabaseError();
-          },
-        })
-      );
+      const invitationRecord = yield* Effect.tryPromise({
+        try: () =>
+          db
+            .insert('membership_invitations', {
+              id: invitationId,
+              role: role,
+              email: email,
+              org_id: orgId,
+            })
+            .run(pool),
+        catch: () => {
+          return new DatabaseError();
+        },
+      });
 
-      const invitation = yield* _(
-        MembershipInvitation.fromRecord({
-          record: invitationRecord,
-          org: {
-            slug: orgRecord.slug,
-            name: orgRecord.name,
-            id: orgRecord.id,
-          },
-        })
-      );
+      const invitation = yield* MembershipInvitation.fromRecord({
+        record: invitationRecord,
+        org: {
+          slug: orgRecord.slug,
+          name: orgRecord.name,
+          id: orgRecord.id,
+        },
+      });
 
       return invitation;
     }).pipe(

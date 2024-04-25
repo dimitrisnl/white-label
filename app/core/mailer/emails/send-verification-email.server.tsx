@@ -13,10 +13,8 @@ export function sendVerificationEmail({
   email: string;
   verifyEmailTokenId: string;
 }) {
-  return Effect.gen(function* (_) {
-    yield* _(
-      Effect.log(`Mailer(verification-email): Sending email to ${email}`)
-    );
+  return Effect.gen(function* () {
+    yield* Effect.log(`Mailer(verification-email): Sending email to ${email}`);
 
     const html = `
       Welcome!
@@ -29,8 +27,8 @@ export function sendVerificationEmail({
       content: html,
     };
 
-    yield* _(addEmailJob('password-reset-email', payload));
-    yield* _(Effect.log(`Mailer(verification-email): Sent email to ${email}`));
+    yield* addEmailJob('password-reset-email', payload);
+    yield* Effect.log(`Mailer(verification-email): Sent email to ${email}`);
   }).pipe(
     Effect.catchAll((error) =>
       pipe(

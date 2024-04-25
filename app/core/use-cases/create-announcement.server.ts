@@ -34,40 +34,34 @@ export function createAnnouncement({pool, db}: {pool: PgPool; db: DB}) {
     orgId: Org['id'];
     userId: User['id'];
   }) {
-    return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(
-          `(create-announcement): Creating announcement for org:${orgId} by user:${userId}`
-        )
+    return Effect.gen(function* () {
+      yield* Effect.log(
+        `(create-announcement): Creating announcement for org:${orgId} by user:${userId}`
       );
 
-      yield* _(
-        announcementAuthorizationService({pool, db}).canCreate({
-          userId,
-          orgId,
-        })
-      );
+      yield* announcementAuthorizationService({pool, db}).canCreate({
+        userId,
+        orgId,
+      });
 
-      const announcementId = yield* _(generateUUID());
+      const announcementId = yield* generateUUID();
 
-      yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .insert('announcements', {
-                id: announcementId,
-                title,
-                content,
-                status,
-                org_id: orgId,
-                created_by_user_id: userId,
-              })
-              .run(pool),
-          catch: () => {
-            return new DatabaseError();
-          },
-        })
-      );
+      yield* Effect.tryPromise({
+        try: () =>
+          db
+            .insert('announcements', {
+              id: announcementId,
+              title,
+              content,
+              status,
+              org_id: orgId,
+              created_by_user_id: userId,
+            })
+            .run(pool),
+        catch: () => {
+          return new DatabaseError();
+        },
+      });
 
       return null;
     }).pipe(

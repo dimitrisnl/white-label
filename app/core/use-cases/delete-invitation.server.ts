@@ -29,29 +29,23 @@ export function deleteInvitation({pool, db}: {pool: PgPool; db: DB}) {
     userId: User['id'];
     orgId: Org['id'];
   }) {
-    return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(
-          `(delete-invitation): Deleting invitation ${invitationId} by user ${userId} in org ${orgId}`
-        )
+    return Effect.gen(function* () {
+      yield* Effect.log(
+        `(delete-invitation): Deleting invitation ${invitationId} by user ${userId} in org ${orgId}`
       );
-      yield* _(
-        invitationAuthorizationService({
-          pool,
-          db,
-        }).canDelete({userId, orgId, invitationId})
-      );
+      yield* invitationAuthorizationService({
+        pool,
+        db,
+      }).canDelete({userId, orgId, invitationId});
 
-      const invitationRecord = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db.deletes('membership_invitations', {id: invitationId}).run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const invitationRecord = yield* Effect.tryPromise({
+        try: () =>
+          db.deletes('membership_invitations', {id: invitationId}).run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (invitationRecord.length === 0) {
-        return yield* _(Effect.fail(new InvitationNotFoundError()));
+        return yield* Effect.fail(new InvitationNotFoundError());
       }
 
       return null;

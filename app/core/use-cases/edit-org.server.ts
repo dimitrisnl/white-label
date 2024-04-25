@@ -28,32 +28,26 @@ export function editOrg({pool, db}: {pool: PgPool; db: DB}) {
     orgId: Org['id'];
     userId: User['id'];
   }) {
-    return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(`(edit-org): Editing org ${orgId} with name ${name}`)
-      );
-      yield* _(
-        orgAuthorizationService({
-          pool,
-          db,
-        }).canUpdate({userId, orgId})
-      );
+    return Effect.gen(function* () {
+      yield* Effect.log(`(edit-org): Editing org ${orgId} with name ${name}`);
+      yield* orgAuthorizationService({
+        pool,
+        db,
+      }).canUpdate({userId, orgId});
 
-      const records = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .update('orgs', {name, updated_at: db.sql`now()`}, {id: orgId})
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const records = yield* Effect.tryPromise({
+        try: () =>
+          db
+            .update('orgs', {name, updated_at: db.sql`now()`}, {id: orgId})
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (records.length === 0 || !records[0]) {
-        return yield* _(Effect.fail(new OrgNotFoundError()));
+        return yield* Effect.fail(new OrgNotFoundError());
       }
 
-      const org = yield* _(Org.fromRecord(records[0]));
+      const org = yield* Org.fromRecord(records[0]);
       return org;
     }).pipe(
       Effect.catchTags({

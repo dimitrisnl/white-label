@@ -30,19 +30,17 @@ function handleInvitationCreation({
   orgId: Org['id'];
   data: Record<string, unknown>;
 }) {
-  return Effect.gen(function* (_) {
+  return Effect.gen(function* () {
     const {validate, execute} = createInvitation({db, pool});
-    const props = yield* _(validate(data));
+    const props = yield* validate(data);
 
-    const invitation = yield* _(execute({props, orgId, userId}));
+    const invitation = yield* execute({props, orgId, userId});
 
-    yield* _(
-      sendInvitationEmail({
-        email: invitation.email,
-        orgName: invitation.org.name,
-        invitationTokenId: invitation.id,
-      })
-    );
+    yield* sendInvitationEmail({
+      email: invitation.email,
+      orgName: invitation.org.name,
+      invitationTokenId: invitation.id,
+    });
   });
 }
 
@@ -55,44 +53,40 @@ function handleInvitationDeletion({
   orgId: Org['id'];
   data: Record<string, unknown>;
 }) {
-  return Effect.gen(function* (_) {
+  return Effect.gen(function* () {
     const {validate, execute} = deleteInvitation({db, pool});
-    const props = yield* _(validate(data));
+    const props = yield* validate(data);
 
-    yield* _(execute({props, orgId, userId}));
+    yield* execute({props, orgId, userId});
   });
 }
 
 export const action = withAction(
-  Effect.gen(function* (_) {
-    const {request, params} = yield* _(ActionArgs);
+  Effect.gen(function* () {
+    const {request, params} = yield* ActionArgs;
 
-    const userId = yield* _(authenticateUser(request));
-    const orgId = yield* _(identifyOrgByParams(params));
-    const data = yield* _(parseFormData(request));
+    const userId = yield* authenticateUser(request);
+    const orgId = yield* identifyOrgByParams(params);
+    const data = yield* parseFormData(request);
 
     const intent = data.intent;
 
     if (intent === 'delete') {
-      yield* _(
-        handleInvitationDeletion({
-          userId,
-          orgId,
-          data,
-        })
-      );
+      yield* handleInvitationDeletion({
+        userId,
+        orgId,
+        data,
+      });
       return new Ok({data: null});
     }
 
     if (intent === 'create') {
-      yield* _(handleInvitationCreation({userId, orgId, data}));
+      yield* handleInvitationCreation({userId, orgId, data});
       return new Ok({data: null});
     }
 
-    return yield* _(
-      Effect.fail(
-        new BadRequest({errors: ['We could not process your request']})
-      )
+    return yield* Effect.fail(
+      new BadRequest({errors: ['We could not process your request']})
     );
   }).pipe(
     Effect.catchTags({

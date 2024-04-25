@@ -13,15 +13,16 @@ import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
 import {getOrgAnnouncements} from '~/core/use-cases/get-org-announcements.server';
 
 export const loader = withLoader(
-  Effect.gen(function* (_) {
-    const {request, params} = yield* _(LoaderArgs);
+  Effect.gen(function* () {
+    const {request, params} = yield* LoaderArgs;
 
-    const userId = yield* _(authenticateUser(request));
-    const orgId = yield* _(identifyOrgByParams(params));
+    const userId = yield* authenticateUser(request);
+    const orgId = yield* identifyOrgByParams(params);
 
-    const announcements = yield* _(
-      getOrgAnnouncements({pool, db}).execute({orgId, userId})
-    );
+    const announcements = yield* getOrgAnnouncements({pool, db}).execute({
+      orgId,
+      userId,
+    });
 
     return new Ok({data: {announcements}});
   }).pipe(

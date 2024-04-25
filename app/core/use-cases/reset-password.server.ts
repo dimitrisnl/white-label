@@ -21,59 +21,50 @@ export type ResetPasswordProps = Schema.Schema.Type<typeof validationSchema>;
 
 export function resetPassword({pool, db}: {pool: PgPool; db: DB}) {
   function execute({token, password}: ResetPasswordProps) {
-    return Effect.gen(function* (_) {
-      yield* _(Effect.log(`(reset-password): Resetting password for ${token}`));
-      const passwordResetTokenRecord = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db.selectOne('password_reset_tokens', {id: token}).run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+    return Effect.gen(function* () {
+      yield* Effect.log(`(reset-password): Resetting password for ${token}`);
+      const passwordResetTokenRecord = yield* Effect.tryPromise({
+        try: () => db.selectOne('password_reset_tokens', {id: token}).run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (!passwordResetTokenRecord) {
-        return yield* _(Effect.fail(new PasswordResetTokenNotFoundError()));
+        return yield* Effect.fail(new PasswordResetTokenNotFoundError());
       }
 
-      const userRecord = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .selectOne('users', {id: passwordResetTokenRecord.user_id})
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const userRecord = yield* Effect.tryPromise({
+        try: () =>
+          db
+            .selectOne('users', {id: passwordResetTokenRecord.user_id})
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (!userRecord) {
-        return yield* _(Effect.fail(new UserNotFoundError()));
+        return yield* Effect.fail(new UserNotFoundError());
       }
 
-      const passwordHash = yield* _(hashPassword(password));
-      const records = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .update(
-                'users',
-                {password: passwordHash, updated_at: db.sql`now()`},
-                {id: userRecord.id}
-              )
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const passwordHash = yield* hashPassword(password);
+      const records = yield* Effect.tryPromise({
+        try: () =>
+          db
+            .update(
+              'users',
+              {password: passwordHash, updated_at: db.sql`now()`},
+              {id: userRecord.id}
+            )
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (records.length === 0 || !records[0]) {
         return new DatabaseError();
       }
 
-      yield* _(
-        Effect.tryPromise({
-          try: () => db.deletes('password_reset_tokens', {id: token}).run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      yield* Effect.tryPromise({
+        try: () => db.deletes('password_reset_tokens', {id: token}).run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       return null;
     }).pipe(

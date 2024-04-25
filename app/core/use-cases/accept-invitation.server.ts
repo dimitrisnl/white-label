@@ -29,53 +29,47 @@ export function acceptInvitation({pool, db}: {pool: PgPool; db: DB}) {
     props: AcceptInvitationProps;
     userId: User['id'];
   }) {
-    return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(`(accept-invitation): Accepting invitation ${invitationId}`)
+    return Effect.gen(function* () {
+      yield* Effect.log(
+        `(accept-invitation): Accepting invitation ${invitationId}`
       );
 
-      const records = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .deletes('membership_invitations', {
-                status: PENDING,
-                id: invitationId,
-              })
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const records = yield* Effect.tryPromise({
+        try: () =>
+          db
+            .deletes('membership_invitations', {
+              status: PENDING,
+              id: invitationId,
+            })
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (records.length === 0 || !records[0]) {
-        return yield* _(Effect.fail(new InvitationNotFoundError()));
+        return yield* Effect.fail(new InvitationNotFoundError());
       }
 
       const {org_id, role} = records[0];
 
-      const membershipRecord = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .insert('memberships', {org_id, user_id: userId, role: role})
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const membershipRecord = yield* Effect.tryPromise({
+        try: () =>
+          db
+            .insert('memberships', {org_id, user_id: userId, role: role})
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
-      const orgRecord = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db.selectOne('orgs', {id: membershipRecord.org_id}).run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const orgRecord = yield* Effect.tryPromise({
+        try: () =>
+          db.selectOne('orgs', {id: membershipRecord.org_id}).run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (!orgRecord) {
-        return yield* _(Effect.fail(new OrgNotFoundError()));
+        return yield* Effect.fail(new OrgNotFoundError());
       }
 
-      const org = yield* _(Org.fromRecord(orgRecord));
+      const org = yield* Org.fromRecord(orgRecord);
 
       return {org};
     }).pipe(

@@ -50,22 +50,22 @@ describe('use-cases/create-org', () => {
       const {validate, execute} = createOrg({pool: testDbPool, db: db});
 
       const result = await Effect.runPromiseExit(
-        Effect.gen(function* (_) {
-          const props = yield* _(validate(orgObj));
+        Effect.gen(function* () {
+          const props = yield* validate(orgObj);
 
-          const userProps = yield* _(
-            createUser({pool: testDbPool, db: db}).validate(userObj)
-          );
-          const {user: newUser} = yield* _(
-            createUser({pool: testDbPool, db: db}).execute(userProps)
-          );
+          const userProps = yield* createUser({
+            pool: testDbPool,
+            db: db,
+          }).validate(userObj);
+          const {user: newUser} = yield* createUser({
+            pool: testDbPool,
+            db: db,
+          }).execute(userProps);
 
-          return yield* _(
-            execute({
-              props,
-              userId: newUser.id,
-            })
-          );
+          return yield* execute({
+            props,
+            userId: newUser.id,
+          });
         })
       );
 
@@ -93,11 +93,11 @@ describe('use-cases/create-org', () => {
       const {validate, execute} = createOrg({pool: testDbPool, db: db});
 
       const result = await Effect.runPromiseExit(
-        Effect.gen(function* (_) {
-          const props = yield* _(validate(orgObj));
+        Effect.gen(function* () {
+          const props = yield* validate(orgObj);
 
           // @ts-expect-error
-          return yield* _(execute({props}, faker.string.uuid()));
+          return yield* execute({props}, faker.string.uuid());
         })
       );
 

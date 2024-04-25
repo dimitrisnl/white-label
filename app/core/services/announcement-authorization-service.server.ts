@@ -29,22 +29,20 @@ export const announcementAuthorizationService = ({
 
   return {
     canViewAll: ({userId, orgId}: {userId: User['id']; orgId: Org['id']}) =>
-      Effect.gen(function* (_) {
-        const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
+      Effect.gen(function* () {
+        const membershipRecord = yield* getMembershipRecord({userId, orgId});
 
         return membershipRecord
-          ? yield* _(Effect.succeed(null))
-          : yield* _(
-              Effect.fail(
-                new ForbiddenActionError({
-                  userId,
-                  action: 'view',
-                  resource: 'announcement',
-                  resourceId: 'all',
-                  resourceBelongsToOrgId: orgId,
-                  reason: 'User is not a member of the organization',
-                })
-              )
+          ? yield* Effect.succeed(null)
+          : yield* Effect.fail(
+              new ForbiddenActionError({
+                userId,
+                action: 'view',
+                resource: 'announcement',
+                resourceId: 'all',
+                resourceBelongsToOrgId: orgId,
+                reason: 'User is not a member of the organization',
+              })
             );
       }),
 
@@ -57,42 +55,38 @@ export const announcementAuthorizationService = ({
       orgId: Org['id'];
       announcementId: Announcement['id'];
     }) =>
-      Effect.gen(function* (_) {
-        const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
+      Effect.gen(function* () {
+        const membershipRecord = yield* getMembershipRecord({userId, orgId});
 
         return membershipRecord
-          ? yield* _(Effect.succeed(null))
-          : yield* _(
-              Effect.fail(
-                new ForbiddenActionError({
-                  userId,
-                  action: 'view',
-                  resource: 'announcement',
-                  resourceId: announcementId,
-                  resourceBelongsToOrgId: orgId,
-                  reason: 'User is not a member of the organization',
-                })
-              )
+          ? yield* Effect.succeed(null)
+          : yield* Effect.fail(
+              new ForbiddenActionError({
+                userId,
+                action: 'view',
+                resource: 'announcement',
+                resourceId: announcementId,
+                resourceBelongsToOrgId: orgId,
+                reason: 'User is not a member of the organization',
+              })
             );
       }),
 
     canCreate: ({userId, orgId}: {userId: User['id']; orgId: Org['id']}) =>
-      Effect.gen(function* (_) {
-        const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
+      Effect.gen(function* () {
+        const membershipRecord = yield* getMembershipRecord({userId, orgId});
 
         return membershipRecord
-          ? yield* _(Effect.succeed(null))
-          : yield* _(
-              Effect.fail(
-                new ForbiddenActionError({
-                  userId,
-                  action: 'create',
-                  resource: 'announcement',
-                  resourceId: 'N/A',
-                  resourceBelongsToOrgId: orgId,
-                  reason: 'User is not a member of the organization',
-                })
-              )
+          ? yield* Effect.succeed(null)
+          : yield* Effect.fail(
+              new ForbiddenActionError({
+                userId,
+                action: 'create',
+                resource: 'announcement',
+                resourceId: 'N/A',
+                resourceBelongsToOrgId: orgId,
+                reason: 'User is not a member of the organization',
+              })
             );
       }),
 
@@ -105,22 +99,20 @@ export const announcementAuthorizationService = ({
       orgId: Org['id'];
       announcementId: Announcement['id'];
     }) =>
-      Effect.gen(function* (_) {
-        const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
+      Effect.gen(function* () {
+        const membershipRecord = yield* getMembershipRecord({userId, orgId});
 
         return membershipRecord
-          ? yield* _(Effect.succeed(null))
-          : yield* _(
-              Effect.fail(
-                new ForbiddenActionError({
-                  userId,
-                  action: 'update',
-                  resource: 'announcement',
-                  resourceId: announcementId,
-                  resourceBelongsToOrgId: orgId,
-                  reason: 'User is not a member of the organization',
-                })
-              )
+          ? yield* Effect.succeed(null)
+          : yield* Effect.fail(
+              new ForbiddenActionError({
+                userId,
+                action: 'update',
+                resource: 'announcement',
+                resourceId: announcementId,
+                resourceBelongsToOrgId: orgId,
+                reason: 'User is not a member of the organization',
+              })
             );
       }),
 
@@ -133,23 +125,21 @@ export const announcementAuthorizationService = ({
       orgId: Org['id'];
       announcementId: Announcement['id'];
     }) =>
-      Effect.gen(function* (_) {
-        const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
+      Effect.gen(function* () {
+        const membershipRecord = yield* getMembershipRecord({userId, orgId});
 
         return membershipRecord
-          ? yield* _(Effect.succeed(null))
-          : yield* _(
-              Effect.fail(
-                new ForbiddenActionError({
-                  userId,
-                  action: 'delete',
+          ? yield* Effect.succeed(null)
+          : yield* Effect.fail(
+              new ForbiddenActionError({
+                userId,
+                action: 'delete',
 
-                  resource: 'announcement',
-                  resourceId: announcementId,
-                  resourceBelongsToOrgId: orgId,
-                  reason: 'User is not a member of the organization',
-                })
-              )
+                resource: 'announcement',
+                resourceId: announcementId,
+                resourceBelongsToOrgId: orgId,
+                reason: 'User is not a member of the organization',
+              })
             );
       }),
   };

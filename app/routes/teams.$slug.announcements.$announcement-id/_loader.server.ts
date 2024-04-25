@@ -14,18 +14,20 @@ import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
 import {getAnnouncement} from '~/core/use-cases/get-announcement.server';
 
 export const loader = withLoader(
-  Effect.gen(function* (_) {
-    const {request, params} = yield* _(LoaderArgs);
+  Effect.gen(function* () {
+    const {request, params} = yield* LoaderArgs;
 
-    const announcementId = yield* _(
-      parseAnnouncementId(params['announcement-id'])
+    const announcementId = yield* parseAnnouncementId(
+      params['announcement-id']
     );
 
-    const userId = yield* _(authenticateUser(request));
-    const orgId = yield* _(identifyOrgByParams(params));
-    const announcement = yield* _(
-      getAnnouncement({db, pool}).execute({announcementId, orgId, userId})
-    );
+    const userId = yield* authenticateUser(request);
+    const orgId = yield* identifyOrgByParams(params);
+    const announcement = yield* getAnnouncement({db, pool}).execute({
+      announcementId,
+      orgId,
+      userId,
+    });
 
     return new Ok({data: {announcement}});
   }).pipe(

@@ -60,9 +60,9 @@ describe('use-cases/create-user', () => {
       const {validate, execute} = createUser({pool: testDbPool, db: db});
 
       const result = await Effect.runPromiseExit(
-        Effect.gen(function* (_) {
-          const props = yield* _(validate(userObj));
-          return yield* _(execute(props));
+        Effect.gen(function* () {
+          const props = yield* validate(userObj);
+          return yield* execute(props);
         })
       );
 
@@ -91,12 +91,12 @@ describe('use-cases/create-user', () => {
       const {validate, execute} = createUser({pool: testDbPool, db: db});
 
       const result = await Effect.runPromiseExit(
-        Effect.gen(function* (_) {
-          const props = yield* _(validate(userObj));
+        Effect.gen(function* () {
+          const props = yield* validate(userObj);
           // Add once
-          yield* _(execute(props));
+          yield* execute(props);
           // Try again
-          return yield* _(execute(props));
+          return yield* execute(props);
         })
       );
 

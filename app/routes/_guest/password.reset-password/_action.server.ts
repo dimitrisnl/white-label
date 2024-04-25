@@ -8,14 +8,14 @@ import {ActionArgs, withAction} from '~/core/lib/with-action.server';
 import {resetPassword} from '~/core/use-cases/reset-password.server';
 
 export const action = withAction(
-  Effect.gen(function* (_) {
-    const {request} = yield* _(ActionArgs);
+  Effect.gen(function* () {
+    const {request} = yield* ActionArgs;
 
     const {validate, execute} = resetPassword({db, pool});
-    const data = yield* _(parseFormData(request));
-    const props = yield* _(validate(data));
+    const data = yield* parseFormData(request);
+    const props = yield* validate(data);
 
-    yield* _(execute(props));
+    yield* execute(props);
 
     return new Redirect({to: '/login?resetPassword=true'});
   }).pipe(

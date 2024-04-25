@@ -20,18 +20,15 @@ export type VerifyPasswordResetProps = Schema.Schema.Type<
 
 export function verifyPasswordReset({pool, db}: {pool: PgPool; db: DB}) {
   function execute({token}: VerifyPasswordResetProps) {
-    return Effect.gen(function* (_) {
-      yield* _(Effect.log(`(verify-password-reset): Verifying token ${token}`));
-      const passwordResetTokenRecord = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db.selectOne('password_reset_tokens', {id: token}).run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+    return Effect.gen(function* () {
+      yield* Effect.log(`(verify-password-reset): Verifying token ${token}`);
+      const passwordResetTokenRecord = yield* Effect.tryPromise({
+        try: () => db.selectOne('password_reset_tokens', {id: token}).run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (!passwordResetTokenRecord) {
-        return yield* _(Effect.fail(new PasswordResetTokenNotFoundError()));
+        return yield* Effect.fail(new PasswordResetTokenNotFoundError());
       }
 
       return null;

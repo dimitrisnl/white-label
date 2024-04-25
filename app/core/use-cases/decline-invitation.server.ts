@@ -21,40 +21,36 @@ export type DeclineInvitationProps = Schema.Schema.Type<
 
 export function declineInvitation({pool, db}: {pool: PgPool; db: DB}) {
   function execute({invitationId}: DeclineInvitationProps) {
-    return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(`(decline-invitation): Declining invitation ${invitationId}`)
+    return Effect.gen(function* () {
+      yield* Effect.log(
+        `(decline-invitation): Declining invitation ${invitationId}`
       );
-      const invitationRecord = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .selectOne('membership_invitations', {
-                id: invitationId,
-                status: PENDING,
-              })
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const invitationRecord = yield* Effect.tryPromise({
+        try: () =>
+          db
+            .selectOne('membership_invitations', {
+              id: invitationId,
+              status: PENDING,
+            })
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (!invitationRecord) {
-        return yield* _(Effect.fail(new InvitationNotFoundError()));
+        return yield* Effect.fail(new InvitationNotFoundError());
       }
 
-      const records = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .update(
-                'membership_invitations',
-                {status: DECLINED, updated_at: db.sql`now()`},
-                {id: invitationId}
-              )
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const records = yield* Effect.tryPromise({
+        try: () =>
+          db
+            .update(
+              'membership_invitations',
+              {status: DECLINED, updated_at: db.sql`now()`},
+              {id: invitationId}
+            )
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (records.length === 0 || !records[0]) {
         return new DatabaseError();

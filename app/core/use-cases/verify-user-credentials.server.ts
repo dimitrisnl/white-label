@@ -23,44 +23,34 @@ export type VerifyUserCredentialsProps = Schema.Schema.Type<
 
 export function verifyUserCredentials({pool, db}: {pool: PgPool; db: DB}) {
   function execute({email, password}: VerifyUserCredentialsProps) {
-    return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(
-          `(verify-user-credentials): Verifying credentials for ${email}`
-        )
+    return Effect.gen(function* () {
+      yield* Effect.log(
+        `(verify-user-credentials): Verifying credentials for ${email}`
       );
 
-      const userRecord = yield* _(
-        Effect.tryPromise({
-          try: () => db.selectOne('users', {email}).run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const userRecord = yield* Effect.tryPromise({
+        try: () => db.selectOne('users', {email}).run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (!userRecord) {
-        return yield* _(
-          Effect.fail(
-            new InvalidCredentialsError({email, reason: 'User not found'})
-          )
+        return yield* Effect.fail(
+          new InvalidCredentialsError({email, reason: 'User not found'})
         );
       }
 
-      const isPasswordValid = yield* _(
-        comparePasswords({
-          plainText: password,
-          hashValue: userRecord.password,
-        })
-      );
+      const isPasswordValid = yield* comparePasswords({
+        plainText: password,
+        hashValue: userRecord.password,
+      });
 
       if (!isPasswordValid) {
-        return yield* _(
-          Effect.fail(
-            new InvalidCredentialsError({email, reason: 'Invalid password'})
-          )
+        return yield* Effect.fail(
+          new InvalidCredentialsError({email, reason: 'Invalid password'})
         );
       }
 
-      const user = yield* _(User.fromRecord(userRecord));
+      const user = yield* User.fromRecord(userRecord);
 
       return user;
     }).pipe(

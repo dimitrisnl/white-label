@@ -27,39 +27,35 @@ function handleAnnouncementDeletion({
   orgId: Org['id'];
   data: Record<string, unknown>;
 }) {
-  return Effect.gen(function* (_) {
+  return Effect.gen(function* () {
     const {validate, execute} = deleteAnnouncement({db, pool});
-    const props = yield* _(validate(data));
+    const props = yield* validate(data);
 
-    yield* _(execute({props, orgId, userId}));
+    yield* execute({props, orgId, userId});
   });
 }
 
 export const action = withAction(
-  Effect.gen(function* (_) {
-    const {request, params} = yield* _(ActionArgs);
+  Effect.gen(function* () {
+    const {request, params} = yield* ActionArgs;
 
-    const userId = yield* _(authenticateUser(request));
-    const orgId = yield* _(identifyOrgByParams(params));
-    const data = yield* _(parseFormData(request));
+    const userId = yield* authenticateUser(request);
+    const orgId = yield* identifyOrgByParams(params);
+    const data = yield* parseFormData(request);
 
     const intent = data.intent;
 
     if (intent === 'delete') {
-      yield* _(
-        handleAnnouncementDeletion({
-          userId,
-          orgId,
-          data,
-        })
-      );
+      yield* handleAnnouncementDeletion({
+        userId,
+        orgId,
+        data,
+      });
       return new Ok({data: null});
     }
 
-    return yield* _(
-      Effect.fail(
-        new BadRequest({errors: ['We could not process your request']})
-      )
+    return yield* Effect.fail(
+      new BadRequest({errors: ['We could not process your request']})
     );
   }).pipe(
     Effect.catchTags({

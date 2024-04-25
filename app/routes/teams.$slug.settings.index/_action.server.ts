@@ -18,17 +18,17 @@ import {ActionArgs, withAction} from '~/core/lib/with-action.server.ts';
 import {editOrg} from '~/core/use-cases/edit-org.server';
 
 export const action = withAction(
-  Effect.gen(function* (_) {
-    const {request, params} = yield* _(ActionArgs);
+  Effect.gen(function* () {
+    const {request, params} = yield* ActionArgs;
 
-    const userId = yield* _(authenticateUser(request));
-    const orgId = yield* _(identifyOrgByParams(params));
-    const data = yield* _(parseFormData(request));
+    const userId = yield* authenticateUser(request);
+    const orgId = yield* identifyOrgByParams(params);
+    const data = yield* parseFormData(request);
 
     const {validate, execute} = editOrg({db, pool});
-    const props = yield* _(validate(data));
+    const props = yield* validate(data);
 
-    yield* _(execute({props, orgId, userId}));
+    yield* execute({props, orgId, userId});
 
     return new Ok({data: null});
   }).pipe(

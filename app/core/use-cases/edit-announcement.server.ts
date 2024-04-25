@@ -38,83 +38,73 @@ export function editAnnouncement({pool, db}: {pool: PgPool; db: DB}) {
     orgId: Org['id'];
     userId: User['id'];
   }) {
-    return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(
-          `(edit-announcement): Editing announcement ${announcementId} for org ${orgId} by user ${userId}`
-        )
+    return Effect.gen(function* () {
+      yield* Effect.log(
+        `(edit-announcement): Editing announcement ${announcementId} for org ${orgId} by user ${userId}`
       );
 
-      yield* _(
-        announcementAuthorizationService({pool, db}).canUpdate({
-          userId,
-          orgId,
-          announcementId,
-        })
-      );
+      yield* announcementAuthorizationService({pool, db}).canUpdate({
+        userId,
+        orgId,
+        announcementId,
+      });
 
-      const records = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .update(
-                'announcements',
-                {
-                  title,
-                  content,
-                  status,
-                  updated_at: db.sql`now()`,
-                  published_by_user_id: status === 'PUBLISHED' ? userId : null,
-                },
-                {id: announcementId, org_id: orgId}
-              )
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const records = yield* Effect.tryPromise({
+        try: () =>
+          db
+            .update(
+              'announcements',
+              {
+                title,
+                content,
+                status,
+                updated_at: db.sql`now()`,
+                published_by_user_id: status === 'PUBLISHED' ? userId : null,
+              },
+              {id: announcementId, org_id: orgId}
+            )
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (records.length === 0 || !records[0]) {
-        return yield* _(Effect.fail(new AnnouncementNotFoundError()));
+        return yield* Effect.fail(new AnnouncementNotFoundError());
       }
 
-      const announcementRecord = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .selectOne(
-                'announcements',
-                {org_id: orgId, id: announcementId},
-                {
-                  lateral: {
-                    created_by_user: db.selectOne(
-                      'users',
-                      {id: db.parent('created_by_user_id')},
-                      {columns: ['id', 'name']}
-                    ),
-                    published_by_user: db.selectOne(
-                      'users',
-                      {id: db.parent('published_by_user_id')},
-                      {columns: ['id', 'name']}
-                    ),
-                  },
-                }
-              )
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const announcementRecord = yield* Effect.tryPromise({
+        try: () =>
+          db
+            .selectOne(
+              'announcements',
+              {org_id: orgId, id: announcementId},
+              {
+                lateral: {
+                  created_by_user: db.selectOne(
+                    'users',
+                    {id: db.parent('created_by_user_id')},
+                    {columns: ['id', 'name']}
+                  ),
+                  published_by_user: db.selectOne(
+                    'users',
+                    {id: db.parent('published_by_user_id')},
+                    {columns: ['id', 'name']}
+                  ),
+                },
+              }
+            )
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (!announcementRecord) {
-        return yield* _(Effect.fail(new AnnouncementNotFoundError()));
+        return yield* Effect.fail(new AnnouncementNotFoundError());
       }
 
-      const announcement = yield* _(
-        Announcement.fromRecord({
-          record: announcementRecord,
-          createdByUser: announcementRecord.created_by_user,
-          publishedByUser: announcementRecord.published_by_user,
-        })
-      );
+      const announcement = yield* Announcement.fromRecord({
+        record: announcementRecord,
+        createdByUser: announcementRecord.created_by_user,
+        publishedByUser: announcementRecord.published_by_user,
+      });
       return announcement;
     }).pipe(
       Effect.catchTags({

@@ -8,15 +8,15 @@ import {ActionArgs, withAction} from '~/core/lib/with-action.server';
 import {createOrg} from '~/core/use-cases/create-org.server';
 
 export const action = withAction(
-  Effect.gen(function* (_) {
-    const {request} = yield* _(ActionArgs);
-    const userId = yield* _(authenticateUser(request));
+  Effect.gen(function* () {
+    const {request} = yield* ActionArgs;
+    const userId = yield* authenticateUser(request);
 
     const {validate, execute} = createOrg({db, pool});
-    const data = yield* _(parseFormData(request));
-    const props = yield* _(validate(data));
+    const data = yield* parseFormData(request);
+    const props = yield* validate(data);
 
-    const org = yield* _(execute({props, userId}));
+    const org = yield* execute({props, userId});
 
     return new Redirect({to: `/teams/${org.slug}`});
   }).pipe(

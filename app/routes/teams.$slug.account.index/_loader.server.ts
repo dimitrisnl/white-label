@@ -8,10 +8,10 @@ import {LoaderArgs, withLoader} from '~/core/lib/with-loader.server';
 import {getUser} from '~/core/use-cases/get-user.server';
 
 export const loader = withLoader(
-  Effect.gen(function* (_) {
-    const {request} = yield* _(LoaderArgs);
-    const userId = yield* _(authenticateUser(request));
-    const {user} = yield* _(getUser({db, pool}).execute({userId}));
+  Effect.gen(function* () {
+    const {request} = yield* LoaderArgs;
+    const userId = yield* authenticateUser(request);
+    const {user} = yield* getUser({db, pool}).execute({userId});
 
     return new Ok({data: {user}});
   }).pipe(

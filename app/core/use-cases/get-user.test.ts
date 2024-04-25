@@ -21,14 +21,12 @@ describe('use-cases/get-user', () => {
       };
 
       const result = await Effect.runPromiseExit(
-        Effect.gen(function* (_) {
-          const {user: newUser} = yield* _(
-            // @ts-expect-error
-            createUser({pool: testDbPool, db: db}).execute(userObj)
-          );
-          return yield* _(
-            getUser({pool: testDbPool, db: db}).execute({userId: newUser.id})
-          );
+        Effect.gen(function* () {
+          const {user: newUser} = yield* // @ts-expect-error
+          createUser({pool: testDbPool, db: db}).execute(userObj);
+          return yield* getUser({pool: testDbPool, db: db}).execute({
+            userId: newUser.id,
+          });
         })
       );
 
@@ -48,11 +46,9 @@ describe('use-cases/get-user', () => {
 
     test('fails to get anything if not existing', async () => {
       const result = await Effect.runPromiseExit(
-        Effect.gen(function* (_) {
-          return yield* _(
-            // @ts-expect-error
-            getUser({pool: testDbPool, db: db}).execute(faker.string.uuid())
-          );
+        Effect.gen(function* () {
+          return yield* // @ts-expect-error
+          getUser({pool: testDbPool, db: db}).execute(faker.string.uuid());
         })
       );
 

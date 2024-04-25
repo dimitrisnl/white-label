@@ -11,21 +11,19 @@ import {
 
 export function getOrgIdBySlug({pool, db}: {pool: PgPool; db: DB}) {
   function execute(slug: Org['slug']) {
-    return Effect.gen(function* (_) {
-      yield* _(Effect.log(`(get-org-id-by-slug): Getting org ${slug}`));
+    return Effect.gen(function* () {
+      yield* Effect.log(`(get-org-id-by-slug): Getting org ${slug}`);
 
-      const orgRecord = yield* _(
-        Effect.tryPromise({
-          try: () => db.selectOne('orgs', {slug}, {columns: ['id']}).run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const orgRecord = yield* Effect.tryPromise({
+        try: () => db.selectOne('orgs', {slug}, {columns: ['id']}).run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (!orgRecord) {
-        return yield* _(Effect.fail(new OrgNotFoundError()));
+        return yield* Effect.fail(new OrgNotFoundError());
       }
 
-      const orgId = yield* _(parseOrgId(orgRecord.id));
+      const orgId = yield* parseOrgId(orgRecord.id);
 
       return orgId;
     }).pipe(

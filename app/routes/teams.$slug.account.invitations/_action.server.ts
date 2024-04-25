@@ -8,16 +8,16 @@ import {ActionArgs, withAction} from '~/core/lib/with-action.server';
 import {acceptInvitation} from '~/core/use-cases/accept-invitation.server';
 
 export const action = withAction(
-  Effect.gen(function* (_) {
-    const {request} = yield* _(ActionArgs);
+  Effect.gen(function* () {
+    const {request} = yield* ActionArgs;
 
-    const userId = yield* _(authenticateUser(request));
-    const data = yield* _(parseFormData(request));
+    const userId = yield* authenticateUser(request);
+    const data = yield* parseFormData(request);
 
     const {validate, execute} = acceptInvitation({db, pool});
 
-    const props = yield* _(validate({invitationId: data.invitationId}));
-    const {org} = yield* _(execute({props, userId}));
+    const props = yield* validate({invitationId: data.invitationId});
+    const {org} = yield* execute({props, userId});
 
     return new Redirect({
       to: `/teams/${org.slug}`,

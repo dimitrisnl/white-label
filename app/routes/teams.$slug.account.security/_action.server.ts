@@ -13,14 +13,14 @@ import {ActionArgs, withAction} from '~/core/lib/with-action.server';
 import {changePassword} from '~/core/use-cases/change-password.server';
 
 export const action = withAction(
-  Effect.gen(function* (_) {
-    const {request} = yield* _(ActionArgs);
-    const userId = yield* _(authenticateUser(request));
+  Effect.gen(function* () {
+    const {request} = yield* ActionArgs;
+    const userId = yield* authenticateUser(request);
     const {validate, execute} = changePassword({db, pool});
-    const data = yield* _(parseFormData(request));
-    const props = yield* _(validate(data));
+    const data = yield* parseFormData(request);
+    const props = yield* validate(data);
 
-    yield* _(execute({props, userId}));
+    yield* execute({props, userId});
 
     return new Ok({data: null});
   }).pipe(

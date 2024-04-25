@@ -27,8 +27,8 @@ describe('domain/password', () => {
       const password = 'my-password-is-ok';
 
       const result = await Effect.runPromiseExit(
-        Effect.gen(function* (_) {
-          const hash = yield* _(hashPassword(password as Password));
+        Effect.gen(function* () {
+          const hash = yield* hashPassword(password as Password);
           expect(hash).not.toBe(password);
         })
       );
@@ -39,9 +39,9 @@ describe('domain/password', () => {
       const password = 'my-password-is-ok';
 
       const result = await Effect.runPromiseExit(
-        Effect.gen(function* (_) {
-          const hash1 = yield* _(hashPassword(password as Password));
-          const hash2 = yield* _(hashPassword(password as Password));
+        Effect.gen(function* () {
+          const hash1 = yield* hashPassword(password as Password);
+          const hash2 = yield* hashPassword(password as Password);
           expect(hash1).not.toBe(hash2);
         })
       );
@@ -55,15 +55,13 @@ describe('domain/password', () => {
       const password = 'my-password-is-ok';
 
       const result = await Effect.runPromiseExit(
-        Effect.gen(function* (_) {
-          const hash = yield* _(hashPassword(password as Password));
+        Effect.gen(function* () {
+          const hash = yield* hashPassword(password as Password);
 
-          const isValid = yield* _(
-            comparePasswords({
-              plainText: password,
-              hashValue: hash,
-            })
-          );
+          const isValid = yield* comparePasswords({
+            plainText: password,
+            hashValue: hash,
+          });
 
           expect(isValid).toBe(true);
         })
@@ -76,15 +74,13 @@ describe('domain/password', () => {
       const password = 'my-password-is-ok';
 
       const result = await Effect.runPromiseExit(
-        Effect.gen(function* (_) {
-          const hash = yield* _(hashPassword(password as Password));
+        Effect.gen(function* () {
+          const hash = yield* hashPassword(password as Password);
 
-          const isValid = yield* _(
-            comparePasswords({
-              plainText: 'my-password-is-not-ok',
-              hashValue: hash,
-            })
-          );
+          const isValid = yield* comparePasswords({
+            plainText: 'my-password-is-not-ok',
+            hashValue: hash,
+          });
 
           expect(isValid).toBe(false);
         })

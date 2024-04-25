@@ -14,7 +14,7 @@ export function sendInvitationEmail({
   orgName: string;
   invitationTokenId: string;
 }) {
-  return Effect.gen(function* (_) {
+  return Effect.gen(function* () {
     const html = `
     You've been invited to join ${orgName}!\n
     Accept your invitation by creating a new account: ${config.DASHBOARD_URL}\n
@@ -27,7 +27,7 @@ export function sendInvitationEmail({
       content: html,
     };
 
-    yield* _(addEmailJob('invitation-email', payload));
+    yield* addEmailJob('invitation-email', payload);
   }).pipe(
     Effect.catchAll((error) =>
       pipe(

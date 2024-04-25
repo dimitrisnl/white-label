@@ -4,9 +4,9 @@ import {logout} from '~/core/lib/session.server';
 import {ActionArgs, withAction} from '~/core/lib/with-action.server';
 
 export const action = withAction(
-  Effect.gen(function* (_) {
-    const {request} = yield* _(ActionArgs);
+  Effect.gen(function* () {
+    const {request} = yield* ActionArgs;
 
-    return yield* _(logout(request));
+    return yield* logout(request);
   })
 );

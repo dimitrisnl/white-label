@@ -24,25 +24,23 @@ export function editUser({pool, db}: {pool: PgPool; db: DB}) {
     props: EditUserProps;
     userId: User['id'];
   }) {
-    return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(`(edit-user): Editing user ${userId} with name ${name}`)
+    return Effect.gen(function* () {
+      yield* Effect.log(
+        `(edit-user): Editing user ${userId} with name ${name}`
       );
-      const records = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .update('users', {name, updated_at: db.sql`now()`}, {id: userId})
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const records = yield* Effect.tryPromise({
+        try: () =>
+          db
+            .update('users', {name, updated_at: db.sql`now()`}, {id: userId})
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (records.length === 0 || !records[0]) {
-        return yield* _(Effect.fail(new UserNotFoundError()));
+        return yield* Effect.fail(new UserNotFoundError());
       }
 
-      const user = yield* _(User.fromRecord(records[0]));
+      const user = yield* User.fromRecord(records[0]);
       return user;
     }).pipe(
       Effect.catchTags({

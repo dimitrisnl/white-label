@@ -21,37 +21,31 @@ export type RequestPasswordResetProps = Schema.Schema.Type<
 
 export function requestPasswordReset({pool, db}: {pool: PgPool; db: DB}) {
   function execute({email}: RequestPasswordResetProps) {
-    return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(
-          `(request-password-reset): Requesting password reset for ${email}`
-        )
+    return Effect.gen(function* () {
+      yield* Effect.log(
+        `(request-password-reset): Requesting password reset for ${email}`
       );
-      const userRecord = yield* _(
-        Effect.tryPromise({
-          try: () => db.selectOne('users', {email}).run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const userRecord = yield* Effect.tryPromise({
+        try: () => db.selectOne('users', {email}).run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (!userRecord) {
-        return yield* _(Effect.fail(new UserNotFoundError()));
+        return yield* Effect.fail(new UserNotFoundError());
       }
 
-      const passwordResetTokenId = yield* _(generateUUID());
+      const passwordResetTokenId = yield* generateUUID();
 
-      yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .insert('password_reset_tokens', {
-                id: passwordResetTokenId,
-                user_id: userRecord.id,
-              })
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      yield* Effect.tryPromise({
+        try: () =>
+          db
+            .insert('password_reset_tokens', {
+              id: passwordResetTokenId,
+              user_id: userRecord.id,
+            })
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       return {email: userRecord.email, passwordResetTokenId};
     }).pipe(

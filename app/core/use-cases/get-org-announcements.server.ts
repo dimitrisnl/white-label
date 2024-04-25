@@ -9,58 +9,50 @@ import {announcementAuthorizationService} from '~/core/services/announcement-aut
 
 export function getOrgAnnouncements({pool, db}: {pool: PgPool; db: DB}) {
   function execute({orgId, userId}: {orgId: Org['id']; userId: User['id']}) {
-    return Effect.gen(function* (_) {
-      yield* _(
-        Effect.log(
-          `(get-org-announcements): Getting announcements for org ${orgId} for user ${userId}`
-        )
+    return Effect.gen(function* () {
+      yield* Effect.log(
+        `(get-org-announcements): Getting announcements for org ${orgId} for user ${userId}`
       );
 
-      yield* _(
-        announcementAuthorizationService({
-          pool,
-          db,
-        }).canViewAll({userId, orgId})
-      );
+      yield* announcementAuthorizationService({
+        pool,
+        db,
+      }).canViewAll({userId, orgId});
 
-      const announcementRecords = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            db
-              .select(
-                'announcements',
-                {org_id: orgId},
-                {
-                  lateral: {
-                    created_by_user: db.selectOne(
-                      'users',
-                      {id: db.parent('created_by_user_id')},
-                      {columns: ['id', 'name']}
-                    ),
-                    published_by_user: db.selectOne(
-                      'users',
-                      {id: db.parent('published_by_user_id')},
-                      {columns: ['id', 'name']}
-                    ),
-                  },
-                }
-              )
-              .run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+      const announcementRecords = yield* Effect.tryPromise({
+        try: () =>
+          db
+            .select(
+              'announcements',
+              {org_id: orgId},
+              {
+                lateral: {
+                  created_by_user: db.selectOne(
+                    'users',
+                    {id: db.parent('created_by_user_id')},
+                    {columns: ['id', 'name']}
+                  ),
+                  published_by_user: db.selectOne(
+                    'users',
+                    {id: db.parent('published_by_user_id')},
+                    {columns: ['id', 'name']}
+                  ),
+                },
+              }
+            )
+            .run(pool),
+        catch: () => new DatabaseError(),
+      });
 
-      const announcements = yield* _(
-        Effect.all(
-          announcementRecords.map(
-            (announcementRecord) =>
-              Announcement.fromRecord({
-                record: announcementRecord,
-                createdByUser: announcementRecord.created_by_user,
-                publishedByUser: announcementRecord.published_by_user,
-              }),
-            {concurrency: 'unbounded'}
-          )
+      const announcements = yield* Effect.all(
+        announcementRecords.map(
+          (announcementRecord) =>
+            Announcement.fromRecord({
+              record: announcementRecord,
+              createdByUser: announcementRecord.created_by_user,
+              publishedByUser: announcementRecord.published_by_user,
+            }),
+          {concurrency: 'unbounded'}
         )
       );
 

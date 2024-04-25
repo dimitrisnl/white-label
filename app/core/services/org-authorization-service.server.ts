@@ -23,61 +23,55 @@ export const orgAuthorizationService = ({pool, db}: {pool: PgPool; db: DB}) => {
 
   return {
     canViewAll: ({userId, orgId}: {userId: User['id']; orgId: Org['id']}) =>
-      Effect.gen(function* (_) {
-        const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
+      Effect.gen(function* () {
+        const membershipRecord = yield* getMembershipRecord({userId, orgId});
 
         return membershipRecord
-          ? yield* _(Effect.succeed(null))
-          : yield* _(
-              Effect.fail(
-                new ForbiddenActionError({
-                  userId,
-                  action: 'view',
-                  resource: 'org',
-                  resourceId: orgId,
-                  resourceBelongsToOrgId: orgId,
-                  reason: 'User is not a member of the organization',
-                })
-              )
-            );
-      }),
-
-    canView: ({userId, orgId}: {userId: User['id']; orgId: Org['id']}) =>
-      Effect.gen(function* (_) {
-        const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
-
-        return membershipRecord
-          ? yield* _(Effect.succeed(null))
-          : yield* _(
-              Effect.fail(
-                new ForbiddenActionError({
-                  userId,
-                  action: 'view',
-                  resource: 'org',
-                  resourceId: orgId,
-                  resourceBelongsToOrgId: orgId,
-                  reason: 'User is not a member of the organization',
-                })
-              )
-            );
-      }),
-
-    canUpdate: ({userId, orgId}: {userId: User['id']; orgId: Org['id']}) =>
-      Effect.gen(function* (_) {
-        const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
-
-        if (!membershipRecord) {
-          return yield* _(
-            Effect.fail(
+          ? yield* Effect.succeed(null)
+          : yield* Effect.fail(
               new ForbiddenActionError({
                 userId,
-                action: 'update',
+                action: 'view',
                 resource: 'org',
                 resourceId: orgId,
                 resourceBelongsToOrgId: orgId,
                 reason: 'User is not a member of the organization',
               })
-            )
+            );
+      }),
+
+    canView: ({userId, orgId}: {userId: User['id']; orgId: Org['id']}) =>
+      Effect.gen(function* () {
+        const membershipRecord = yield* getMembershipRecord({userId, orgId});
+
+        return membershipRecord
+          ? yield* Effect.succeed(null)
+          : yield* Effect.fail(
+              new ForbiddenActionError({
+                userId,
+                action: 'view',
+                resource: 'org',
+                resourceId: orgId,
+                resourceBelongsToOrgId: orgId,
+                reason: 'User is not a member of the organization',
+              })
+            );
+      }),
+
+    canUpdate: ({userId, orgId}: {userId: User['id']; orgId: Org['id']}) =>
+      Effect.gen(function* () {
+        const membershipRecord = yield* getMembershipRecord({userId, orgId});
+
+        if (!membershipRecord) {
+          return yield* Effect.fail(
+            new ForbiddenActionError({
+              userId,
+              action: 'update',
+              resource: 'org',
+              resourceId: orgId,
+              resourceBelongsToOrgId: orgId,
+              reason: 'User is not a member of the organization',
+            })
           );
         }
 
@@ -86,57 +80,51 @@ export const orgAuthorizationService = ({pool, db}: {pool: PgPool; db: DB}) => {
         const hasPermission = isOwner || isAdmin;
 
         return hasPermission
-          ? yield* _(Effect.succeed(null))
-          : yield* _(
-              Effect.fail(
-                new ForbiddenActionError({
-                  userId,
-                  action: 'update',
-                  resource: 'org',
-                  resourceId: orgId,
-                  resourceBelongsToOrgId: orgId,
-                  reason:
-                    'User does not have permission to update the organization',
-                })
-              )
+          ? yield* Effect.succeed(null)
+          : yield* Effect.fail(
+              new ForbiddenActionError({
+                userId,
+                action: 'update',
+                resource: 'org',
+                resourceId: orgId,
+                resourceBelongsToOrgId: orgId,
+                reason:
+                  'User does not have permission to update the organization',
+              })
             );
       }),
 
     canDelete: ({userId, orgId}: {userId: User['id']; orgId: Org['id']}) =>
-      Effect.gen(function* (_) {
-        const membershipRecord = yield* _(getMembershipRecord({userId, orgId}));
+      Effect.gen(function* () {
+        const membershipRecord = yield* getMembershipRecord({userId, orgId});
 
         if (!membershipRecord) {
-          return yield* _(
-            Effect.fail(
-              new ForbiddenActionError({
-                userId,
-                action: 'delete',
-                resource: 'org',
-                resourceId: orgId,
-                resourceBelongsToOrgId: orgId,
-                reason: 'User is not a member of the organization',
-              })
-            )
+          return yield* Effect.fail(
+            new ForbiddenActionError({
+              userId,
+              action: 'delete',
+              resource: 'org',
+              resourceId: orgId,
+              resourceBelongsToOrgId: orgId,
+              reason: 'User is not a member of the organization',
+            })
           );
         }
 
         const hasPermission = membershipRecord.role === OWNER;
 
         return hasPermission
-          ? yield* _(Effect.succeed(null))
-          : yield* _(
-              Effect.fail(
-                new ForbiddenActionError({
-                  userId,
-                  action: 'delete',
-                  resource: 'org',
-                  resourceId: orgId,
-                  resourceBelongsToOrgId: orgId,
-                  reason:
-                    'User does not have permission to delete the organization',
-                })
-              )
+          ? yield* Effect.succeed(null)
+          : yield* Effect.fail(
+              new ForbiddenActionError({
+                userId,
+                action: 'delete',
+                resource: 'org',
+                resourceId: orgId,
+                resourceBelongsToOrgId: orgId,
+                reason:
+                  'User does not have permission to delete the organization',
+              })
             );
       }),
   };

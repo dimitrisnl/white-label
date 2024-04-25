@@ -9,22 +9,20 @@ import {ActionArgs, withAction} from '~/core/lib/with-action.server';
 import {verifyUserCredentials} from '~/core/use-cases/verify-user-credentials.server';
 
 export const action = withAction(
-  Effect.gen(function* (_) {
-    const {request} = yield* _(ActionArgs);
+  Effect.gen(function* () {
+    const {request} = yield* ActionArgs;
 
     const {validate, execute} = verifyUserCredentials({pool, db});
-    const data = yield* _(parseFormData(request));
-    const props = yield* _(validate(data));
-    const user = yield* _(execute(props));
+    const data = yield* parseFormData(request);
+    const props = yield* validate(data);
+    const user = yield* execute(props);
 
-    return yield* _(
-      createUserSession({
-        userId: user.id,
-        redirectToPath: '/',
-        remember: true,
-        request,
-      })
-    );
+    return yield* createUserSession({
+      userId: user.id,
+      redirectToPath: '/',
+      remember: true,
+      request,
+    });
   }).pipe(
     Effect.catchTags({
       InternalServerError: () => Effect.fail(new ServerError()),

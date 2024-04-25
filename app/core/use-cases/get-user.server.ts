@@ -10,20 +10,18 @@ import {
 
 export function getUser({pool, db}: {pool: PgPool; db: DB}) {
   function execute({userId}: {userId: User['id']}) {
-    return Effect.gen(function* (_) {
-      yield* _(Effect.log(`(get-user): Getting user ${userId}`));
-      const userRecord = yield* _(
-        Effect.tryPromise({
-          try: () => db.selectOne('users', {id: userId}).run(pool),
-          catch: () => new DatabaseError(),
-        })
-      );
+    return Effect.gen(function* () {
+      yield* Effect.log(`(get-user): Getting user ${userId}`);
+      const userRecord = yield* Effect.tryPromise({
+        try: () => db.selectOne('users', {id: userId}).run(pool),
+        catch: () => new DatabaseError(),
+      });
 
       if (!userRecord) {
-        return yield* _(Effect.fail(new UserNotFoundError()));
+        return yield* Effect.fail(new UserNotFoundError());
       }
 
-      const user = yield* _(User.fromRecord(userRecord));
+      const user = yield* User.fromRecord(userRecord);
 
       return {user};
     }).pipe(
